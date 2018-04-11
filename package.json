@@ -1,0 +1,28 @@
+{
+  "name": "react-native-audio-recorder-player",
+  "version": "0.0.1",
+  "description": "React Native Audio Recorder and Player.",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "postinstall": "dooboolab-welcome postinstall",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react-native",
+    "audio",
+    "sound",
+    "record",
+    "recorder",
+    "player"
+  ],
+  "author": "dooboolab",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "*",
+    "react-native": "*"
+  },
+  "dependencies": {
+    "dooboolab-welcome": "^1.0.5"
+  }
+}
