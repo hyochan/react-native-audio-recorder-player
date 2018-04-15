@@ -42,3 +42,5 @@ local.properties
 buck-out/
 \.buckd/
 *.keystore
+
+Example/android/java_*
