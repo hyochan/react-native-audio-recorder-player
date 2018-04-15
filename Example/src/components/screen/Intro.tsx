@@ -29,44 +29,44 @@ const styles: any = StyleSheet.create({
     alignItems: 'center',
   },
   titleTxt: {
-    marginTop: 140 * ratio,
+    marginTop: 100 * ratio,
     color: 'white',
     fontSize: 28 * ratio,
   },
-  btnBottomWrapper: {
-    position: 'absolute',
-    bottom: 16 * ratio,
-  },
-  btnLogin: {
-    backgroundColor: 'transparent',
-    alignSelf: 'center',
-    borderRadius: 4 * ratio,
-    borderWidth: 2 * ratio,
-    width: 320 * ratio,
-    height: 52 * ratio,
-    borderColor: 'white',
-
+  view: {
+    marginTop: 100 * ratio,
+    width: '100%',
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  txtLogin: {
-    fontSize: 14 * ratio,
-    color: 'white',
+  viewBar: {
+    backgroundColor: '#ccc',
+    height: 4 * ratio,
+    marginHorizontal: 28 * ratio,
+    alignSelf: 'stretch',
   },
-  imgBtn: {
-    width: 24 * ratio,
-    height: 24 * ratio,
-    position: 'absolute',
-    left: 16 * ratio,
+  viewBarPlay: {
+    backgroundColor: 'white',
+    height: 4 * ratio,
+    width: '40%',
+    alignSelf: 'stretch',
   },
-  viewUser: {
+  statusTxt: {
+    marginTop: 8 * ratio,
+    color: '#ccc',
+  },
+  btnWrapper: {
+    flexDirection: 'row',
     marginTop: 40 * ratio,
-    alignItems: 'center',
   },
-  txtUser: {
-    fontSize: 16 * ratio,
-    color: '#eee',
-    lineHeight: 48,
+  btn: {
+    borderColor: 'white',
+    borderWidth: 1 * ratio,
+  },
+  txt: {
+    color: 'white',
+    fontSize: 14 * ratio,
+    marginHorizontal: 8 * ratio,
+    marginVertical: 4 * ratio,
   },
 });
 
@@ -82,6 +82,7 @@ class Page extends Component<any, IState> {
     super(props);
     this.state = {
       isLoggingIn: false,
+      status: 'STOPPED',
     };
   }
 
@@ -94,36 +95,75 @@ class Page extends Component<any, IState> {
   public render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.titleTxt}>DOOBOO NATIVE</Text>
-        <View style={styles.viewUser}>
-          <Text style={styles.txtUser}>{this.props.store.user.displayName}</Text>
-          <Text style={styles.txtUser}>{this.props.store.user.age}</Text>
-          <Text style={styles.txtUser}>{this.props.store.user.job}</Text>
-        </View>
-        <View style={styles.btnBottomWrapper}>
+        <Text style={styles.titleTxt}>{getString('TITLE')}</Text>
+        <TouchableOpacity
+          style={styles.view}
+          onPress={this.onStatusPress}
+        >
+          <View style={styles.viewBar}>
+            <View style={styles.viewBarPlay}/>
+          </View>
+        </TouchableOpacity>
+        <Text style={styles.statusTxt}>{this.state.status}</Text>
+        <View style={styles.btnWrapper}>
           <Button
-            isLoading={this.state.isLoggingIn}
-            onPress={this.onLogin}
-            style={styles.btnLogin}
-            textStyle={styles.txtLogin}
-            imgLeftSrc={IC_MASK}
-            imgLeftStyle={styles.imgBtn}
-          >{getString('LOGIN')}</Button>
+            style={styles.btn}
+            onPress={this.onPlay}
+            textStyle={styles.txt}
+          >{getString('PLAY')}</Button>
+          <Button
+            style={[
+              styles.btn,
+              {
+                marginLeft: 12 * ratio,
+              },
+            ]}
+            onPress={this.onPause}
+            textStyle={styles.txt}
+            >{getString('PAUSE')}</Button>
+          <Button
+            style={[
+              styles.btn,
+              {
+                marginLeft: 12 * ratio,
+              },
+            ]}
+            onPress={this.onStop}
+            textStyle={styles.txt}
+            >{getString('STOP')}</Button>
+          <Button
+            style={[
+              styles.btn,
+              {
+                marginLeft: 12 * ratio,
+              },
+            ]}
+            onPress={this.onRecord}
+            textStyle={styles.txt}
+          >{getString('RECORD')}</Button>
         </View>
       </View>
     );
   }
 
-  private onLogin = () => {
-    this.props.store.user = new User();
-    this.setState({ isLoggingIn: true }, () => {
-      this.timer = setTimeout(() => {
-        this.props.store.user.displayName = 'dooboolab';
-        this.props.store.user.age = 30;
-        this.props.store.user.job = 'developer';
-        this.setState({ isLoggingIn: false });
-      }, 1000);
-    });
+  private onStatusPress = () => {
+    console.log('onStatusPress');
+  }
+
+  private onPlay = () => {
+    console.log('onPlay');
+  }
+
+  private onPause = () => {
+    console.log('onPause');
+  }
+
+  private onStop = () => {
+    console.log('onStop');
+  }
+
+  private onRecord = () => {
+    console.log('onRecord');
   }
 }
 
