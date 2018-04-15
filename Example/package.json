@@ -1,0 +1,107 @@
+{
+  "name": "dooboo",
+  "version": "0.0.1",
+  "description": "boilerplate for react-native by dooboolab!",
+  "author": "hyochan <dooboolab@gmail.com>",
+  "private": true,
+  "scripts": {
+    "dev": "node node_modules/react-native/local-cli/cli.js start",
+    "tsc": "tsc",
+    "watch": "tsc -w",
+    "start": "npm run dev",
+    "upgrade": "react-native-git-upgrade && npm install --save react-native",
+    "upgrade:major": "react-native upgrade",
+    "test": "jest -u",
+    "start:packager": "node_modules/react-native/packager/packager.sh",
+    "start:reset": "node node_modules/react-native/local-cli/cli.js start --reset-cache",
+    "android": "node node_modules/react-native/local-cli/cli.js run-android",
+    "ios": "node node_modules/react-native/local-cli/cli.js run-ios",
+    "ios:reset": "rm -rf ios/build/ModuleCache",
+    "jest": "jest",
+    "lint": "eslint -c .eslintrc.js './src/**/*.js'",
+    "build:ios": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
+    "build:android": "react-native bundle --entry-file index.js --platform android --dev false --bundle-output android/main.jsbundle --assets-dest android"
+  },
+  "dependencies": {
+    "mobx": "^3.6.1",
+    "mobx-react": "^4.4.3",
+    "moment": "^2.21.0",
+    "react": "^16.3.1",
+    "react-native": "^0.55.2",
+    "react-native-localization": "^0.2.3",
+    "react-native-status-bar-height": "^2.0.0",
+    "react-navigation": "^1.5.0"
+  },
+  "devDependencies": {
+    "babel-jest": "22.4.1",
+    "babel-preset-react-native": "4.0.0",
+    "jest": "22.4.2",
+    "react-test-renderer": "16.3.0-alpha.1",
+    "@types/enzyme": "^3.1.9",
+    "@types/jest": "^22.2.0",
+    "@types/react": "16.0.40",
+    "@types/react-native": "0.52.16",
+    "apsl-react-native-button": "^3.1.0",
+    "babel-plugin-module-resolver": "^3.1.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "enzyme-to-json": "^3.3.2",
+    "react-dom": "^16.2.0",
+    "react-native-typescript-transformer": "^1.2.3",
+    "ts-jest": "^22.4.1",
+    "tslib": "^1.9.0",
+    "tslint": "^5.9.1",
+    "tslint-react": "^3.5.1",
+    "typescript": "^2.7.2"
+  },
+  "jest": {
+    "preset": "react-native",
+    "transformIgnorePatterns": [
+      "node_modules/(?!(.*-)?react-(.*-)?native(-.*)?)"
+    ],
+    "setupFiles": [
+      "./test/shimSetup.js",
+      "./test/jestSetup.ts"
+    ],
+    "globals": {
+      "ts-jest": {
+        "useBabelrc": true,
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "transform": {
+      "^.+\\.jsx?$": "<rootDir>/node_modules/babel-jest",
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "ios.ts",
+      "ios.tsx",
+      "android.ts",
+      "android.tsx"
+    ],
+    "moduleNameMapper": {
+      "^@apis(.*)$": "<rootDir>/src/apis$1",
+      "^@screen(.*)$": "<rootDir>/src/screen$1",
+      "^@navigation(.*)$": "<rootDir>/src/navigation$1",
+      "^@models(.*)$": "<rootDir>/src/models$1",
+      "^@stores(.*)$": "<rootDir>/src/stores$1",
+      "^@utils(.*)$": "<rootDir>/src/utils$1",
+      "^@STRINGS(.*)$": "<rootDir>/src/STRINGS$1",
+      "^@assets(.*)$": "<rootDir>/src/assets$1",
+      "^@shared(.*)$": "<rootDir>/src/shared$1",
+      "^@app(.*)$": "<rootDir>/src/app$1",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/assetsTransformer.js",
+      "\\.(css|less)$": "<rootDir>/test/assetsTransformer.js"
+    },
+    "snapshotSerializers": [
+      "./node_modules/enzyme-to-json/serializer"
+    ]
+  }
+}
