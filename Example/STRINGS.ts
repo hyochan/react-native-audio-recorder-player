@@ -2,7 +2,7 @@ import LocalizedStrings from 'react-native-localization';
 
 const strings = new LocalizedStrings({
   en: {
-    TITLE: 'Audio Recorder',
+    TITLE: 'Audio Recorder Player',
     PLAY: 'Play',
     PAUSE: 'Pause',
     STOP: 'Stop',
@@ -20,4 +20,3 @@ const strings = new LocalizedStrings({
 export const getString = (str: string) => {
   return strings[str];
 };
-

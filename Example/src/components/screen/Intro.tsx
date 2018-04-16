@@ -11,6 +11,8 @@ import {
   View,
   FlatList,
   InteractionManager,
+  NativeModules,
+  DeviceEventEmitter,
 } from 'react-native';
 
 import { ratio, colors } from '@utils/Styles';
@@ -20,6 +22,8 @@ import { getString } from '@STRINGS';
 import User from '@models/User';
 import Button from '@shared/Button';
 import { inject } from 'mobx-react/native';
+
+const { AudioRecorderPlayer } = NativeModules;
 
 const styles: any = StyleSheet.create({
   container: {
@@ -33,28 +37,37 @@ const styles: any = StyleSheet.create({
     color: 'white',
     fontSize: 28 * ratio,
   },
-  view: {
-    marginTop: 100 * ratio,
+  viewRecorder: {
+    marginTop: 40 * ratio,
     width: '100%',
     alignItems: 'center',
   },
-  viewBar: {
+  recordBtnWrapper: {
+    flexDirection: 'row',
+  },
+  viewPlayer: {
+    marginTop: 60 * ratio,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  viewBarWrapper: {
     backgroundColor: '#ccc',
     height: 4 * ratio,
+    marginTop: 28 * ratio,
     marginHorizontal: 28 * ratio,
     alignSelf: 'stretch',
   },
   viewBarPlay: {
     backgroundColor: 'white',
     height: 4 * ratio,
-    width: '40%',
+    width: 0,
     alignSelf: 'stretch',
   },
-  statusTxt: {
+  playStatusTxt: {
     marginTop: 8 * ratio,
     color: '#ccc',
   },
-  btnWrapper: {
+  playBtnWrapper: {
     flexDirection: 'row',
     marginTop: 40 * ratio,
   },
@@ -67,6 +80,11 @@ const styles: any = StyleSheet.create({
     fontSize: 14 * ratio,
     marginHorizontal: 8 * ratio,
     marginVertical: 4 * ratio,
+  },
+  txtCounter: {
+    marginTop: 12 * ratio,
+    color: 'white',
+    fontSize: 20 * ratio,
   },
 });
 
@@ -82,7 +100,8 @@ class Page extends Component<any, IState> {
     super(props);
     this.state = {
       isLoggingIn: false,
-      status: 'STOPPED',
+      playTime: '00:00',
+      duration: '00:00',
     };
   }
 
@@ -96,74 +115,101 @@ class Page extends Component<any, IState> {
     return (
       <View style={styles.container}>
         <Text style={styles.titleTxt}>{getString('TITLE')}</Text>
-        <TouchableOpacity
-          style={styles.view}
-          onPress={this.onStatusPress}
-        >
-          <View style={styles.viewBar}>
-            <View style={styles.viewBarPlay}/>
-          </View>
-        </TouchableOpacity>
-        <Text style={styles.statusTxt}>{this.state.status}</Text>
-        <View style={styles.btnWrapper}>
-          <Button
-            style={styles.btn}
-            onPress={this.onPlay}
-            textStyle={styles.txt}
-          >{getString('PLAY')}</Button>
-          <Button
-            style={[
-              styles.btn,
-              {
-                marginLeft: 12 * ratio,
-              },
-            ]}
-            onPress={this.onPause}
-            textStyle={styles.txt}
-            >{getString('PAUSE')}</Button>
-          <Button
-            style={[
-              styles.btn,
-              {
-                marginLeft: 12 * ratio,
-              },
-            ]}
-            onPress={this.onStop}
-            textStyle={styles.txt}
+        <View style={styles.viewRecorder}>
+          <View style={styles.recordBtnWrapper}>
+            <Button
+              style={styles.btn}
+              onPress={this.onStartRecord}
+              textStyle={styles.txt}
+            >{getString('RECORD')}</Button>
+            <Button
+              style={[
+                styles.btn,
+                {
+                  marginLeft: 12 * ratio,
+                },
+              ]}
+              onPress={this.onStopRecord}
+              textStyle={styles.txt}
             >{getString('STOP')}</Button>
-          <Button
-            style={[
-              styles.btn,
-              {
-                marginLeft: 12 * ratio,
-              },
-            ]}
-            onPress={this.onRecord}
-            textStyle={styles.txt}
-          >{getString('RECORD')}</Button>
+          </View>
+        </View>
+        <View style={styles.viewPlayer}>
+          <TouchableOpacity
+            style={styles.viewBarWrapper}
+            onPress={this.onStatusPress}
+          >
+            <View style={styles.viewBar}>
+              <View style={styles.viewBarPlay}/>
+            </View>
+          </TouchableOpacity>
+          <Text style={styles.txtCounter}>{this.state.playTime} / {this.state.duration}</Text>
+          <View style={styles.playBtnWrapper}>
+            <Button
+              style={styles.btn}
+              onPress={this.onStartPlay}
+              textStyle={styles.txt}
+            >{getString('PLAY')}</Button>
+            <Button
+              style={[
+                styles.btn,
+                {
+                  marginLeft: 12 * ratio,
+                },
+              ]}
+              onPress={this.onStopPlay}
+              textStyle={styles.txt}
+              >{getString('STOP')}</Button>
+          </View>
         </View>
       </View>
     );
+  }
+
+  private mmss = (secs) => {
+    let minutes = Math.floor(secs / 60);
+    secs = secs % 60;
+    minutes = minutes % 60;
+    minutes = ('0' + minutes).slice(-2);
+    secs = ('0' + secs).slice(-2);
+    return minutes + ':' + secs;
   }
 
   private onStatusPress = () => {
     console.log('onStatusPress');
   }
 
-  private onPlay = () => {
-    console.log('onPlay');
+  private onStartPlay = async () => {
+    console.log('onStartPlay');
+    // 'https://coonidev.blob.core.windows.net/audios-activity/094785446ae05822fe9e663172357673.mp3',
+    const result = await AudioRecorderPlayer.startPlay('DEFAULT');
+    console.log(result);
+    DeviceEventEmitter.addListener('rn-playback', (e: Event) => {
+      console.log('event', e);
+      console.log('event', e.current_position);
+      this.setState({
+        playTime: this.mmss(Math.round(e.current_position / 1000)),
+        duration: this.mmss(Math.round(e.duration / 1000)),
+      });
+    });
   }
 
-  private onPause = () => {
-    console.log('onPause');
+  private onStopPlay = async () => {
+    console.log('onStopPlay');
+    const result = await AudioRecorderPlayer.stopPlay();
+    console.log(result);
   }
 
-  private onStop = () => {
-    console.log('onStop');
+  private onStartRecord = async () => {
+    console.log('onStartRecord');
+    const result = await AudioRecorderPlayer.startRecord();
+    console.log(result);
   }
 
-  private onRecord = () => {
-    console.log('onRecord');
+  private onStopRecord = async () => {
+    console.log('onStopRecord');
+    const result = await AudioRecorderPlayer.stopRecord();
+    console.log(result);
   }
 }
 

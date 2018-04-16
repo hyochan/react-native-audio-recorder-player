@@ -20,7 +20,8 @@
     "jest": "jest",
     "lint": "eslint -c .eslintrc.js './src/**/*.js'",
     "build:ios": "react-native bundle --entry-file index.js --platform ios --dev false --bundle-output ios/main.jsbundle --assets-dest ios",
-    "build:android": "react-native bundle --entry-file index.js --platform android --dev false --bundle-output android/main.jsbundle --assets-dest android"
+    "build:android": "react-native bundle --entry-file index.js --platform android --dev false --bundle-output android/main.jsbundle --assets-dest android",
+    "reload:android": "adb shell input keyevent 82"
   },
   "dependencies": {
     "mobx": "^3.6.1",
