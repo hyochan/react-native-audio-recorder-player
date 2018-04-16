@@ -202,7 +202,7 @@ class Page extends Component<any, IState> {
 
   private onStartRecord = async () => {
     console.log('onStartRecord');
-    const result = await AudioRecorderPlayer.startRecord();
+    const result = await AudioRecorderPlayer.startRecord('DEFAULT');
     console.log(result);
   }
 

@@ -41,13 +41,17 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void startRecord(Promise promise) {
+  public void startRecord(String path, Promise promise) {
     if (mediaRecorder == null) {
       mediaRecorder = new MediaRecorder();
       mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
       mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
       mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-      mediaRecorder.setOutputFile(FILE_LOCATION);
+      if (path.equals("DEFAULT")) {
+        mediaRecorder.setOutputFile(FILE_LOCATION);
+      } else {
+        mediaRecorder.setOutputFile(path);
+      }
     }
 
     try {
