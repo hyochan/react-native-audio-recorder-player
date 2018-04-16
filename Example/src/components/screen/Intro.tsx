@@ -13,6 +13,7 @@ import {
   InteractionManager,
   NativeModules,
   DeviceEventEmitter,
+  NativeEventEmitter,
 } from 'react-native';
 
 import { ratio, colors } from '@utils/Styles';
@@ -95,6 +96,7 @@ interface IState {
 @inject('store')
 class Page extends Component<any, IState> {
   private timer: any;
+  private subscription: any;
 
   constructor(props) {
     super(props);
@@ -179,27 +181,6 @@ class Page extends Component<any, IState> {
     console.log('onStatusPress');
   }
 
-  private onStartPlay = async () => {
-    console.log('onStartPlay');
-    // 'https://coonidev.blob.core.windows.net/audios-activity/094785446ae05822fe9e663172357673.mp3',
-    const result = await AudioRecorderPlayer.startPlay('DEFAULT');
-    console.log(result);
-    DeviceEventEmitter.addListener('rn-playback', (e: Event) => {
-      console.log('event', e);
-      console.log('event', e.current_position);
-      this.setState({
-        playTime: this.mmss(Math.round(e.current_position / 1000)),
-        duration: this.mmss(Math.round(e.duration / 1000)),
-      });
-    });
-  }
-
-  private onStopPlay = async () => {
-    console.log('onStopPlay');
-    const result = await AudioRecorderPlayer.stopPlay();
-    console.log(result);
-  }
-
   private onStartRecord = async () => {
     console.log('onStartRecord');
     const result = await AudioRecorderPlayer.startRecord('DEFAULT');
@@ -210,6 +191,40 @@ class Page extends Component<any, IState> {
     console.log('onStopRecord');
     const result = await AudioRecorderPlayer.stopRecord();
     console.log(result);
+  }
+
+  private onStartPlay = async () => {
+    if (Platform.OS === 'android') {
+      this.subscription = DeviceEventEmitter.addListener('rn-playback', (e: Event) => {
+        this.setState({
+          playTime: this.mmss(Math.round(e.current_position / 1000)),
+          duration: this.mmss(Math.round(e.duration / 1000)),
+        });
+      });
+    } else {
+      const myModuleEvt = new NativeEventEmitter(AudioRecorderPlayer);
+      myModuleEvt.addListener('rn-playback', (data) => {
+        this.setState({
+          playTime: this.mmss(Math.round(data.current_position)),
+          duration: this.mmss(Math.round(data.duration)),
+        });
+        console.log(data.current_position);
+      });
+    }
+
+    console.log('onStartPlay');
+    // 'https://coonidev.blob.core.windows.net/audios-activity/094785446ae05822fe9e663172357673.mp3',
+    const result = await AudioRecorderPlayer.startPlay('DEFAULT');
+    console.log(result);
+  }
+
+  private onStopPlay = async () => {
+    console.log('onStopPlay');
+    const result = await AudioRecorderPlayer.stopPlay();
+    console.log(result);
+    if (this.subscription) {
+      this.subscription.remove();
+    }
   }
 }
 
