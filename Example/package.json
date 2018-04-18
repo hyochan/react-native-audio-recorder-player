@@ -30,6 +30,7 @@
     "react": "^16.3.1",
     "react-native": "^0.55.2",
     "react-native-localization": "^0.2.3",
+    "react-native-audio-recorder-player": "file:../",
     "react-native-status-bar-height": "^2.0.0",
     "react-navigation": "^1.5.0"
   },
