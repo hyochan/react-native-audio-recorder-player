@@ -96,36 +96,68 @@ RCT_EXPORT_METHOD(startRecord:(NSString*)path
 
 RCT_EXPORT_METHOD(stopRecord:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-  [audioRecorder stop];
-  resolve(@"stop record");
+    if (audioRecorder) {
+        [audioRecorder stop];
+        resolve(@"stop record");
+    } else {
+        reject(@"audioRecorder record", @"audioRecorder is not set", nil);
+    }
 }
 
 RCT_EXPORT_METHOD(startPlay:(NSString*)path
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-  RCTLogInfo(@"startPlay %@", path);
-  if ([path isEqualToString:@"DEFAULT"]) {
-    audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:@"sound.m4a"]];
-  } else {
-    audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:path]];
-  }
-  
-  audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil];
-  audioPlayer.delegate = self;
-  [audioPlayer play];
-  
-  [self startTimer];
-  resolve(@"start play");
+    RCTLogInfo(@"startPlay %@", path);
+    
+    if ([path isEqualToString:@"DEFAULT"]) {
+        audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:@"sound.m4a"]];
+    } else {
+        audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:path]];
+    }
+    
+    audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil];
+    audioPlayer.delegate = self;
+    [audioPlayer play];
+    
+    [self startTimer];
+    resolve(@"start play");
 }
+
+RCT_EXPORT_METHOD(seekTo: (nonnull NSNumber*) time
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    RCTLogInfo(@"seekTo %@", time);
+    if (audioPlayer) {
+        audioPlayer.currentTime = [time doubleValue];
+    } else {
+        reject(@"audioPlayer pause", @"audioPlayer is not set", nil);
+    }
+}
+
+RCT_EXPORT_METHOD(pause: (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    RCTLogInfo(@"pause");
+    if (audioPlayer) {
+        [audioPlayer pause];
+        resolve(@"pause play");
+    } else {
+        reject(@"audioPlayer pause", @"audioPlayer is not set", nil);
+    }
+}
+
 
 RCT_EXPORT_METHOD(stopPlay:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-  [audioPlayer stop];
-  if (timer != nil) {
-    [timer invalidate];
-    timer = nil;
-  }
-  resolve(@"stop play");
+    if (audioPlayer) {
+        [audioPlayer stop];
+        if (timer != nil) {
+            [timer invalidate];
+            timer = nil;
+        }
+        resolve(@"stop play");
+    } else {
+        reject(@"audioPlayer stop", @"audioPlayer is not set", nil);
+    }
 }
 
 @end

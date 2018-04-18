@@ -169,6 +169,36 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void pausePlay(Promise promise) {
+    if (mediaPlayer == null) {
+      promise.reject("pausePlay","mediaPlayer is null.");
+      return;
+    }
+
+    mediaPlayer.pause();
+    promise.resolve("pause player");
+  }
+
+  @ReactMethod
+  public void seekTo(int time, Promise promise) {
+    if (mediaPlayer == null) {
+      promise.reject("seekTo","mediaPlayer is null.");
+      return;
+    }
+
+    mediaPlayer.seekTo(time);
+    promise.resolve("pause player");
+  }
+
+  private void sendEvent(ReactContext reactContext,
+                         String eventName,
+                         @Nullable WritableMap params) {
+    reactContext
+        .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
+        .emit(eventName, params);
+  }
+
+  @ReactMethod
   public void stopPlay(Promise promise) {
     if (mediaPlayer == null) {
       promise.reject("stopPlay","mediaPlayer is null.");
@@ -182,13 +212,5 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
     mediaPlayer.release();
     mediaPlayer = null;
     promise.resolve("stopped player");
-  }
-
-  private void sendEvent(ReactContext reactContext,
-                         String eventName,
-                         @Nullable WritableMap params) {
-    reactContext
-      .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
-      .emit(eventName, params);
   }
 }
