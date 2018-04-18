@@ -24,7 +24,7 @@ import User from '@models/User';
 import Button from '@shared/Button';
 import { inject } from 'mobx-react/native';
 
-const { AudioRecorderPlayer } = NativeModules;
+import RNAudioRecorderPlayer from 'react-native-audio-recorder-player';
 
 const styles: any = StyleSheet.create({
   container: {
@@ -183,13 +183,13 @@ class Page extends Component<any, IState> {
 
   private onStartRecord = async () => {
     console.log('onStartRecord');
-    const result = await AudioRecorderPlayer.startRecord('DEFAULT');
+    const result = await RNAudioRecorderPlayer.startRecord('DEFAULT');
     console.log(result);
   }
 
   private onStopRecord = async () => {
     console.log('onStopRecord');
-    const result = await AudioRecorderPlayer.stopRecord();
+    const result = await RNAudioRecorderPlayer.stopRecord();
     console.log(result);
   }
 
@@ -202,7 +202,7 @@ class Page extends Component<any, IState> {
         });
       });
     } else {
-      const myModuleEvt = new NativeEventEmitter(AudioRecorderPlayer);
+      const myModuleEvt = new NativeEventEmitter(RNAudioRecorderPlayer);
       myModuleEvt.addListener('rn-playback', (data) => {
         this.setState({
           playTime: this.mmss(Math.round(data.current_position)),
@@ -214,13 +214,13 @@ class Page extends Component<any, IState> {
 
     console.log('onStartPlay');
     // 'https://coonidev.blob.core.windows.net/audios-activity/094785446ae05822fe9e663172357673.mp3',
-    const result = await AudioRecorderPlayer.startPlay('DEFAULT');
+    const result = await RNAudioRecorderPlayer.startPlay('DEFAULT');
     console.log(result);
   }
 
   private onStopPlay = async () => {
     console.log('onStopPlay');
-    const result = await AudioRecorderPlayer.stopPlay();
+    const result = await RNAudioRecorderPlayer.stopPlay();
     console.log(result);
     if (this.subscription) {
       this.subscription.remove();

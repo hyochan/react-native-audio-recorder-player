@@ -1,11 +1,11 @@
-
-#if __has_include("RCTBridgeModule.h")
-#import "RCTBridgeModule.h"
-#else
+#import <Foundation/Foundation.h>
+#import <AVFoundation/AVFoundation.h>
 #import <React/RCTBridgeModule.h>
-#endif
+#import <React/RCTEventEmitter.h>
 
-@interface RNAudioRecorderPlayer : NSObject <RCTBridgeModule>
-
+@interface RNAudioRecorderPlayer : RCTEventEmitter <RCTBridgeModule, AVAudioPlayerDelegate>
+- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player
+                       successfully:(BOOL)flag;
+- (void)updateProgress:(NSTimer*) timer;
+- (void)startTimer;
 @end
-  
