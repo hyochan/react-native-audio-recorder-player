@@ -134,14 +134,14 @@ RCT_EXPORT_METHOD(seekTo: (nonnull NSNumber*) time
     }
 }
 
-RCT_EXPORT_METHOD(pause: (RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(pausePlay: (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     RCTLogInfo(@"pause");
     if (audioPlayer) {
         [audioPlayer pause];
         resolve(@"pause play");
     } else {
-        reject(@"audioPlayer pause", @"audioPlayer is not set", nil);
+        reject(@"audioPlayer seekTo", @"audioPlayer is not set", nil);
     }
 }
 
