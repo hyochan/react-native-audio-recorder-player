@@ -13,7 +13,7 @@ import {
   InteractionManager,
 } from 'react-native';
 
-import { ratio, colors } from '@utils/Styles';
+import { ratio, colors, screenWidth } from '@utils/Styles';
 import { IC_MASK } from '@utils/Icons';
 
 import { getString } from '@STRINGS';
@@ -159,6 +159,16 @@ class Page extends Component<any, IState> {
                   marginLeft: 12 * ratio,
                 },
               ]}
+              onPress={this.onPausePlay}
+              textStyle={styles.txt}
+            >{getString('PAUSE')}</Button>
+            <Button
+              style={[
+                styles.btn,
+                {
+                  marginLeft: 12 * ratio,
+                },
+              ]}
               onPress={this.onStopPlay}
               textStyle={styles.txt}
               >{getString('STOP')}</Button>
@@ -168,8 +178,20 @@ class Page extends Component<any, IState> {
     );
   }
 
-  private onStatusPress = () => {
-    console.log('onStatusPress');
+  private onStatusPress = (e: Event) => {
+    const touchX = e.nativeEvent.locationX;
+    console.log(`touchX: ${touchX}`);
+    const currentPlayWidth = this.state.currentPositionSec / this.state.currentDurationSec * (screenWidth - 56 * ratio);
+    console.log(`currentPlayWidth: ${currentPlayWidth}`);
+
+    const currentPosition = Math.round(this.state.currentPositionSec);
+    console.log(`currentPosition: ${currentPosition}`);
+
+    if (currentPlayWidth && currentPlayWidth < touchX) {
+      this.audioRecorderPlayer.seekTo(currentPosition + 3);
+    } else {
+      this.audioRecorderPlayer.seekTo(currentPosition - 3);
+    }
   }
 
   private onStartRecord = async () => {
@@ -186,18 +208,27 @@ class Page extends Component<any, IState> {
     console.log('onStartPlay');
     this.audioRecorderPlayer.startPlay();
     this.audioRecorderPlayer.addPlayBackListener((e) => {
+      console.log(e);
       if (Platform.OS === 'android') {
         this.setState({
+          currentPositionSec: e.current_position,
+          currentDurationSec: e.duration,
           playTime: this.audioRecorderPlayer.mmss(Math.round(e.current_position / 1000)),
           duration: this.audioRecorderPlayer.mmss(Math.round(e.duration / 1000)),
         });
         return;
       }
       this.setState({
+        currentPositionSec: e.current_position,
+        currentDurationSec: e.duration,
         playTime: this.audioRecorderPlayer.mmss(Math.round(e.current_position)),
         duration: this.audioRecorderPlayer.mmss(Math.round(e.duration)),
       });
     });
+  }
+
+  private onPausePlay = async () => {
+    await this.audioRecorderPlayer.pausePlay();
   }
 
   private onStopPlay = async () => {

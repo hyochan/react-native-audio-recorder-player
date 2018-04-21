@@ -24,6 +24,7 @@
   [self sendEventWithName:@"rn-playback" body:@{
                                                 @"duration" : [duration stringValue],
                                                 @"current_position" : [duration stringValue],
+                                                @"justFinished" : @"1",
                                                }
   ];
   if (timer != nil) {
@@ -49,11 +50,11 @@
 - (void)startTimer
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-      self->timer = [NSTimer scheduledTimerWithTimeInterval:0.01
-                                             target:self
+      self->timer = [NSTimer scheduledTimerWithTimeInterval:0.1
+                                           target:self
                                            selector:@selector(updateProgress:)
                                            userInfo:nil
-                                            repeats:YES];
+                                           repeats:YES];
   });
 }
 
@@ -108,17 +109,20 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     RCTLogInfo(@"startPlay %@", path);
-    
+
     if ([path isEqualToString:@"DEFAULT"]) {
         audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:@"sound.m4a"]];
     } else {
         audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:path]];
     }
-    
-    audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil];
-    audioPlayer.delegate = self;
+
+    if (!audioPlayer) {
+        RCTLogInfo(@"audio player alloc");
+        audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil];
+        audioPlayer.delegate = self;
+    }
+
     [audioPlayer play];
-    
     [self startTimer];
     resolve(@"start play");
 }
@@ -126,22 +130,25 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
 RCT_EXPORT_METHOD(seekTo: (nonnull NSNumber*) time
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    RCTLogInfo(@"seekTo %@", time);
     if (audioPlayer) {
         audioPlayer.currentTime = [time doubleValue];
     } else {
-        reject(@"audioPlayer pause", @"audioPlayer is not set", nil);
+        reject(@"audioPlayer seekTo", @"audioPlayer is not set", nil);
     }
 }
 
 RCT_EXPORT_METHOD(pausePlay: (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     RCTLogInfo(@"pause");
-    if (audioPlayer) {
+    if (audioPlayer && [audioPlayer isPlaying]) {
         [audioPlayer pause];
+        if (timer != nil) {
+            [timer invalidate];
+            timer = nil;
+        } 
         resolve(@"pause play");
     } else {
-        reject(@"audioPlayer seekTo", @"audioPlayer is not set", nil);
+        reject(@"audioPlayer pause", @"audioPlayer is not playing", nil);
     }
 }
 
@@ -149,11 +156,12 @@ RCT_EXPORT_METHOD(pausePlay: (RCTPromiseResolveBlock)resolve
 RCT_EXPORT_METHOD(stopPlay:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (audioPlayer) {
-        [audioPlayer stop];
         if (timer != nil) {
             [timer invalidate];
             timer = nil;
         }
+        [audioPlayer stop];
+        audioPlayer.currentTime = 0;
         resolve(@"stop play");
     } else {
         reject(@"audioPlayer stop", @"audioPlayer is not set", nil);
