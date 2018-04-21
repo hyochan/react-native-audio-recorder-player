@@ -11,9 +11,6 @@ import {
   View,
   FlatList,
   InteractionManager,
-  NativeModules,
-  DeviceEventEmitter,
-  NativeEventEmitter,
 } from 'react-native';
 
 import { ratio, colors } from '@utils/Styles';
@@ -24,7 +21,7 @@ import User from '@models/User';
 import Button from '@shared/Button';
 import { inject } from 'mobx-react/native';
 
-import RNAudioRecorderPlayer from 'react-native-audio-recorder-player';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 
 const styles: any = StyleSheet.create({
   container: {
@@ -97,6 +94,7 @@ interface IState {
 class Page extends Component<any, IState> {
   private timer: any;
   private subscription: any;
+  private audioRecorderPlayer: any;
 
   constructor(props) {
     super(props);
@@ -105,6 +103,8 @@ class Page extends Component<any, IState> {
       playTime: '00:00',
       duration: '00:00',
     };
+
+    this.audioRecorderPlayer = new AudioRecorderPlayer();
   }
 
   public componentWillUnmount() {
@@ -168,63 +168,42 @@ class Page extends Component<any, IState> {
     );
   }
 
-  private mmss = (secs) => {
-    let minutes = Math.floor(secs / 60);
-    secs = secs % 60;
-    minutes = minutes % 60;
-    minutes = ('0' + minutes).slice(-2);
-    secs = ('0' + secs).slice(-2);
-    return minutes + ':' + secs;
-  }
-
   private onStatusPress = () => {
     console.log('onStatusPress');
   }
 
   private onStartRecord = async () => {
-    console.log('onStartRecord');
-    const result = await RNAudioRecorderPlayer.startRecord('DEFAULT');
+    const result = await this.audioRecorderPlayer.startRecord();
     console.log(result);
   }
 
   private onStopRecord = async () => {
-    console.log('onStopRecord');
-    const result = await RNAudioRecorderPlayer.stopRecord();
+    const result = await this.audioRecorderPlayer.stopRecord();
     console.log(result);
   }
 
   private onStartPlay = async () => {
-    if (Platform.OS === 'android') {
-      this.subscription = DeviceEventEmitter.addListener('rn-playback', (e: Event) => {
-        this.setState({
-          playTime: this.mmss(Math.round(e.current_position / 1000)),
-          duration: this.mmss(Math.round(e.duration / 1000)),
-        });
-      });
-    } else {
-      const myModuleEvt = new NativeEventEmitter(RNAudioRecorderPlayer);
-      myModuleEvt.addListener('rn-playback', (data) => {
-        this.setState({
-          playTime: this.mmss(Math.round(data.current_position)),
-          duration: this.mmss(Math.round(data.duration)),
-        });
-        console.log(data.current_position);
-      });
-    }
-
     console.log('onStartPlay');
-    // 'https://coonidev.blob.core.windows.net/audios-activity/094785446ae05822fe9e663172357673.mp3',
-    const result = await RNAudioRecorderPlayer.startPlay('DEFAULT');
-    console.log(result);
+    this.audioRecorderPlayer.startPlay();
+    this.audioRecorderPlayer.addPlayBackListener((e) => {
+      if (Platform.OS === 'android') {
+        this.setState({
+          playTime: this.audioRecorderPlayer.mmss(Math.round(e.current_position / 1000)),
+          duration: this.audioRecorderPlayer.mmss(Math.round(e.duration / 1000)),
+        });
+        return;
+      }
+      this.setState({
+        playTime: this.audioRecorderPlayer.mmss(Math.round(e.current_position)),
+        duration: this.audioRecorderPlayer.mmss(Math.round(e.duration)),
+      });
+    });
   }
 
   private onStopPlay = async () => {
     console.log('onStopPlay');
-    const result = await RNAudioRecorderPlayer.stopPlay();
-    console.log(result);
-    if (this.subscription) {
-      this.subscription.remove();
-    }
+    this.audioRecorderPlayer.stopPlay();
+    this.audioRecorderPlayer.removePlayBackListener();
   }
 }
 
