@@ -18,7 +18,7 @@
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
   NSLog(@"audioPlayerDidFinishPlaying");
-  NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration];
+  NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
 
   // Send last event then finish it.
   [self sendEventWithName:@"rn-playback" body:@{
@@ -36,8 +36,8 @@
 - (void)updateProgress:(NSTimer*) timer
 {
   NSLog(@"updateProgress");
-  NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration];
-  NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.currentTime];
+  NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
+  NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.currentTime * 1000];
   
   NSDictionary *status = @{
                            @"duration" : [duration stringValue],

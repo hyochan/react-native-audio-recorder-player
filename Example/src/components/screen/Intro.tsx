@@ -209,21 +209,13 @@ class Page extends Component<any, IState> {
     this.audioRecorderPlayer.startPlay();
     this.audioRecorderPlayer.addPlayBackListener((e) => {
       console.log(e);
-      if (Platform.OS === 'android') {
-        this.setState({
-          currentPositionSec: e.current_position,
-          currentDurationSec: e.duration,
-          playTime: this.audioRecorderPlayer.mmss(Math.round(e.current_position / 1000)),
-          duration: this.audioRecorderPlayer.mmss(Math.round(e.duration / 1000)),
-        });
-        return;
-      }
       this.setState({
         currentPositionSec: e.current_position,
         currentDurationSec: e.duration,
-        playTime: this.audioRecorderPlayer.mmss(Math.round(e.current_position)),
-        duration: this.audioRecorderPlayer.mmss(Math.round(e.duration)),
+        playTime: this.audioRecorderPlayer.mmss(Math.round(e.current_position / 1000)),
+        duration: this.audioRecorderPlayer.mmss(Math.round(e.duration / 1000)),
       });
+      return;
     });
   }
 
