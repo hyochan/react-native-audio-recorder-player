@@ -49,17 +49,19 @@ const styles: any = StyleSheet.create({
     alignItems: 'center',
   },
   viewBarWrapper: {
-    backgroundColor: '#ccc',
-    height: 4 * ratio,
     marginTop: 28 * ratio,
     marginHorizontal: 28 * ratio,
+    alignSelf: 'stretch',
+  },
+  viewBar: {
+    backgroundColor: '#ccc',
+    height: 4 * ratio,
     alignSelf: 'stretch',
   },
   viewBarPlay: {
     backgroundColor: 'white',
     height: 4 * ratio,
     width: 0,
-    alignSelf: 'stretch',
   },
   playStatusTxt: {
     marginTop: 8 * ratio,
@@ -78,6 +80,11 @@ const styles: any = StyleSheet.create({
     fontSize: 14 * ratio,
     marginHorizontal: 8 * ratio,
     marginVertical: 4 * ratio,
+  },
+  txtRecordCounter: {
+    marginTop: 32 * ratio,
+    color: 'white',
+    fontSize: 20 * ratio,
   },
   txtCounter: {
     marginTop: 12 * ratio,
@@ -100,6 +107,10 @@ class Page extends Component<any, IState> {
     super(props);
     this.state = {
       isLoggingIn: false,
+      recordSecs: 0,
+      recordTime: '00:00',
+      currentPositionSec: 0,
+      currentDurationSec: 0,
       playTime: '00:00',
       duration: '00:00',
     };
@@ -114,9 +125,12 @@ class Page extends Component<any, IState> {
   }
 
   public render() {
+    const playWidth = (this.state.currentPositionSec / this.state.currentDurationSec) * (screenWidth - 56 * ratio);
+    console.log(`playWidth: ${playWidth}`);
     return (
       <View style={styles.container}>
         <Text style={styles.titleTxt}>{getString('TITLE')}</Text>
+        <Text style={styles.txtRecordCounter}>{this.state.recordTime}</Text>
         <View style={styles.viewRecorder}>
           <View style={styles.recordBtnWrapper}>
             <Button
@@ -142,7 +156,10 @@ class Page extends Component<any, IState> {
             onPress={this.onStatusPress}
           >
             <View style={styles.viewBar}>
-              <View style={styles.viewBarPlay}/>
+              <View style={[
+                styles.viewBarPlay,
+                { width: playWidth },
+              ]}/>
             </View>
           </TouchableOpacity>
           <Text style={styles.txtCounter}>{this.state.playTime} / {this.state.duration}</Text>
@@ -181,26 +198,44 @@ class Page extends Component<any, IState> {
   private onStatusPress = (e: Event) => {
     const touchX = e.nativeEvent.locationX;
     console.log(`touchX: ${touchX}`);
-    const currentPlayWidth = this.state.currentPositionSec / this.state.currentDurationSec * (screenWidth - 56 * ratio);
-    console.log(`currentPlayWidth: ${currentPlayWidth}`);
+    const playWidth = (this.state.currentPositionSec / this.state.currentDurationSec) * (screenWidth - 56 * ratio);
+    console.log(`currentPlayWidth: ${playWidth}`);
 
     const currentPosition = Math.round(this.state.currentPositionSec);
     console.log(`currentPosition: ${currentPosition}`);
 
-    if (currentPlayWidth && currentPlayWidth < touchX) {
-      this.audioRecorderPlayer.seekTo(currentPosition + 3);
+    if (playWidth && playWidth < touchX) {
+      const addSecs = Math.round((currentPosition + 3000) / 1000);
+      this.audioRecorderPlayer.seekTo(addSecs);
+      console.log(`addSecs: ${addSecs}`);
     } else {
-      this.audioRecorderPlayer.seekTo(currentPosition - 3);
+      const subSecs = Math.round((currentPosition - 3000) / 1000);
+      this.audioRecorderPlayer.seekTo(subSecs);
+      console.log(`addSecs: ${subSecs}`);
     }
   }
 
   private onStartRecord = async () => {
     const result = await this.audioRecorderPlayer.startRecord();
+    this.audioRecorderPlayer.setRecordInterval(() => {
+      const secs = this.state.recordSecs + 1;
+      this.setState({
+        recordSecs: secs,
+        recordTime: this.audioRecorderPlayer.mmss(secs),
+      }, () => {
+        console.log(`recordSecs: ${this.state.recordSecs}`);
+        console.log(`recordTime: ${this.state.recordTime}`);
+      });
+    });
     console.log(result);
   }
 
   private onStopRecord = async () => {
     const result = await this.audioRecorderPlayer.stopRecord();
+    this.audioRecorderPlayer.removeRecordInterval();
+    this.setState({
+      recordSecs: 0,
+    });
     console.log(result);
   }
 
@@ -212,8 +247,8 @@ class Page extends Component<any, IState> {
       this.setState({
         currentPositionSec: e.current_position,
         currentDurationSec: e.duration,
-        playTime: this.audioRecorderPlayer.mmss(Math.round(e.current_position / 1000)),
-        duration: this.audioRecorderPlayer.mmss(Math.round(e.duration / 1000)),
+        playTime: this.audioRecorderPlayer.mmss(Math.floor(e.current_position / 1000)),
+        duration: this.audioRecorderPlayer.mmss(Math.floor(e.duration / 1000)),
       });
       return;
     });

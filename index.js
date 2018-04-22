@@ -9,7 +9,10 @@ import {
 const { RNAudioRecorderPlayer } = NativeModules;
 
 class AudioRecorderPlayer {
+  static _isRecording;
+  static _isPlaying;
   static _subscription;
+  static _recordInterval;
 
   mmss = (secs) => {
     let minutes = Math.floor(secs / 60);
@@ -18,6 +21,14 @@ class AudioRecorderPlayer {
     minutes = ('0' + minutes).slice(-2);
     secs = ('0' + secs).slice(-2);
     return minutes + ':' + secs;
+  }
+
+  setRecordInterval = (callBack) => {
+    _recordInterval = setInterval(callBack, 1000);
+  }
+
+  removeRecordInterval = (callBack) => {
+    clearInterval(_recordInterval);
   }
 
   addPlayBackListener = (e: Event) => {
@@ -36,19 +47,35 @@ class AudioRecorderPlayer {
   }
 
   startRecord = async() => {
-    return await RNAudioRecorderPlayer.startRecord('DEFAULT');
+    if (!this._isRecording) {
+      this._isRecording = true;
+      return await RNAudioRecorderPlayer.startRecord('DEFAULT');
+    }
+    console.log('Already recording');
   }
 
   stopRecord = async() => {
-    return await RNAudioRecorderPlayer.stopRecord();
+    if (this._isRecording) {
+      this._isRecording = false;
+      return await RNAudioRecorderPlayer.stopRecord();
+    }
+    console.log('Already stopped recording');
   }
 
   startPlay = async () => {
-    return await RNAudioRecorderPlayer.startPlay('DEFAULT');
+    if (!this._isPlaying) {
+      this._isPlaying = true;
+      return await RNAudioRecorderPlayer.startPlay('DEFAULT');
+    }
+    console.log('Already started playing');
   }
 
   stopPlay = async () => {
-    return await RNAudioRecorderPlayer.stopPlay();
+    if (this._isPlaying) {
+      this._isPlaying = false;
+      return await RNAudioRecorderPlayer.stopPlay();
+    }
+    console.log('Already stopped playing');
   }
 
   pausePlay = async () => {
