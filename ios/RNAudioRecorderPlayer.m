@@ -161,7 +161,7 @@ RCT_EXPORT_METHOD(stopPlay:(RCTPromiseResolveBlock)resolve
             timer = nil;
         }
         [audioPlayer stop];
-        audioPlayer.currentTime = 0;
+        audioPlayer = nil;
         resolve(@"stop play");
     } else {
         reject(@"audioPlayer stop", @"audioPlayer is not set", nil);
