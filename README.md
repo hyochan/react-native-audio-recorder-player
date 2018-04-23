@@ -8,7 +8,7 @@
 This is a react-native link library project for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities.
 
 ## Preview
-[![Alt text for preview](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.png?alt=media&token=897d619f-beb3-41fd-8fe7-ceadb74ede91)](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.mp4?alt=media&token=e9e108f8-cd0c-4d4a-85c7-3b8db222249a)
+[![Alt text for preview](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.png?alt=media&token=2512541e-cc0d-45e6-b21e-32e8c24ad99d)](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.mp4?alt=media&token=e9e108f8-cd0c-4d4a-85c7-3b8db222249a)
 
 ## Getting started
 
@@ -113,4 +113,8 @@ onStopPlay = async () => {
 	audioRecorderPlayer.removePlayBackListener();
 }
 ```
-  
+
+## Try yourself
+1. Goto `Example` folder by running `cd Example`.
+2. Run `npm install && npm start`.
+3. Run `npm run ios` to run on ios simulator and `npm run android` to run on your android device.
