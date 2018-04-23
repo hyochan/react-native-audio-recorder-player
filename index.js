@@ -53,7 +53,7 @@ class AudioRecorderPlayer {
 
   /**
    * remove listener for player.
-   * @returns {Promise<void>}
+   * @returns {void}
    */
   removePlayBackListener = () => {
     if (this._subscription) {
