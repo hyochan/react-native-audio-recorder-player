@@ -8,7 +8,7 @@
 This is a react-native link library project for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities.
 
 ## Preview
-![alt text](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.mp4?alt=media&token=e9e108f8-cd0c-4d4a-85c7-3b8db222249a)
+[![Watch the video](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.mp4?alt=media&token=e9e108f8-cd0c-4d4a-85c7-3b8db222249a)
 
 ## Getting started
 
@@ -43,7 +43,7 @@ This is a react-native link library project for audio recorder and player. This 
       compile project(':react-native-audio-recorder-player')
   	```
 
-#### Methods
+## Methods
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
 | mmss | `number` seconds | `string` | Convert seconds to `minute:second` string.|
