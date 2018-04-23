@@ -79,7 +79,11 @@ class AudioRecorderPlayer {
   }
 
   pausePlay = async () => {
-    return await RNAudioRecorderPlayer.pausePlay();
+    if (this._isPlaying) {
+      this._isPlaying = false;
+      return await RNAudioRecorderPlayer.pausePlay();
+    }
+    console.log('Already paused or stopped');
   }
 
   seekTo = async (time) => {

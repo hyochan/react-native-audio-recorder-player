@@ -99,6 +99,14 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void startPlay(String path, Promise promise) {
     if (mediaPlayer != null) {
+      Boolean isPaused = !mediaPlayer.isPlaying() && mediaPlayer.getCurrentPosition() > 1;
+
+      if (isPaused) {
+        mediaPlayer.start();
+        promise.resolve("player resumed.");
+        return;
+      }
+
       Log.e(TAG, "Player is already running. Stop it first.");
       promise.reject("startPlay", "Player is already running. Stop it first.");
       return;
@@ -150,7 +158,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
           mTimer.cancel();
           mp.stop();
           mp.release();
-          mediaPlayer = null;
+          mp = null;
         }
       });
 

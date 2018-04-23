@@ -126,7 +126,6 @@ class Page extends Component<any, IState> {
 
   public render() {
     const playWidth = (this.state.currentPositionSec / this.state.currentDurationSec) * (screenWidth - 56 * ratio);
-    console.log(`playWidth: ${playWidth}`);
     return (
       <View style={styles.container}>
         <Text style={styles.titleTxt}>{getString('TITLE')}</Text>
@@ -241,9 +240,9 @@ class Page extends Component<any, IState> {
 
   private onStartPlay = async () => {
     console.log('onStartPlay');
-    this.audioRecorderPlayer.startPlay();
+    const msg = await this.audioRecorderPlayer.startPlay();
+    console.log(msg);
     this.audioRecorderPlayer.addPlayBackListener((e) => {
-      console.log(e);
       this.setState({
         currentPositionSec: e.current_position,
         currentDurationSec: e.duration,
