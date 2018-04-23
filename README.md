@@ -5,7 +5,10 @@
   <a href="https://npmjs.org/package/react-native-audio-recorder-player"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-audio-recorder-player.svg?style=flat-square"></a>
 </p>
 
-This is a react-native link library project for audio recorder and player. Under construction.
+This is a react-native link library project for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities.
+
+## Preview
+![alt text](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.mp4?alt=media&token=e9e108f8-cd0c-4d4a-85c7-3b8db222249a)
 
 ## Getting started
 
@@ -40,12 +43,74 @@ This is a react-native link library project for audio recorder and player. Under
       compile project(':react-native-audio-recorder-player')
   	```
 
+#### Methods
+| Func  | Param  | Return | Description |
+| :------------ |:---------------:| :---------------:| :-----|
+| mmss | `number` seconds | `string` | Convert seconds to `minute:second` string.|
+| setRecordInterval |  | `Promise<void>` | Set record interval in second.|
+| removeRecordInterval | callBack | `void` | Remove record interval.|
+| addPlayBackListener | e: Event | `void` | Get callback from native module. Will receive `duration`, `current_position`|
+| startRecord | `<string>` uri? | `Promise<void>` | Start recording. Not passing the param will save audio in default location.|
+| stopRecord | | `Promise<void>` | Stop recording.|
+| startPlay | `<string>` uri? | `Promise<void>` | Start playing. Not passing the param will play audio in default location.|
+| stopPlay | | `Promise<void>` | Stop playing.|
+| pausePlay | | `Promise<void>` | Pause playing.|
+| seekTo | `number` seconds | `Promise<string>` | Seek audio.|
+
 
 ## Usage
 ```javascript
-import RNAudioRecorderPlayer from 'react-native-audio-recorder-player';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 
-// TODO: What to do with the module?
-RNAudioRecorderPlayer;
+const audioRecorderPlayer = new AudioRecorderPlayer();
+
+onStartRecord = async () => {
+	const result = await audioRecorderPlayer.startRecord();
+	audioRecorderPlayer.setRecordInterval(() => {
+		const secs = this.state.recordSecs + 1;
+		this.setState({
+			recordSecs: secs,
+			recordTime: audioRecorderPlayer.mmss(secs),
+		}, () => {
+			console.log(`recordSecs: ${this.state.recordSecs}`);
+			console.log(`recordTime: ${this.state.recordTime}`);
+		});
+	});
+	console.log(result);
+}
+
+onStopRecord = async () => {
+	const result = await audioRecorderPlayer.stopRecord();
+	audioRecorderPlayer.removeRecordInterval();
+	this.setState({
+		recordSecs: 0,
+	});
+	console.log(result);
+}
+
+onStartPlay = async () => {
+	console.log('onStartPlay');
+	const msg = await audioRecorderPlayer.startPlay();
+	console.log(msg);
+	audioRecorderPlayer.addPlayBackListener((e) => {
+		this.setState({
+			currentPositionSec: e.current_position,
+			currentDurationSec: e.duration,
+			playTime: audioRecorderPlayer.mmss(Math.floor(e.current_position / 1000)),
+			duration: audioRecorderPlayer.mmss(Math.floor(e.duration / 1000)),
+		});
+		return;
+	});
+}
+
+onPausePlay = async () => {
+	await audioRecorderPlayer.pausePlay();
+}
+
+onStopPlay = async () => {
+	console.log('onStopPlay');
+	audioRecorderPlayer.stopPlay();
+	audioRecorderPlayer.removePlayBackListener();
+}
 ```
   

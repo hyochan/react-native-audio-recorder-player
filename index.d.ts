@@ -53,7 +53,7 @@ export class AudioRecorderPlayer {
    * @param {uri} audioPathUri no param will save audio in default location
    * @returns {Promise<string>}
    */
-  public startPlay(uri?: sring) : Promise<string>;
+  public startPlay(uri?: string) : Promise<string>;
 
   /**
    * Stop playing.
