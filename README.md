@@ -49,12 +49,12 @@ This is a react-native link library project for audio recorder and player. This 
 | mmss | `number` seconds | `string` | Convert seconds to `minute:second` string.|
 | setRecordInterval |  | `Promise<void>` | Set record interval in second.|
 | removeRecordInterval | callBack | `void` | Remove record interval.|
-| addPlayBackListener | e: Event | `void` | Get callback from native module. Will receive `duration`, `current_position`|
+| addPlayBackListener | `Event` | `void` | Get callback from native module. Will receive `duration`, `current_position`|
 | startRecord | `<string>` uri? | `Promise<void>` | Start recording. Not passing the param will save audio in default location.|
-| stopRecord | | `Promise<void>` | Stop recording.|
-| startPlay | `<string>` uri? | `Promise<void>` | Start playing. Not passing the param will play audio in default location.|
-| stopPlay | | `Promise<void>` | Stop playing.|
-| pausePlay | | `Promise<void>` | Pause playing.|
+| stopRecord | | `Promise<string>` | Stop recording.|
+| startPlay | `<string>` uri? | `Promise<string>` | Start playing. Not passing the param will play audio in default location.|
+| stopPlay | | `Promise<string>` | Stop playing.|
+| pausePlay | | `Promise<string>` | Pause playing.|
 | seekTo | `number` seconds | `Promise<string>` | Seek audio.|
 
 
@@ -65,52 +65,52 @@ import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 onStartRecord = async () => {
-	const result = await audioRecorderPlayer.startRecord();
-	audioRecorderPlayer.setRecordInterval(() => {
-		const secs = this.state.recordSecs + 1;
-		this.setState({
-			recordSecs: secs,
-			recordTime: audioRecorderPlayer.mmss(secs),
-		}, () => {
-			console.log(`recordSecs: ${this.state.recordSecs}`);
-			console.log(`recordTime: ${this.state.recordTime}`);
-		});
-	});
-	console.log(result);
+  const result = await audioRecorderPlayer.startRecord();
+    audioRecorderPlayer.setRecordInterval(() => {
+    const secs = this.state.recordSecs + 1;
+    this.setState({
+      recordSecs: secs,
+      recordTime: audioRecorderPlayer.mmss(secs),
+    }, () => {
+      console.log(`recordSecs: ${this.state.recordSecs}`);
+      console.log(`recordTime: ${this.state.recordTime}`);
+    });
+  });
+  console.log(result);
 }
 
 onStopRecord = async () => {
-	const result = await audioRecorderPlayer.stopRecord();
-	audioRecorderPlayer.removeRecordInterval();
-	this.setState({
-		recordSecs: 0,
-	});
-	console.log(result);
+  const result = await audioRecorderPlayer.stopRecord();
+  audioRecorderPlayer.removeRecordInterval();
+  this.setState({
+    recordSecs: 0,
+  });
+  console.log(result);
 }
 
 onStartPlay = async () => {
-	console.log('onStartPlay');
-	const msg = await audioRecorderPlayer.startPlay();
-	console.log(msg);
-	audioRecorderPlayer.addPlayBackListener((e) => {
-		this.setState({
-			currentPositionSec: e.current_position,
-			currentDurationSec: e.duration,
-			playTime: audioRecorderPlayer.mmss(Math.floor(e.current_position / 1000)),
-			duration: audioRecorderPlayer.mmss(Math.floor(e.duration / 1000)),
-		});
-		return;
-	});
+  console.log('onStartPlay');
+  const msg = await audioRecorderPlayer.startPlay();
+  console.log(msg);
+  audioRecorderPlayer.addPlayBackListener((e) => {
+    this.setState({
+      currentPositionSec: e.current_position,
+      currentDurationSec: e.duration,
+      playTime: audioRecorderPlayer.mmss(Math.floor(e.current_position / 1000)),
+      duration: audioRecorderPlayer.mmss(Math.floor(e.duration / 1000)),
+    });
+    return;
+  });
 }
 
 onPausePlay = async () => {
-	await audioRecorderPlayer.pausePlay();
+  await audioRecorderPlayer.pausePlay();
 }
 
 onStopPlay = async () => {
-	console.log('onStopPlay');
-	audioRecorderPlayer.stopPlay();
-	audioRecorderPlayer.removePlayBackListener();
+  console.log('onStopPlay');
+  audioRecorderPlayer.stopPlay();
+  audioRecorderPlayer.removePlayBackListener();
 }
 ```
 
