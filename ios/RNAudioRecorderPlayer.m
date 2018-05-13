@@ -50,7 +50,7 @@
 - (void)startTimer
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-      self->timer = [NSTimer scheduledTimerWithTimeInterval:0.1
+      self->timer = [NSTimer scheduledTimerWithTimeInterval:0.01
                                            target:self
                                            selector:@selector(updateProgress:)
                                            userInfo:nil
