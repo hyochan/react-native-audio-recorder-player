@@ -71,6 +71,9 @@ On *Android* you need to add a permission to `AndroidManifest.xml`:
 | pausePlay | | `Promise<string>` | Pause playing.|
 | seekTo | `number` seconds | `Promise<string>` | Seek audio.|
 
+## Default Path
+* Default path for android uri is `sdcard/sound.mp4`.
+* Default path for ios uri is `sound.m4a`.
 
 ## Usage
 ```javascript
