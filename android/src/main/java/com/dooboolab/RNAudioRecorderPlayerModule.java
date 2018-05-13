@@ -135,7 +135,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       };
 
       mTimer = new Timer();
-      mTimer.schedule(mTask, 0, 10);
+      mTimer.schedule(mTask, 0, 1000);
 
       /**
        * Detect when finish playing.

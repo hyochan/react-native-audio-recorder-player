@@ -27,15 +27,6 @@ class AudioRecorderPlayer {
     return pad(minutes) + ':' + pad(secs);
   }
 
-  mmssss = (milisecs) => {
-    const secs = Math.floor(milisecs / 1000);
-    const minutes = Math.floor(secs / 60);
-    const seconds = secs % 60;
-    const miliseconds = Math.floor((milisecs % 1000) / 10);
-  
-    return pad(minutes) + ':' + pad(seconds) + ':' + pad(miliseconds);
-  };
-
   /**
    * setInterval for recording by 10 milliseconds.
    * @param {number} milliseconds
