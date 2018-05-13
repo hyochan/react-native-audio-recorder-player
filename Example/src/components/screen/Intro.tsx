@@ -216,7 +216,7 @@ class Page extends Component<any, IState> {
 
   private onStartRecord = async () => {
     const result = await this.audioRecorderPlayer.startRecord();
-    this.audioRecorderPlayer.setRecordInterval(() => {
+    this.audioRecorderPlayer.setRecordInterval(1000, () => {
       const secs = this.state.recordSecs + 1;
       this.setState({
         recordSecs: secs,

@@ -6,9 +6,17 @@ export class AudioRecorderPlayer {
 
   /**
    * Convert seconds into minute:second string format.
-   * @returns {string}
+   * @param {string} seconds
+   * @returns {string} 00:00
    */
   public mmss(secs: number) : string;
+
+  /**
+   * Convert seconds into minute:second:millisecond string format.
+   * @param {string} milliseconds
+   * @returns {string} 00:00:00
+   */
+  public mmssss(milisecs: number) : string;
 
   /**
    * Set record interval.

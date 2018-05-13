@@ -8,6 +8,10 @@ import {
 
 const { RNAudioRecorderPlayer } = NativeModules;
 
+const pad = (num) => {
+  return ('0' + num).slice(-2);
+};
+
 class AudioRecorderPlayer {
   static _isRecording;
   static _isPlaying;
@@ -18,17 +22,27 @@ class AudioRecorderPlayer {
     let minutes = Math.floor(secs / 60);
     secs = secs % 60;
     minutes = minutes % 60;
-    minutes = ('0' + minutes).slice(-2);
-    secs = ('0' + secs).slice(-2);
-    return minutes + ':' + secs;
+    // minutes = ('0' + minutes).slice(-2);
+    // secs = ('0' + secs).slice(-2);
+    return pad(minutes) + ':' + pad(secs);
   }
 
+  mmssss = (milisecs) => {
+    const secs = Math.floor(milisecs / 1000);
+    const minutes = Math.floor(secs / 60);
+    const seconds = secs % 60;
+    const miliseconds = Math.floor((milisecs % 1000) / 10);
+  
+    return pad(minutes) + ':' + pad(seconds) + ':' + pad(miliseconds);
+  };
+
   /**
-   * setInterval for recording by 1 sec.
+   * setInterval for recording by 10 milliseconds.
+   * @param {number} milliseconds
    * @returns {callBack}
    */
-  setRecordInterval = (callBack) => {
-    _recordInterval = setInterval(callBack, 1000);
+  setRecordInterval = (milliseconds, callBack) => {
+    _recordInterval = setInterval(callBack, milliseconds);
   }
 
   /**
