@@ -39,7 +39,7 @@ export class AudioRecorderPlayer {
   /**
    * Start recording.
    * @param {uri} audioPathUri no param will save audio in default location
-   * @returns {Promise<string>}
+   * @returns {Promise<string>} audioFileURI
    */
   public startRecord(uri?: string) : Promise<string>;
 
@@ -52,7 +52,7 @@ export class AudioRecorderPlayer {
   /**
    * Start playing.
    * @param {uri} audioPathUri no param will save audio in default location
-   * @returns {Promise<string>}
+   * @returns {Promise<string>} audioFileURI
    */
   public startPlay(uri?: string) : Promise<string>;
 

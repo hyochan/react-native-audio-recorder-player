@@ -92,7 +92,9 @@ RCT_EXPORT_METHOD(startRecord:(NSString*)path
                         error:nil];
   
   [audioRecorder record];
-  resolve(@"Recorder started.");
+    
+  NSString *filePath = audioFileURL.absoluteString;
+  resolve(filePath);
 }
 
 RCT_EXPORT_METHOD(stopRecord:(RCTPromiseResolveBlock)resolve
@@ -124,7 +126,9 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
 
     [audioPlayer play];
     [self startTimer];
-    resolve(@"start play");
+
+    NSString *filePath = audioFileURL.absoluteString;
+    resolve(filePath);
 }
 
 RCT_EXPORT_METHOD(seekTo: (nonnull NSNumber*) time

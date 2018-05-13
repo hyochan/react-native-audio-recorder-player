@@ -77,7 +77,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
         }
       });
 
-      promise.resolve("recorder started.");
+      promise.resolve("file://" + path);
     } catch (Exception e) {
       Log.e(TAG, "Exception: ", e);
       promise.reject("startRecord", e.getMessage());
@@ -93,6 +93,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
     mediaRecorder.stop();
     mediaRecorder.release();
     mediaRecorder = null;
+
     promise.resolve("recorder stopped.");
   }
 
@@ -163,7 +164,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
         }
       });
 
-      promise.resolve("player started.");
+      promise.resolve("file://" + path);
     } catch (IOException e) {
       Log.e(TAG, "startPlay() failed");
       promise.reject("startPlay", e.getMessage());
