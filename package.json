@@ -1,6 +1,6 @@
 {
   "name": "react-native-audio-recorder-player",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "React Native Audio Recorder and Player.",
   "main": "index.js",
   "types": "index.d.ts",

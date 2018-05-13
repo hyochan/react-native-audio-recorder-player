@@ -22,7 +22,7 @@ export class AudioRecorderPlayer {
    * Set record interval.
    * @returns {string}
    */
-  public setRecordInterval() : Promise<void>;
+  public setRecordInterval(milisecs: number) : Promise<void>;
 
   /**
    * Remove record interval.

@@ -93,6 +93,9 @@ class AudioRecorderPlayer {
    * @returns {Promise<string>}
    */
   startRecord = async(uri) => {
+    if (!uri) {
+      uri = 'DEFAULT';
+    }
     if (!this._isRecording) {
       this._isRecording = true;
       return await RNAudioRecorderPlayer.startRecord(uri);
@@ -130,6 +133,9 @@ class AudioRecorderPlayer {
    * @returns {Promise<string>}
    */
   startPlay = async (uri) => {
+    if (!uri) {
+      uri = 'DEFAULT';
+    }
     if (!this._isPlaying) {
       this._isPlaying = true;
       return await RNAudioRecorderPlayer.startPlay(uri);
