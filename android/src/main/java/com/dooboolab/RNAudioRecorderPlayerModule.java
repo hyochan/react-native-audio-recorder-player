@@ -104,7 +104,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
 
       if (isPaused) {
         mediaPlayer.start();
-        promise.resolve("player resumed.");
+        promise.resolve("player start.");
         return;
       }
 
@@ -179,7 +179,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void resume(String path, Promise promise) {
+  public void resume(Promise promise) {
     if (mediaPlayer == null) {
       promise.reject("resume","mediaPlayer is null.");
       return;
