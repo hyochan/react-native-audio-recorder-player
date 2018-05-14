@@ -190,7 +190,8 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       return;
     }
 
-    mediaPlayer.resume();
+    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
+    mediaPlayer.start();
     promise.resolve("resume player");
   }
 
