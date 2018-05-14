@@ -98,13 +98,13 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void startPlay(String path, Promise promise) {
+  public void startPlay(final String path, final Promise promise) {
     if (mediaPlayer != null) {
       Boolean isPaused = !mediaPlayer.isPlaying() && mediaPlayer.getCurrentPosition() > 1;
 
       if (isPaused) {
         mediaPlayer.start();
-        promise.resolve("player start.");
+        promise.resolve("player resumed.");
         return;
       }
 
@@ -120,51 +120,56 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
         mediaPlayer.setDataSource(path);
       }
       mediaPlayer.prepare();
-      mediaPlayer.start();
-
-      /**
-       * Set timer task to send event to RN.
-       */
-      mTask = new TimerTask() {
+      mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
         @Override
-        public void run() {
-          WritableMap obj = Arguments.createMap();
-          obj.putInt("duration", mediaPlayer.getDuration());
-          obj.putInt("current_position", mediaPlayer.getCurrentPosition());
-          sendEvent(reactContext, "rn-playback", obj);
-        }
-      };
-
-      mTimer = new Timer();
-      mTimer.schedule(mTask, 0, 1000);
-
-      /**
-       * Detect when finish playing.
-       */
-      mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-        @Override
-        public void onCompletion(MediaPlayer mp) {
-          /**
-           * Send last event
-           */
-          WritableMap obj = Arguments.createMap();
-          obj.putInt("duration", mediaPlayer.getDuration());
-          obj.putInt("current_position", mediaPlayer.getDuration());
-          obj.putInt("justFinished", 1);
-          sendEvent(reactContext, "rn-playback", obj);
+        public void onPrepared(MediaPlayer mp) {
+          mediaPlayer.start();
 
           /**
-           * Reset player.
+           * Set timer task to send event to RN.
            */
-          Log.d(TAG, "Plays completed.");
-          mTimer.cancel();
-          mp.stop();
-          mp.release();
-          mp = null;
+          mTask = new TimerTask() {
+            @Override
+            public void run() {
+              WritableMap obj = Arguments.createMap();
+              obj.putInt("duration", mediaPlayer.getDuration());
+              obj.putInt("current_position", mediaPlayer.getCurrentPosition());
+              sendEvent(reactContext, "rn-playback", obj);
+            }
+          };
+
+          mTimer = new Timer();
+          mTimer.schedule(mTask, 0, 1000);
+
+          /**
+           * Detect when finish playing.
+           */
+          mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mp) {
+              /**
+               * Send last event
+               */
+              WritableMap obj = Arguments.createMap();
+              obj.putInt("duration", mediaPlayer.getDuration());
+              obj.putInt("current_position", mediaPlayer.getDuration());
+              obj.putInt("justFinished", 1);
+              sendEvent(reactContext, "rn-playback", obj);
+
+              /**
+               * Reset player.
+               */
+              Log.d(TAG, "Plays completed.");
+              mTimer.cancel();
+              mp.stop();
+              mp.release();
+              mp = null;
+            }
+          });
+
+          promise.resolve("file://" + path);
         }
       });
-
-      promise.resolve("file://" + path);
     } catch (IOException e) {
       Log.e(TAG, "startPlay() failed");
       promise.reject("startPlay", e.getMessage());
@@ -229,13 +234,13 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void stopPlay(Promise promise) {
+    if (mTimer != null) {
+      mTimer.cancel();
+    }
+
     if (mediaPlayer == null) {
       promise.reject("stopPlay","mediaPlayer is null.");
       return;
-    }
-
-    if (mTimer != null) {
-      mTimer.cancel();
     }
 
     mediaPlayer.release();
