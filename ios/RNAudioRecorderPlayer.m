@@ -114,38 +114,42 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
 
     if ([[path substringToIndex:4] isEqualToString:@"http"]) {
         audioFileURL = [NSURL URLWithString:path];
-        NSData *soundData = [NSData dataWithContentsOfURL:audioFileURL];
+
+        NSURLSessionDataTask *downloadTask = [[NSURLSession sharedSession]
+        dataTaskWithURL:audioFileURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            // NSData *data = [NSData dataWithContentsOfURL:audioFileURL];
+            if (!audioPlayer) {
+                audioPlayer = [[AVAudioPlayer alloc] initWithData:data error:nil];
+                audioPlayer.delegate = self;
+            }
+            
+
+            [audioPlayer play];
+            [self startTimer];
+            NSString *filePath = audioFileURL.absoluteString;
+            resolve(filePath);
+        }];
+
+        [downloadTask resume];
+    } else {
+        if ([path isEqualToString:@"DEFAULT"]) {
+            audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:@"sound.m4a"]];
+        } else {
+            audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:path]];
+        }
 
         if (!audioPlayer) {
-            audioPlayer = [[AVAudioPlayer alloc] initWithData:soundData error:nil];
+            RCTLogInfo(@"audio player alloc");
+            audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil];
             audioPlayer.delegate = self;
         }
-        
 
         [audioPlayer play];
         [self startTimer];
+
         NSString *filePath = audioFileURL.absoluteString;
         resolve(filePath);
-        return;
     }
-
-    if ([path isEqualToString:@"DEFAULT"]) {
-        audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:@"sound.m4a"]];
-    } else {
-        audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:path]];
-    }
-
-    if (!audioPlayer) {
-        RCTLogInfo(@"audio player alloc");
-        audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil];
-        audioPlayer.delegate = self;
-    }
-
-    [audioPlayer play];
-    [self startTimer];
-
-    NSString *filePath = audioFileURL.absoluteString;
-    resolve(filePath);
 }
 
 RCT_EXPORT_METHOD(seekTo: (nonnull NSNumber*) time
