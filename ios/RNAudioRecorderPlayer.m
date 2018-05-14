@@ -152,6 +152,24 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
     }
 }
 
+RCT_EXPORT_METHOD(resume: (RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+    if (!audioFileURL) {
+        reject(@"audioRecorder play", @"no audioFileURL", nil);
+        return;
+    }
+
+    if (!audioPlayer) {
+        reject(@"audioRecorder play", @"no audioPlayer", nil);
+        return;
+    }
+
+    [audioPlayer play];
+    [self startTimer];
+    NSString *filePath = audioFileURL.absoluteString;
+    resolve(filePath);
+}
+
 RCT_EXPORT_METHOD(seekTo: (nonnull NSNumber*) time
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {

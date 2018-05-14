@@ -119,6 +119,18 @@ class AudioRecorderPlayer {
   }
 
   /**
+   * resume playing.
+   * @returns {Promise<string>}
+   */
+  resume = async () => {
+    if (!this._isPlaying) {
+      this._isPlaying = true;
+      return await RNAudioRecorderPlayer.resume();
+    }
+    console.log('Already playing');
+  }
+
+  /**
    * start playing with param.
    * @param {string} uri audio uri.
    * @returns {Promise<string>}

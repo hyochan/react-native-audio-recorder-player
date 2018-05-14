@@ -179,6 +179,22 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
+  public void resume(String path, Promise promise) {
+    if (mediaPlayer == null) {
+      promise.reject("resume","mediaPlayer is null.");
+      return;
+    }
+
+    if (mediaPlayer.isPlaying()) {
+      promise.reject("resume","mediaPlayer is already running.");
+      return;
+    }
+
+    mediaPlayer.resume();
+    promise.resolve("resume player");
+  }
+
+  @ReactMethod
   public void pausePlay(Promise promise) {
     if (mediaPlayer == null) {
       promise.reject("pausePlay","mediaPlayer is null.");
