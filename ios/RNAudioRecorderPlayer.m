@@ -112,6 +112,23 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
                   reject:(RCTPromiseRejectBlock)reject) {
     RCTLogInfo(@"startPlay %@", path);
 
+    if ([[path substringToIndex:4] isEqualToString:@"http"]) {
+        audioFileURL = [NSURL URLWithString:path];
+        NSData *soundData = [NSData dataWithContentsOfURL:audioFileURL];
+
+        if (!audioPlayer) {
+            audioPlayer = [[AVAudioPlayer alloc] initWithData:soundData error:nil];
+            audioPlayer.delegate = self;
+        }
+        
+
+        [audioPlayer play];
+        [self startTimer];
+        NSString *filePath = audioFileURL.absoluteString;
+        resolve(filePath);
+        return;
+    }
+
     if ([path isEqualToString:@"DEFAULT"]) {
         audioFileURL = [NSURL fileURLWithPath:[NSTemporaryDirectory() stringByAppendingString:@"sound.m4a"]];
     } else {
