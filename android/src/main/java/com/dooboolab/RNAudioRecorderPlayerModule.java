@@ -213,7 +213,9 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       return;
     }
 
-    mediaPlayer.seekTo(time);
+    int millis = time * 1000;
+
+    mediaPlayer.seekTo(millis);
     promise.resolve("pause player");
   }
 
