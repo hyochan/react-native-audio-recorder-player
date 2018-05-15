@@ -111,8 +111,9 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       Log.e(TAG, "Player is already running. Stop it first.");
       promise.reject("startPlay", "Player is already running. Stop it first.");
       return;
+    } else {
+      mediaPlayer = new MediaPlayer();
     }
-    mediaPlayer = new MediaPlayer();
     try {
       if (path.equals("DEFAULT")) {
         mediaPlayer.setDataSource(FILE_LOCATION);
@@ -171,16 +172,11 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
         }
       });
     } catch (IOException e) {
-      Log.e(TAG, "startPlay() failed");
+      Log.e(TAG, "startPlay() io exception");
       promise.reject("startPlay", e.getMessage());
+    } catch (NullPointerException e) {
+      Log.e(TAG, "startPlay() null exception");
     }
-
-    mediaPlayer.setOnBufferingUpdateListener(new MediaPlayer.OnBufferingUpdateListener() {
-      @Override
-      public void onBufferingUpdate(MediaPlayer mp, int percent) {
-        Log.d(TAG, "percent: " + percent);
-      }
-    });
   }
 
   @ReactMethod
@@ -195,9 +191,15 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       return;
     }
 
-    mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
-    mediaPlayer.start();
-    promise.resolve("resume player");
+    try {
+      mediaPlayer.seekTo(mediaPlayer.getCurrentPosition());
+      mediaPlayer.start();
+      promise.resolve("resume player");
+    } catch (Exception e) {
+      Log.e(TAG, "mediaPlayer resume: " + e.getMessage());
+      promise.reject("resume", e.getMessage());
+    }
+
   }
 
   @ReactMethod
@@ -207,8 +209,13 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       return;
     }
 
-    mediaPlayer.pause();
-    promise.resolve("pause player");
+    try {
+      mediaPlayer.pause();
+      promise.resolve("pause player");
+    } catch (Exception e) {
+      Log.e(TAG, "pausePlay exception: " + e.getMessage());
+      promise.reject("pausePlay",e.getMessage());
+    }
   }
 
   @ReactMethod
@@ -243,8 +250,13 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       return;
     }
 
-    mediaPlayer.release();
-    mediaPlayer = null;
-    promise.resolve("stopped player");
+    try {
+      mediaPlayer.release();
+      mediaPlayer = null;
+      promise.resolve("stopped player");
+    } catch (Exception e) {
+      Log.e(TAG, "stopPlay exception: " + e.getMessage());
+      promise.reject("stopPlay",e.getMessage());
+    }
   }
 }
