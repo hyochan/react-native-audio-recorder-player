@@ -78,7 +78,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       });
 
       String resolvedPath = (path.equals("DEFAULT")) ? FILE_LOCATION : path;
-      promise.resolve(resolvedPath);
+      promise.resolve("file://" + resolvedPath);
     } catch (Exception e) {
       Log.e(TAG, "Exception: ", e);
       promise.reject("startRecord", e.getMessage());
@@ -170,7 +170,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
           });
 
           String resolvedPath = (path.equals("DEFAULT")) ? FILE_LOCATION : path;
-          promise.resolve(resolvedPath);
+          promise.resolve("file://" + resolvedPath);
         }
       });
     } catch (IOException e) {
