@@ -44,14 +44,13 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void startRecord(String path, Promise promise) {
+  public void startRecord(final String path, Promise promise) {
     if (mediaRecorder == null) {
       mediaRecorder = new MediaRecorder();
       mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
       mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
       mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
       if (path.equals("DEFAULT")) {
-        path = FILE_LOCATION;
         mediaRecorder.setOutputFile(FILE_LOCATION);
       } else {
         mediaRecorder.setOutputFile(path);
@@ -78,7 +77,8 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
         }
       });
 
-      promise.resolve("file://" + path);
+      String resolvedPath = (path.equals("DEFAULT")) ? FILE_LOCATION : path;
+      promise.resolve(resolvedPath);
     } catch (Exception e) {
       Log.e(TAG, "Exception: ", e);
       promise.reject("startRecord", e.getMessage());
@@ -117,10 +117,9 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
     }
     try {
       if (path.equals("DEFAULT")) {
-        path = FILE_LOCATION;
-        mediaPlayer.setDataSource(FILE_LOCATION);
+        mediaRecorder.setOutputFile(FILE_LOCATION);
       } else {
-        mediaPlayer.setDataSource(path);
+        mediaRecorder.setOutputFile(path);
       }
       mediaPlayer.prepare();
       mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -170,7 +169,8 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
             }
           });
 
-          promise.resolve("file://" + path);
+          String resolvedPath = (path.equals("DEFAULT")) ? FILE_LOCATION : path;
+          promise.resolve(resolvedPath);
         }
       });
     } catch (IOException e) {
