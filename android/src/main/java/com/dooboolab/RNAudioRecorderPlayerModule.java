@@ -51,6 +51,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
       mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
       if (path.equals("DEFAULT")) {
+        path = FILE_LOCATION;
         mediaRecorder.setOutputFile(FILE_LOCATION);
       } else {
         mediaRecorder.setOutputFile(path);
@@ -116,6 +117,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
     }
     try {
       if (path.equals("DEFAULT")) {
+        path = FILE_LOCATION;
         mediaPlayer.setDataSource(FILE_LOCATION);
       } else {
         mediaPlayer.setDataSource(path);
