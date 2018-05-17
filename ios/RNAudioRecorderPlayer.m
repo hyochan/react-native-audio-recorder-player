@@ -90,15 +90,19 @@ RCT_EXPORT_METHOD(startRecord:(NSString*)path
   AVAudioSession *session = [AVAudioSession sharedInstance];
   [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
 
+  // set volume default to speaker
+  UInt32 doChangeDefaultRoute = 1;
+  AudioSessionSetProperty(kAudioSessionProperty_OverrideCategoryDefaultToSpeaker, sizeof(doChangeDefaultRoute), &doChangeDefaultRoute);
+
   audioRecorder = [[AVAudioRecorder alloc]
                         initWithURL:audioFileURL
                         settings:audioSettings
                         error:nil];
   
-  audioRecorder.delegate = self;
+  [audioRecorder setDelegate:self];
   [audioRecorder record];
     
-  NSString *filePath = audioFileURL.absoluteString;
+  NSString *filePath = self->audioFileURL.absoluteString;
   resolve(filePath);
 }
 
