@@ -83,14 +83,19 @@ RCT_EXPORT_METHOD(startRecord:(NSString*)path
   NSDictionary *audioSettings = [NSDictionary dictionaryWithObjectsAndKeys:
                                  [NSNumber numberWithFloat:44100],AVSampleRateKey,
                                  [NSNumber numberWithInt: kAudioFormatAppleLossless],AVFormatIDKey,
-                                 [NSNumber numberWithInt: 1],AVNumberOfChannelsKey,
+                                 [NSNumber numberWithInt: 2],AVNumberOfChannelsKey,
                                  [NSNumber numberWithInt:AVAudioQualityMedium],AVEncoderAudioQualityKey,nil];
+
+  // Setup audio session
+  AVAudioSession *session = [AVAudioSession sharedInstance];
+  [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
 
   audioRecorder = [[AVAudioRecorder alloc]
                         initWithURL:audioFileURL
                         settings:audioSettings
                         error:nil];
   
+  audioRecorder.delegate = self;
   [audioRecorder record];
     
   NSString *filePath = audioFileURL.absoluteString;
@@ -101,7 +106,12 @@ RCT_EXPORT_METHOD(stopRecord:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (audioRecorder) {
         [audioRecorder stop];
-        resolve(@"stop record");
+
+        AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+        [audioSession setActive:NO error:nil];
+
+        NSString *filePath = audioFileURL.absoluteString;
+        resolve(filePath);
     } else {
         reject(@"audioRecorder record", @"audioRecorder is not set", nil);
     }
