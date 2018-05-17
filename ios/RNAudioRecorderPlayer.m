@@ -138,6 +138,11 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
             }
             
 
+            // Able to play in silent mode
+            [[AVAudioSession sharedInstance]
+                setCategory: AVAudioSessionCategoryPlayback
+                error: nil];
+
             [audioPlayer play];
             [self startTimer];
             NSString *filePath = audioFileURL.absoluteString;
@@ -157,6 +162,11 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
             audioPlayer = [[AVAudioPlayer alloc] initWithContentsOfURL:audioFileURL error:nil];
             audioPlayer.delegate = self;
         }
+
+        // Able to play in silent mode
+        [[AVAudioSession sharedInstance]
+            setCategory: AVAudioSessionCategoryPlayback
+            error: nil];
 
         [audioPlayer play];
         [self startTimer];
@@ -178,6 +188,9 @@ RCT_EXPORT_METHOD(resume: (RCTPromiseResolveBlock)resolve
         return;
     }
 
+    [[AVAudioSession sharedInstance]
+        setCategory: AVAudioSessionCategoryPlayback
+        error: nil];
     [audioPlayer play];
     [self startTimer];
     NSString *filePath = audioFileURL.absoluteString;
