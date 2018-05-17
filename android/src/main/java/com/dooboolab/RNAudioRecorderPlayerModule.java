@@ -117,15 +117,15 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
     }
     try {
       if (path.equals("DEFAULT")) {
-        mediaRecorder.setOutputFile(FILE_LOCATION);
+        mediaPlayer.setDataSource(FILE_LOCATION);
       } else {
-        mediaRecorder.setOutputFile(path);
+        mediaPlayer.setDataSource(path);
       }
-      mediaPlayer.prepare();
       mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
         @Override
-        public void onPrepared(MediaPlayer mp) {
-          mediaPlayer.start();
+        public void onPrepared(final MediaPlayer mp) {
+          Log.d(TAG, "mediaplayer prepared and start");
+          mp.start();
 
           /**
            * Set timer task to send event to RN.
@@ -134,8 +134,8 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
             @Override
             public void run() {
               WritableMap obj = Arguments.createMap();
-              obj.putInt("duration", mediaPlayer.getDuration());
-              obj.putInt("current_position", mediaPlayer.getCurrentPosition());
+              obj.putInt("duration", mp.getDuration());
+              obj.putInt("current_position", mp.getCurrentPosition());
               sendEvent(reactContext, "rn-playback", obj);
             }
           };
@@ -143,36 +143,36 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
           mTimer = new Timer();
           mTimer.schedule(mTask, 0, 1000);
 
-          /**
-           * Detect when finish playing.
-           */
-          mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mp) {
-              /**
-               * Send last event
-               */
-              WritableMap obj = Arguments.createMap();
-              obj.putInt("duration", mediaPlayer.getDuration());
-              obj.putInt("current_position", mediaPlayer.getDuration());
-              obj.putInt("justFinished", 1);
-              sendEvent(reactContext, "rn-playback", obj);
-
-              /**
-               * Reset player.
-               */
-              Log.d(TAG, "Plays completed.");
-              mTimer.cancel();
-              mp.stop();
-              mp.release();
-              mp = null;
-            }
-          });
-
-          String resolvedPath = (path.equals("DEFAULT")) ? FILE_LOCATION : path;
-          promise.resolve("file://" + resolvedPath);
+          String resolvedPath = (path.equals("DEFAULT")) ? "file://" + FILE_LOCATION : path;
+          promise.resolve(resolvedPath);
         }
       });
+      /**
+       * Detect when finish playing.
+       */
+      mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+        @Override
+        public void onCompletion(MediaPlayer mp) {
+          /**
+           * Send last event
+           */
+          WritableMap obj = Arguments.createMap();
+          obj.putInt("duration", mp.getDuration());
+          obj.putInt("current_position", mp.getDuration());
+          obj.putInt("justFinished", 1);
+          sendEvent(reactContext, "rn-playback", obj);
+
+          /**
+           * Reset player.
+           */
+          Log.d(TAG, "Plays completed.");
+          mTimer.cancel();
+          mp.stop();
+          mp.release();
+          mediaPlayer = null;
+        }
+      });
+      mediaPlayer.prepare();
     } catch (IOException e) {
       Log.e(TAG, "startPlay() io exception");
       promise.reject("startPlay", e.getMessage());
