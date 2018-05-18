@@ -5,7 +5,7 @@
   <a href="https://npmjs.org/package/react-native-audio-recorder-player"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-audio-recorder-player.svg?style=flat-square"></a>
 </p>
 
-This is a react-native link library project for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities.
+This is a react-native link module for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities for both `android` and `ios` platforms. This only supports default file extension for each platform. This module can also handle file from url.
 
 ## Preview
 [![Alt text for preview](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.png?alt=media&token=2512541e-cc0d-45e6-b21e-32e8c24ad99d)](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.mp4?alt=media&token=e9e108f8-cd0c-4d4a-85c7-3b8db222249a)
@@ -46,18 +46,40 @@ This is a react-native link library project for audio recorder and player. This 
 ### Post installation
 On *iOS* you need to add a usage description to `Info.plist`:
 
-```
+```xml
 <key>NSMicrophoneUsageDescription</key>
 <string>This sample uses the microphone to record your speech and convert it to text.</string>
 ```
 
 On *Android* you need to add a permission to `AndroidManifest.xml`:
 
-```
+```xml
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
+```
+Also, android above `Marshmallow` needs runtime permission to record audio. Using [react-native-permissions](https://github.com/yonahforst/react-native-permissions) will help you out with this problem. Below is sample usage before when started the recording.
+```javascript
+if (Platform.OS === 'android') {
+  const micPermission: string = await checkPermission('microphone');
+  console.log('micPermission', micPermission);
+  if (micPermission !== 'authorized') {
+    const micRequest: string = await requestPermission('microphone');
+    console.log('micRequest', micRequest);
+    if (micRequest !== 'authorized') {
+      return;
+    }
+  }
+  const storagePermission: string = await checkPermission('storage');
+  if (storagePermission !== 'authorized') {
+    const storageRequest: string = await requestPermission('storage');
+    if (storageRequest !== 'authorized') {
+      return;
+    }
+  }
+}
 ```
 
 ## Methods
+All methods are implemented with promises.
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
 | mmss | `number` seconds | `string` | Convert seconds to `minute:second` string.|
@@ -130,6 +152,17 @@ onStopPlay = async () => {
   audioRecorderPlayer.removePlayBackListener();
 }
 ```
+
+## TIPS
+If you want to get actual uri from the record or play file to actually grab it and upload it to your bucket, just grab the resolved message when using `startPlay` or `startRecord` method like below.
+```javascript
+const path = Platform.select({
+  ios: 'hello.m4a',
+  android: 'hello.mp4',
+});
+const uri = await audioRecorderPlayer.startRecord(path);
+```
+Also, above example helps you to setup manual path to record audio. Not giving path param will record in `default` path and mentioned above.
 
 ## Try yourself
 1. Goto `Example` folder by running `cd Example`.
