@@ -80,6 +80,7 @@ if (Platform.OS === 'android') {
 
 ## Methods
 All methods are implemented with promises.
+
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
 | mmss | `number` seconds | `string` | Convert seconds to `minute:second` string.|
