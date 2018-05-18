@@ -1,4 +1,4 @@
-export class AudioRecorderPlayer {
+export default class AudioRecorderPlayer {
   private _isRecording: boolean;
   private _isPlaying: boolean;
   private _subscription: any;
