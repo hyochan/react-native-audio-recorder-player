@@ -163,7 +163,7 @@ const path = Platform.select({
 });
 const uri = await audioRecorderPlayer.startRecord(path);
 ```
-Also, above example helps you to setup manual path to record audio. Not giving path param will record in `default` path and mentioned above.
+Also, above example helps you to setup manual path to record audio. Not giving path param will record in `default` path as mentioned above.
 
 ## Try yourself
 1. Goto `Example` folder by running `cd Example`.
