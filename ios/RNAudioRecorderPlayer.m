@@ -142,6 +142,9 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
             [[AVAudioSession sharedInstance]
                 setCategory: AVAudioSessionCategoryPlayback
                 error: nil];
+            // Able to play in background
+            [[AVAudioSession sharedInstance] setActive: YES error: nil];
+            [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 
             [audioPlayer play];
             [self startTimer];
@@ -179,12 +182,12 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
 RCT_EXPORT_METHOD(resume: (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (!audioFileURL) {
-        reject(@"audioRecorder play", @"no audioFileURL", nil);
+        reject(@"audioRecorder resume", @"no audioFileURL", nil);
         return;
     }
 
     if (!audioPlayer) {
-        reject(@"audioRecorder play", @"no audioPlayer", nil);
+        reject(@"audioRecorder resume", @"no audioPlayer", nil);
         return;
     }
 
