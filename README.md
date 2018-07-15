@@ -13,6 +13,10 @@ This is a react-native link module for audio recorder and player. This is not a 
 ## Preview
 [![Alt text for preview](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.png?alt=media&token=2512541e-cc0d-45e6-b21e-32e8c24ad99d)](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.mp4?alt=media&token=e9e108f8-cd0c-4d4a-85c7-3b8db222249a)
 
+## Changelogs
+- **[1.2.2]**
+  + Set android build version to that of `rootProject`'s to prevent from build failing cause of mismatched version.
+
 ## Getting started
 
 `$ npm install react-native-audio-recorder-player --save`
