@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, SyntheticEvent } from 'react';
 import {
   Platform,
   StatusBar,
@@ -95,6 +95,12 @@ const styles: any = StyleSheet.create({
 
 interface IState {
   isLoggingIn: boolean;
+  recordSecs: number;
+  recordTime: string;
+  currentPositionSec: number;
+  currentDurationSec: number;
+  playTime: string;
+  duration: string;
 }
 
 @inject('store')
@@ -194,7 +200,7 @@ class Page extends Component<any, IState> {
     );
   }
 
-  private onStatusPress = (e: Event) => {
+  private onStatusPress = (e: any) => {
     const touchX = e.nativeEvent.locationX;
     console.log(`touchX: ${touchX}`);
     const playWidth = (this.state.currentPositionSec / this.state.currentDurationSec) * (screenWidth - 56 * ratio);
