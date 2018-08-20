@@ -123,23 +123,20 @@ import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 onStartRecord = async () => {
-  const result = await audioRecorderPlayer.startRecord();
-    audioRecorderPlayer.setRecordInterval(() => {
-    const secs = this.state.recordSecs + 1;
+  const result = await this.audioRecorderPlayer.startRecorder();
+  this.audioRecorderPlayer.addRecordBackListener((e) => {
     this.setState({
-      recordSecs: secs,
-      recordTime: audioRecorderPlayer.mmss(secs),
-    }, () => {
-      console.log(`recordSecs: ${this.state.recordSecs}`);
-      console.log(`recordTime: ${this.state.recordTime}`);
+      recordSecs: e.current_position,
+      recordTime: this.audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
     });
+    return;
   });
   console.log(result);
 }
 
 onStopRecord = async () => {
-  const result = await audioRecorderPlayer.stopRecord();
-  audioRecorderPlayer.removeRecordInterval();
+  const result = await this.audioRecorderPlayer.stopRecorder();
+  this.audioRecorderPlayer.removeRecordBackListener();
   this.setState({
     recordSecs: 0,
   });
@@ -148,27 +145,31 @@ onStopRecord = async () => {
 
 onStartPlay = async () => {
   console.log('onStartPlay');
-  const msg = await audioRecorderPlayer.startPlay();
+  const msg = await this.audioRecorderPlayer.startPlayer();
   console.log(msg);
-  audioRecorderPlayer.addPlayBackListener((e) => {
+  this.audioRecorderPlayer.addPlayBackListener((e) => {
+    if (e.current_position === e.duration) {
+      console.log('finished');
+      this.audioRecorderPlayer.stopPlayer();
+    }
     this.setState({
       currentPositionSec: e.current_position,
       currentDurationSec: e.duration,
-      playTime: audioRecorderPlayer.mmss(Math.floor(e.current_position / 1000)),
-      duration: audioRecorderPlayer.mmss(Math.floor(e.duration / 1000)),
+      playTime: this.audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
+      duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
     });
     return;
   });
 }
 
 onPausePlay = async () => {
-  await audioRecorderPlayer.pausePlay();
+  await this.audioRecorderPlayer.pausePlayer();
 }
 
 onStopPlay = async () => {
   console.log('onStopPlay');
-  audioRecorderPlayer.stopPlay();
-  audioRecorderPlayer.removePlayBackListener();
+  this.audioRecorderPlayer.stopPlayer();
+  this.audioRecorderPlayer.removePlayBackListener();
 }
 ```
 
