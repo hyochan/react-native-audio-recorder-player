@@ -85,11 +85,19 @@ const styles: any = StyleSheet.create({
     marginTop: 32 * ratio,
     color: 'white',
     fontSize: 20 * ratio,
+    textAlignVertical: 'center',
+    fontWeight: '200',
+    fontFamily: 'Helvetica Neue',
+    letterSpacing: 3,
   },
   txtCounter: {
     marginTop: 12 * ratio,
     color: 'white',
     fontSize: 20 * ratio,
+    textAlignVertical: 'center',
+    fontWeight: '200',
+    fontFamily: 'Helvetica Neue',
+    letterSpacing: 3,
   },
 });
 
