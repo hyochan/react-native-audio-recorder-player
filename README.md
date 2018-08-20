@@ -11,11 +11,8 @@ This is a react-native link module for audio recorder and player. This is not a 
   - Happy [Blog](https://medium.com/@dooboolab/react-native-audio-recorder-and-player-4aa5f26a666).
 
 ## Preview
-[![Alt text for preview](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.png?alt=media&token=2512541e-cc0d-45e6-b21e-32e8c24ad99d)](https://firebasestorage.googleapis.com/v0/b/bookoo-89f6c.appspot.com/o/react-native-audio-player-recorder.mp4?alt=media&token=e9e108f8-cd0c-4d4a-85c7-3b8db222249a)
+<img src="https://firebasestorage.googleapis.com/v0/b/flutterdart-5d354.appspot.com/o/react-native-audio-recorder-player.gif?alt=media&token=2bff9eeb-bab6-4265-918b-aa0c83ae0faf"/>
 
-## Changelogs
-- **[1.2.2]**
-  + Set android build version to that of `rootProject`'s to prevent from build failing cause of mismatched version.
 
 ## Migration Guide
 | 1.*.* | 2.*.* |
@@ -106,14 +103,14 @@ All methods are implemented with promises.
 | :------------ |:---------------:| :---------------:| :-----|
 | mmss | `number` seconds | `string` | Convert seconds to `minute:second` string.|
 | setRecordInterval |  | `Promise<void>` | Set record interval in second.|
-| removeRecordInterval | callBack | `void` | Remove record interval.|
-| addPlayBackListener | `Event` | `void` | Get callback from native module. Will receive `duration`, `current_position`|
+| removeRecordInterval | `Function` callBack | `void` | Remove record interval.|
+| addPlayBackListener | `Function` callBack | `void` | Get callback from native module. Will receive `duration`, `current_position`|
 | startRecord | `<string>` uri? | `Promise<void>` | Start recording. Not passing the param will save audio in default location.|
 | stopRecord | | `Promise<string>` | Stop recording.|
 | startPlay | `<string>` uri? | `Promise<string>` | Start playing. Not passing the param will play audio in default location.|
 | stopPlay | | `Promise<string>` | Stop playing.|
 | pausePlay | | `Promise<string>` | Pause playing.|
-| seekTo | `number` seconds | `Promise<string>` | Seek audio.|
+| seekTo | `number` milliseconds | `Promise<string>` | Seek audio.|
 
 ## Default Path
 * Default path for android uri is `sdcard/sound.mp4`.
