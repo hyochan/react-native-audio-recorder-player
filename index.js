@@ -58,6 +58,7 @@ class AudioRecorderPlayer {
   removeRecordBackListener = () => {
     if (this._recorderSubscription) {
       this._recorderSubscription.remove();
+      this._recorderSubscription = null;
     }
   }
 
@@ -81,6 +82,7 @@ class AudioRecorderPlayer {
   removePlayBackListener = () => {
     if (this._playerSubscription) {
       this._playerSubscription.remove();
+      this._playerSubscription = null;
     }
   }
 
@@ -170,6 +172,9 @@ class AudioRecorderPlayer {
    * @returns {Promise<string>}
    */
   seekToPlayer = async (time) => {
+    if (Platform.OS === 'ios') {
+      time = time / 1000;
+    }
     return await RNAudioRecorderPlayer.seekToPlayer(time);
   }
 

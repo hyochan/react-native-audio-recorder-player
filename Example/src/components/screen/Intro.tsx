@@ -219,7 +219,7 @@ class Page extends Component<any, IState> {
     } else {
       const subSecs = Math.round((currentPosition - 3000));
       this.audioRecorderPlayer.seekToPlayer(subSecs);
-      console.log(`addSecs: ${subSecs}`);
+      console.log(`subSecs: ${subSecs}`);
     }
   }
 
