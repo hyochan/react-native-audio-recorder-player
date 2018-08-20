@@ -17,6 +17,20 @@ This is a react-native link module for audio recorder and player. This is not a 
 - **[1.2.2]**
   + Set android build version to that of `rootProject`'s to prevent from build failing cause of mismatched version.
 
+## Migration Guide
+| 1.*.* | 2.*.* |
+| --- | --- |
+| `startRecord` | `startRecorder` |
+| `stopRecord` | `stopRecorder` |
+| `startPlay` | `startPlayer` |
+| `stopPlay` | `stopPlayer` |
+| `pausePlay` | `pausePlayer` |
+| `resume` | `resumePlayer` |
+| `seekTo` | `seekToPlayer` |
+| `` | `setSubscriptionDuration` |
+| `setRecordInterval` | `addRecordBackListener` |
+| `removeRecordInterval` | `` |
+
 ## Getting started
 
 `$ npm install react-native-audio-recorder-player --save`
