@@ -12,6 +12,13 @@ export default class AudioRecorderPlayer {
   public mmss(secs: number) : string;
 
   /**
+   * Convert seconds into minute:second:millis string format.
+   * @param {string} miliseconds
+   * @returns {string} 00:00:00
+   */
+  public mmssss(milisecs: number) : string;
+
+  /**
    * Set record interval.
    * @returns {string}
    */
@@ -28,7 +35,7 @@ export default class AudioRecorderPlayer {
    * @param {Event} playback current_position, duration
    * @returns {void}
    */
-  public addRecordBackListener(e: Event) : void;
+  public addRecordBackListener(fn: Function) : void;
 
   /**
    * Remove playback listener.
@@ -41,7 +48,7 @@ export default class AudioRecorderPlayer {
    * @param {Event} playback current_position, duration
    * @returns {void}
    */
-  public addPlayBackListener(e: Event) : void;
+  public addPlayBackListener(fn: Function) : void;
 
   /**
    * Remove playback listener.

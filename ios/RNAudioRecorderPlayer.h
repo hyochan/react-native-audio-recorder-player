@@ -9,5 +9,5 @@
 - (void)updateRecorderProgress:(NSTimer*) timer;
 - (void)updateProgress:(NSTimer*) timer;
 - (void)startRecorderTimer;
-- (void)startTimer;
+- (void)startPlayerTimer;
 @end

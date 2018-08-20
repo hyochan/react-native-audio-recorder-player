@@ -28,6 +28,16 @@ class AudioRecorderPlayer {
     return pad(minutes) + ':' + pad(secs);
   }
 
+  mmssss = (milisecs) => {
+    const secs = Math.floor(milisecs / 1000);
+    const minutes = Math.floor(secs / 60);
+    const seconds = secs % 60;
+    const miliseconds = Math.floor((milisecs % 1000) / 10);
+    console.log('milisecs: ' + milisecs);
+    console.log('min: ' + minutes + ', secs: ' + seconds + ', ' + miliseconds);
+    return pad(minutes) + ':' + pad(seconds) + ':' + pad(miliseconds);
+  };
+
   /**
    * set listerner from native module for recorder.
    * @returns {callBack(e: Event)}
@@ -169,7 +179,7 @@ class AudioRecorderPlayer {
    * @returns {Promise<string>}
    */
   setSubscriptionDuration = async (sec) => {
-    return await RNAudioRecorderPlayer.seekToPlayer(sec);
+    return await RNAudioRecorderPlayer.setSubscriptionDuration(sec);
   }
 }
 

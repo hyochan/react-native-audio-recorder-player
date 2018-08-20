@@ -114,20 +114,15 @@ class Page extends Component<any, IState> {
     this.state = {
       isLoggingIn: false,
       recordSecs: 0,
-      recordTime: '00:00',
+      recordTime: '00:00:00',
       currentPositionSec: 0,
       currentDurationSec: 0,
-      playTime: '00:00',
-      duration: '00:00',
+      playTime: '00:00:00',
+      duration: '00:00:00',
     };
 
     this.audioRecorderPlayer = new AudioRecorderPlayer();
-  }
-
-  public componentWillUnmount() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
+    this.audioRecorderPlayer.setSubscriptionDuration(0.09); // optional. Default is 0.1
   }
 
   public render() {
@@ -210,12 +205,12 @@ class Page extends Component<any, IState> {
     console.log(`currentPosition: ${currentPosition}`);
 
     if (playWidth && playWidth < touchX) {
-      const addSecs = Math.round((currentPosition + 3000) / 1000);
-      this.audioRecorderPlayer.seekTo(addSecs);
+      const addSecs = Math.round((currentPosition + 3000));
+      this.audioRecorderPlayer.seekToPlayer(addSecs);
       console.log(`addSecs: ${addSecs}`);
     } else {
-      const subSecs = Math.round((currentPosition - 3000) / 1000);
-      this.audioRecorderPlayer.seekTo(subSecs);
+      const subSecs = Math.round((currentPosition - 3000));
+      this.audioRecorderPlayer.seekToPlayer(subSecs);
       console.log(`addSecs: ${subSecs}`);
     }
   }
@@ -223,11 +218,9 @@ class Page extends Component<any, IState> {
   private onStartRecord = async () => {
     const result = await this.audioRecorderPlayer.startRecorder();
     this.audioRecorderPlayer.addRecordBackListener((e) => {
-      console.log(e);
-      e = JSON.parse(e);
       this.setState({
         recordSecs: e.current_position,
-        recordTime: this.audioRecorderPlayer.mmss(Math.floor(e.current_position / 1000)),
+        recordTime: this.audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
       });
       return;
     });
@@ -248,7 +241,6 @@ class Page extends Component<any, IState> {
     const msg = await this.audioRecorderPlayer.startPlayer();
     console.log(msg);
     this.audioRecorderPlayer.addPlayBackListener((e) => {
-      e = JSON.parse(e);
       if (e.current_position === e.duration) {
         console.log('finished');
         this.audioRecorderPlayer.stopPlayer();
@@ -256,8 +248,8 @@ class Page extends Component<any, IState> {
       this.setState({
         currentPositionSec: e.current_position,
         currentDurationSec: e.duration,
-        playTime: this.audioRecorderPlayer.mmss(Math.floor(e.current_position / 1000)),
-        duration: this.audioRecorderPlayer.mmss(Math.floor(e.duration / 1000)),
+        playTime: this.audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
+        duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
       });
       return;
     });

@@ -16,7 +16,7 @@
   NSTimer *recordTimer;
   NSTimer *playTimer;
 }
-double subscriptionDuration = 0.01;
+double subscriptionDuration = 0.1;
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
   NSLog(@"audioPlayerDidFinishPlaying");
@@ -24,7 +24,11 @@ double subscriptionDuration = 0.01;
   NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
 
   // Send last event then finish it.
-  NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
+  // NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
+  NSDictionary *status = @{
+                         @"duration" : [duration stringValue],
+                         @"current_position" : [duration stringValue],
+                         };
   [self sendEventWithName:@"rn-playback" body: status];
   if (playTimer != nil) {
     [playTimer invalidate];
@@ -35,7 +39,10 @@ double subscriptionDuration = 0.01;
 - (void)updateRecorderProgress:(NSTimer*) timer
 {
   NSNumber *currentTime = [NSNumber numberWithDouble:audioRecorder.currentTime * 1000];
-  NSString* status = [NSString stringWithFormat:@"{\"current_position\": \"%@\"}", [currentTime stringValue]];
+  // NSString* status = [NSString stringWithFormat:@"{\"current_position\": \"%@\"}", [currentTime stringValue]];
+  NSDictionary *status = @{
+                         @"current_position" : [currentTime stringValue],
+                         };
   [self sendEventWithName:@"rn-recordback" body:status];
 }
 
@@ -45,7 +52,11 @@ double subscriptionDuration = 0.01;
   NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
   NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.currentTime * 1000];
   
-  NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
+  // NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
+  NSDictionary *status = @{
+                         @"duration" : [duration stringValue],
+                         @"current_position" : [currentTime stringValue],
+                         };
   [self sendEventWithName:@"rn-playback" body:status];
 }
 
@@ -121,7 +132,7 @@ RCT_EXPORT_METHOD(startRecorder:(NSString*)path
   
   [audioRecorder setDelegate:self];
   [audioRecorder record];
-  [self startRecordeTimer];
+  [self startRecorderTimer];
     
   NSString *filePath = self->audioFileURL.absoluteString;
   resolve(filePath);
