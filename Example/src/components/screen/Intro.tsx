@@ -107,7 +107,7 @@ interface IState {
 class Page extends Component<any, IState> {
   private timer: any;
   private subscription: any;
-  private audioRecorderPlayer: any;
+  private audioRecorderPlayer: AudioRecorderPlayer;
 
   constructor(props) {
     super(props);
@@ -221,23 +221,22 @@ class Page extends Component<any, IState> {
   }
 
   private onStartRecord = async () => {
-    const result = await this.audioRecorderPlayer.startRecord();
-    this.audioRecorderPlayer.setRecordInterval(1000, () => {
-      const secs = this.state.recordSecs + 1;
+    const result = await this.audioRecorderPlayer.startRecorder();
+    this.audioRecorderPlayer.addRecordBackListener((e) => {
+      console.log(e);
+      e = JSON.parse(e);
       this.setState({
-        recordSecs: secs,
-        recordTime: this.audioRecorderPlayer.mmss(secs),
-      }, () => {
-        console.log(`recordSecs: ${this.state.recordSecs}`);
-        console.log(`recordTime: ${this.state.recordTime}`);
+        recordSecs: e.current_position,
+        recordTime: this.audioRecorderPlayer.mmss(Math.floor(e.current_position / 1000)),
       });
+      return;
     });
     console.log(result);
   }
 
   private onStopRecord = async () => {
-    const result = await this.audioRecorderPlayer.stopRecord();
-    this.audioRecorderPlayer.removeRecordInterval();
+    const result = await this.audioRecorderPlayer.stopRecorder();
+    this.audioRecorderPlayer.removeRecordBackListener();
     this.setState({
       recordSecs: 0,
     });
@@ -246,9 +245,14 @@ class Page extends Component<any, IState> {
 
   private onStartPlay = async () => {
     console.log('onStartPlay');
-    const msg = await this.audioRecorderPlayer.startPlay();
+    const msg = await this.audioRecorderPlayer.startPlayer();
     console.log(msg);
     this.audioRecorderPlayer.addPlayBackListener((e) => {
+      e = JSON.parse(e);
+      if (e.current_position === e.duration) {
+        console.log('finished');
+        this.audioRecorderPlayer.stopPlayer();
+      }
       this.setState({
         currentPositionSec: e.current_position,
         currentDurationSec: e.duration,
@@ -260,12 +264,12 @@ class Page extends Component<any, IState> {
   }
 
   private onPausePlay = async () => {
-    await this.audioRecorderPlayer.pausePlay();
+    await this.audioRecorderPlayer.pausePlayer();
   }
 
   private onStopPlay = async () => {
     console.log('onStopPlay');
-    this.audioRecorderPlayer.stopPlay();
+    this.audioRecorderPlayer.stopPlayer();
     this.audioRecorderPlayer.removePlayBackListener();
   }
 }

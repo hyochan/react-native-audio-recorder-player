@@ -28,6 +28,19 @@ export default class AudioRecorderPlayer {
    * @param {Event} playback current_position, duration
    * @returns {void}
    */
+  public addRecordBackListener(e: Event) : void;
+
+  /**
+   * Remove playback listener.
+   * @returns {void}
+   */
+  public removeRecordBackListener() : void;
+
+  /**
+   * Add playback listener.
+   * @param {Event} playback current_position, duration
+   * @returns {void}
+   */
   public addPlayBackListener(e: Event) : void;
 
   /**
@@ -37,40 +50,53 @@ export default class AudioRecorderPlayer {
   public removePlayBackListener() : void;
 
   /**
+   * Set callback duration. Default is 0.01 which will be heavy apps doing many things concurrently.
+   */
+  public setSubscriptionDuration() : Promise<string>;
+
+  /**
    * Start recording.
    * @param {uri} audioPathUri no param will save audio in default location
    * @returns {Promise<string>} audioFileURI
    */
-  public startRecord(uri?: string) : Promise<string>;
+  public startRecorder(uri?: string) : Promise<string>;
 
   /**
    * Stop recording.
    * @returns {Promise<string>}
    */
-  public stopRecord() : Promise<string>;
+  public stopRecorder() : Promise<string>;
 
   /**
    * Start playing.
    * @param {uri} audioPathUri no param will save audio in default location
    * @returns {Promise<string>} audioFileURI
    */
-  public startPlay(uri?: string) : Promise<string>;
+  public startPlayer(uri?: string) : Promise<string>;
 
   /**
    * Stop playing.
    * @returns {Promise<string>}
    */
-  public stopPlay() : Promise<string>;
+  public stopPlayer() : Promise<string>;
 
   /**
    * Pause playing.
    * @returns {Promise<string>}
    */
-  public pausePlay() : Promise<string>;
+  public pausePlayer() : Promise<string>;
 
   /**
    * Seek to.
+   * @param {string} time position seek to in second.
    * @returns {Promise<string>}
    */
-  public seekTo(time: number) : Promise<string>;
+  public seekToPlayer(time: number) : Promise<string>;
+
+  /**
+   * setSubscriptionDuration.
+   * @param {number} sec subscription callback duration in seconds.
+   * @returns {Promise<string>}
+   */
+  public setSubscriptionDuration(time: number) : Promise<string>;
 }
