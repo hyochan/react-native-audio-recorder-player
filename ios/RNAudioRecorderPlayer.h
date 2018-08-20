@@ -6,6 +6,8 @@
 @interface RNAudioRecorderPlayer : RCTEventEmitter <RCTBridgeModule, AVAudioPlayerDelegate>
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player
         successfully:(BOOL)flag;
+- (void)updateRecorderProgress:(NSTimer*) timer;
 - (void)updateProgress:(NSTimer*) timer;
-- (void)startTimer;
+- (void)startRecorderTimer;
+- (void)startPlayerTimer;
 @end

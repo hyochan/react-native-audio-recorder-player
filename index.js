@@ -15,7 +15,8 @@ const pad = (num) => {
 class AudioRecorderPlayer {
   static _isRecording;
   static _isPlaying;
-  static _subscription;
+  static _recorderSubscription;
+  static _playerSubscription;
   static _recordInterval;
 
   mmss = (secs) => {
@@ -27,32 +28,50 @@ class AudioRecorderPlayer {
     return pad(minutes) + ':' + pad(secs);
   }
 
+  mmssss = (milisecs) => {
+    const secs = Math.floor(milisecs / 1000);
+    const minutes = Math.floor(secs / 60);
+    const seconds = secs % 60;
+    const miliseconds = Math.floor((milisecs % 1000) / 10);
+    console.log('milisecs: ' + milisecs);
+    console.log('min: ' + minutes + ', secs: ' + seconds + ', ' + miliseconds);
+    return pad(minutes) + ':' + pad(seconds) + ':' + pad(miliseconds);
+  };
+
   /**
-   * setInterval for recording by 10 milliseconds.
-   * @param {number} milliseconds
-   * @returns {callBack}
+   * set listerner from native module for recorder.
+   * @returns {callBack(e: Event)}
    */
-  setRecordInterval = (milliseconds, callBack) => {
-    _recordInterval = setInterval(callBack, milliseconds);
+  addRecordBackListener = (e: Event) => {
+    if (Platform.OS === 'android') {
+      this._recorderSubscription = DeviceEventEmitter.addListener('rn-recordback', e);
+    } else {
+      const myModuleEvt = new NativeEventEmitter(RNAudioRecorderPlayer);
+      this._recorderSubscription = myModuleEvt.addListener('rn-recordback', e);
+    }
   }
 
   /**
-   * clearInterval for recording.
+   * remove listener for recorder.
+   * @returns {void}
    */
-  removeRecordInterval = (callBack) => {
-    clearInterval(_recordInterval);
+  removeRecordBackListener = () => {
+    if (this._recorderSubscription) {
+      this._recorderSubscription.remove();
+      this._recorderSubscription = null;
+    }
   }
 
   /**
-   * set listerner from native module for player.
+   * set listener from native module for player.
    * @returns {callBack(e: Event)}
    */
   addPlayBackListener = (e: Event) => {
     if (Platform.OS === 'android') {
-      this._subscription = DeviceEventEmitter.addListener('rn-playback', e);
+      this._playerSubscription = DeviceEventEmitter.addListener('rn-playback', e);
     } else {
       const myModuleEvt = new NativeEventEmitter(RNAudioRecorderPlayer);
-      this._subscription = myModuleEvt.addListener('rn-playback', e);
+      this._playerSubscription = myModuleEvt.addListener('rn-playback', e);
     }
   }
 
@@ -61,21 +80,10 @@ class AudioRecorderPlayer {
    * @returns {void}
    */
   removePlayBackListener = () => {
-    if (this._subscription) {
-      this._subscription.remove();
+    if (this._playerSubscription) {
+      this._playerSubscription.remove();
+      this._playerSubscription = null;
     }
-  }
-
-  /**
-   * start recording.
-   * @returns {Promise<string>}
-   */
-  startRecord = async() => {
-    if (!this._isRecording) {
-      this._isRecording = true;
-      return await RNAudioRecorderPlayer.startRecord('DEFAULT');
-    }
-    console.log('Already recording');
   }
 
   /**
@@ -83,13 +91,13 @@ class AudioRecorderPlayer {
    * @param {string} uri audio uri.
    * @returns {Promise<string>}
    */
-  startRecord = async(uri) => {
+  startRecorder = async(uri) => {
     if (!uri) {
       uri = 'DEFAULT';
     }
     if (!this._isRecording) {
       this._isRecording = true;
-      return await RNAudioRecorderPlayer.startRecord(uri);
+      return await RNAudioRecorderPlayer.startRecorder(uri);
     }
     console.log('Already recording');
   }
@@ -98,34 +106,22 @@ class AudioRecorderPlayer {
    * stop recording.
    * @returns {Promise<string>}
    */
-  stopRecord = async() => {
+  stopRecorder = async() => {
     if (this._isRecording) {
       this._isRecording = false;
-      return await RNAudioRecorderPlayer.stopRecord();
+      return await RNAudioRecorderPlayer.stopRecorder();
     }
     console.log('Already stopped recording');
-  }
-
-  /**
-   * start playing.
-   * @returns {Promise<string>}
-   */
-  startPlay = async () => {
-    if (!this._isPlaying) {
-      this._isPlaying = true;
-      return await RNAudioRecorderPlayer.startPlay('DEFAULT');
-    }
-    console.log('Already started playing');
   }
 
   /**
    * resume playing.
    * @returns {Promise<string>}
    */
-  resume = async () => {
+  resumePlayer = async () => {
     if (!this._isPlaying) {
       this._isPlaying = true;
-      return await RNAudioRecorderPlayer.resume();
+      return await RNAudioRecorderPlayer.resumePlayer();
     }
     console.log('Already playing');
   }
@@ -135,13 +131,13 @@ class AudioRecorderPlayer {
    * @param {string} uri audio uri.
    * @returns {Promise<string>}
    */
-  startPlay = async (uri) => {
+  startPlayer = async (uri) => {
     if (!uri) {
       uri = 'DEFAULT';
     }
     if (!this._isPlaying) {
       this._isPlaying = true;
-      return await RNAudioRecorderPlayer.startPlay(uri);
+      return await RNAudioRecorderPlayer.startPlayer(uri);
     }
     console.log('Already started playing');
   }
@@ -150,10 +146,10 @@ class AudioRecorderPlayer {
    * stop playing.
    * @returns {Promise<string>}
    */
-  stopPlay = async () => {
+  stopPlayer = async () => {
     if (this._isPlaying) {
       this._isPlaying = false;
-      return await RNAudioRecorderPlayer.stopPlay();
+      return await RNAudioRecorderPlayer.stopPlayer();
     }
     console.log('Already stopped playing');
   }
@@ -162,21 +158,33 @@ class AudioRecorderPlayer {
    * pause playing.
    * @returns {Promise<string>}
    */
-  pausePlay = async () => {
+  pausePlayer = async () => {
     if (this._isPlaying) {
       this._isPlaying = false;
-      return await RNAudioRecorderPlayer.pausePlay();
+      return await RNAudioRecorderPlayer.pausePlayer();
     }
     console.log('Already paused or stopped');
   }
 
   /**
    * seek to.
-   * @param {string} time changed position for play time in seconds.
+   * @param {string} time position seek to in second.
    * @returns {Promise<string>}
    */
-  seekTo = async (time) => {
-    return await RNAudioRecorderPlayer.seekTo(time);
+  seekToPlayer = async (time) => {
+    if (Platform.OS === 'ios') {
+      time = time / 1000;
+    }
+    return await RNAudioRecorderPlayer.seekToPlayer(time);
+  }
+
+  /**
+   * set subscription duration.
+   * @param {number} sec subscription callback duration in seconds.
+   * @returns {Promise<string>}
+   */
+  setSubscriptionDuration = async (sec) => {
+    return await RNAudioRecorderPlayer.setSubscriptionDuration(sec);
   }
 }
 

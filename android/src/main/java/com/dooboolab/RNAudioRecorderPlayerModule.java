@@ -6,8 +6,14 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.os.Build;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.SystemClock;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -15,6 +21,8 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+
+import org.json.JSONException;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -26,12 +34,16 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   final private static String TAG = "RNAudioRecorderPlayer";
   final private static String FILE_LOCATION = "/sdcard/sound.mp4";
 
+  private int subsDurationMillis = 100;
+
   private final ReactApplicationContext reactContext;
   private MediaRecorder mediaRecorder;
   private MediaPlayer mediaPlayer;
 
+  private Runnable recorderRunnable;
   private TimerTask mTask;
   private Timer mTimer;
+  Handler recordHandler = new Handler(Looper.getMainLooper());
 
   public RNAudioRecorderPlayerModule(ReactApplicationContext reactContext) {
     super(reactContext);
@@ -44,7 +56,26 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void startRecord(final String path, Promise promise) {
+  public void startRecorder(final String path, Promise promise) {
+    try {
+      if (
+          Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+              (
+                  getReactApplicationContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
+                  getCurrentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+              )
+          ) {
+        getCurrentActivity().requestPermissions(new String[]{
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        }, 0);
+        promise.reject("No permission granted.", "Try again after adding permission.");
+        return;
+      }
+    } catch (NullPointerException ne) {
+      Log.w(TAG, ne.toString());
+    }
+
     if (mediaRecorder == null) {
       mediaRecorder = new MediaRecorder();
       mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
@@ -60,22 +91,18 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
     try {
       mediaRecorder.prepare();
       mediaRecorder.start();
-      mediaRecorder.setOnInfoListener(new MediaRecorder.OnInfoListener() {
+      final long systemTime = SystemClock.elapsedRealtime();
+      this.recorderRunnable = new Runnable() {
         @Override
-        public void onInfo(MediaRecorder mr, int what, int extra) {
-          switch (what) {
-            case MediaRecorder.MEDIA_RECORDER_INFO_UNKNOWN:
-              Log.d(TAG, "MEDIA_RECORDER_INFO_UNKNOWN: " + extra);
-              break;
-            case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED:
-              Log.d(TAG, "MEDIA_RECORDER_INFO_MAX_DURATION_REACHED: " + extra);
-              break;
-            case MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED:
-              Log.d(TAG, "MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED: " + extra);
-              break;
-          }
+        public void run() {
+          long time = SystemClock.elapsedRealtime() - systemTime;
+          WritableMap obj = Arguments.createMap();
+          obj.putDouble("current_position", time);
+          sendEvent(reactContext, "rn-recordback", obj);
+          recordHandler.postDelayed(this, subsDurationMillis);
         }
-      });
+      };
+      this.recorderRunnable.run();
 
       String resolvedPath = (path.equals("DEFAULT")) ? FILE_LOCATION : path;
       promise.resolve("file://" + resolvedPath);
@@ -86,7 +113,11 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void stopRecord(Promise promise) {
+  public void stopRecorder(Promise promise) {
+    if (recordHandler != null) {
+      recordHandler.removeCallbacks(this.recorderRunnable);
+    }
+
     if (mediaRecorder == null) {
       promise.reject("stopRecord", "recorder is null.");
       return;
@@ -99,7 +130,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void startPlay(final String path, final Promise promise) {
+  public void startPlayer(final String path, final Promise promise) {
     if (mediaPlayer != null) {
       Boolean isPaused = !mediaPlayer.isPlaying() && mediaPlayer.getCurrentPosition() > 1;
 
@@ -141,7 +172,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
           };
 
           mTimer = new Timer();
-          mTimer.schedule(mTask, 0, 1000);
+          mTimer.schedule(mTask, 0, subsDurationMillis);
 
           String resolvedPath = (path.equals("DEFAULT")) ? "file://" + FILE_LOCATION : path;
           promise.resolve(resolvedPath);
@@ -159,7 +190,6 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
           WritableMap obj = Arguments.createMap();
           obj.putInt("duration", mp.getDuration());
           obj.putInt("current_position", mp.getDuration());
-          obj.putInt("justFinished", 1);
           sendEvent(reactContext, "rn-playback", obj);
 
           /**
@@ -182,7 +212,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void resume(Promise promise) {
+  public void resumePlayer(Promise promise) {
     if (mediaPlayer == null) {
       promise.reject("resume","mediaPlayer is null.");
       return;
@@ -205,7 +235,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void pausePlay(Promise promise) {
+  public void pausePlayer(Promise promise) {
     if (mediaPlayer == null) {
       promise.reject("pausePlay","mediaPlayer is null.");
       return;
@@ -221,7 +251,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void seekTo(int time, Promise promise) {
+  public void seekToPlayer(int time, Promise promise) {
     if (mediaPlayer == null) {
       promise.reject("seekTo","mediaPlayer is null.");
       return;
@@ -242,7 +272,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void stopPlay(Promise promise) {
+  public void stopPlayer(Promise promise) {
     if (mTimer != null) {
       mTimer.cancel();
     }
@@ -260,5 +290,11 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       Log.e(TAG, "stopPlay exception: " + e.getMessage());
       promise.reject("stopPlay",e.getMessage());
     }
+  }
+
+  @ReactMethod
+  public void setSubscriptionDuration(double sec, Promise promise) {
+    this.subsDurationMillis = (int) (sec * 1000);
+    promise.resolve("setSubscriptionDuration: " + this.subsDurationMillis);
   }
 }

@@ -85,11 +85,19 @@ const styles: any = StyleSheet.create({
     marginTop: 32 * ratio,
     color: 'white',
     fontSize: 20 * ratio,
+    textAlignVertical: 'center',
+    fontWeight: '200',
+    fontFamily: 'Helvetica Neue',
+    letterSpacing: 3,
   },
   txtCounter: {
     marginTop: 12 * ratio,
     color: 'white',
     fontSize: 20 * ratio,
+    textAlignVertical: 'center',
+    fontWeight: '200',
+    fontFamily: 'Helvetica Neue',
+    letterSpacing: 3,
   },
 });
 
@@ -107,27 +115,22 @@ interface IState {
 class Page extends Component<any, IState> {
   private timer: any;
   private subscription: any;
-  private audioRecorderPlayer: any;
+  private audioRecorderPlayer: AudioRecorderPlayer;
 
   constructor(props) {
     super(props);
     this.state = {
       isLoggingIn: false,
       recordSecs: 0,
-      recordTime: '00:00',
+      recordTime: '00:00:00',
       currentPositionSec: 0,
       currentDurationSec: 0,
-      playTime: '00:00',
-      duration: '00:00',
+      playTime: '00:00:00',
+      duration: '00:00:00',
     };
 
     this.audioRecorderPlayer = new AudioRecorderPlayer();
-  }
-
-  public componentWillUnmount() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-    }
+    this.audioRecorderPlayer.setSubscriptionDuration(0.09); // optional. Default is 0.1
   }
 
   public render() {
@@ -210,34 +213,31 @@ class Page extends Component<any, IState> {
     console.log(`currentPosition: ${currentPosition}`);
 
     if (playWidth && playWidth < touchX) {
-      const addSecs = Math.round((currentPosition + 3000) / 1000);
-      this.audioRecorderPlayer.seekTo(addSecs);
+      const addSecs = Math.round((currentPosition + 3000));
+      this.audioRecorderPlayer.seekToPlayer(addSecs);
       console.log(`addSecs: ${addSecs}`);
     } else {
-      const subSecs = Math.round((currentPosition - 3000) / 1000);
-      this.audioRecorderPlayer.seekTo(subSecs);
-      console.log(`addSecs: ${subSecs}`);
+      const subSecs = Math.round((currentPosition - 3000));
+      this.audioRecorderPlayer.seekToPlayer(subSecs);
+      console.log(`subSecs: ${subSecs}`);
     }
   }
 
   private onStartRecord = async () => {
-    const result = await this.audioRecorderPlayer.startRecord();
-    this.audioRecorderPlayer.setRecordInterval(1000, () => {
-      const secs = this.state.recordSecs + 1;
+    const result = await this.audioRecorderPlayer.startRecorder();
+    this.audioRecorderPlayer.addRecordBackListener((e) => {
       this.setState({
-        recordSecs: secs,
-        recordTime: this.audioRecorderPlayer.mmss(secs),
-      }, () => {
-        console.log(`recordSecs: ${this.state.recordSecs}`);
-        console.log(`recordTime: ${this.state.recordTime}`);
+        recordSecs: e.current_position,
+        recordTime: this.audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
       });
+      return;
     });
     console.log(result);
   }
 
   private onStopRecord = async () => {
-    const result = await this.audioRecorderPlayer.stopRecord();
-    this.audioRecorderPlayer.removeRecordInterval();
+    const result = await this.audioRecorderPlayer.stopRecorder();
+    this.audioRecorderPlayer.removeRecordBackListener();
     this.setState({
       recordSecs: 0,
     });
@@ -246,26 +246,30 @@ class Page extends Component<any, IState> {
 
   private onStartPlay = async () => {
     console.log('onStartPlay');
-    const msg = await this.audioRecorderPlayer.startPlay();
+    const msg = await this.audioRecorderPlayer.startPlayer();
     console.log(msg);
     this.audioRecorderPlayer.addPlayBackListener((e) => {
+      if (e.current_position === e.duration) {
+        console.log('finished');
+        this.audioRecorderPlayer.stopPlayer();
+      }
       this.setState({
         currentPositionSec: e.current_position,
         currentDurationSec: e.duration,
-        playTime: this.audioRecorderPlayer.mmss(Math.floor(e.current_position / 1000)),
-        duration: this.audioRecorderPlayer.mmss(Math.floor(e.duration / 1000)),
+        playTime: this.audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
+        duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
       });
       return;
     });
   }
 
   private onPausePlay = async () => {
-    await this.audioRecorderPlayer.pausePlay();
+    await this.audioRecorderPlayer.pausePlayer();
   }
 
   private onStopPlay = async () => {
     console.log('onStopPlay');
-    this.audioRecorderPlayer.stopPlay();
+    this.audioRecorderPlayer.stopPlayer();
     this.audioRecorderPlayer.removePlayBackListener();
   }
 }

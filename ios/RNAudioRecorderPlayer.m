@@ -13,24 +13,37 @@
   NSURL *audioFileURL;
   AVAudioRecorder *audioRecorder;
   AVAudioPlayer *audioPlayer;
-  NSTimer *timer;
+  NSTimer *recordTimer;
+  NSTimer *playTimer;
 }
+double subscriptionDuration = 0.1;
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
   NSLog(@"audioPlayerDidFinishPlaying");
   NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
+  NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
 
   // Send last event then finish it.
-  [self sendEventWithName:@"rn-playback" body:@{
-                                                @"duration" : [duration stringValue],
-                                                @"current_position" : [duration stringValue],
-                                                @"justFinished" : @"1",
-                                               }
-  ];
-  if (timer != nil) {
-    [timer invalidate];
-    timer = nil;
+  // NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
+  NSDictionary *status = @{
+                         @"duration" : [duration stringValue],
+                         @"current_position" : [duration stringValue],
+                         };
+  [self sendEventWithName:@"rn-playback" body: status];
+  if (playTimer != nil) {
+    [playTimer invalidate];
+    playTimer = nil;
   }
+}
+
+- (void)updateRecorderProgress:(NSTimer*) timer
+{
+  NSNumber *currentTime = [NSNumber numberWithDouble:audioRecorder.currentTime * 1000];
+  // NSString* status = [NSString stringWithFormat:@"{\"current_position\": \"%@\"}", [currentTime stringValue]];
+  NSDictionary *status = @{
+                         @"current_position" : [currentTime stringValue],
+                         };
+  [self sendEventWithName:@"rn-recordback" body:status];
 }
 
 - (void)updateProgress:(NSTimer*) timer
@@ -39,18 +52,29 @@
   NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
   NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.currentTime * 1000];
   
+  // NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
   NSDictionary *status = @{
-                           @"duration" : [duration stringValue],
-                           @"current_position" : [currentTime stringValue],
-                           };
-  
+                         @"duration" : [duration stringValue],
+                         @"current_position" : [currentTime stringValue],
+                         };
   [self sendEventWithName:@"rn-playback" body:status];
 }
 
-- (void)startTimer
+- (void)startRecorderTimer
 {
   dispatch_async(dispatch_get_main_queue(), ^{
-      self->timer = [NSTimer scheduledTimerWithTimeInterval:1.0
+      self->recordTimer = [NSTimer scheduledTimerWithTimeInterval: subscriptionDuration
+                                           target:self
+                                           selector:@selector(updateRecorderProgress:)
+                                           userInfo:nil
+                                           repeats:YES];
+  });
+}
+
+- (void)startPlayerTimer
+{
+  dispatch_async(dispatch_get_main_queue(), ^{
+      self->playTimer = [NSTimer scheduledTimerWithTimeInterval: subscriptionDuration
                                            target:self
                                            selector:@selector(updateProgress:)
                                            userInfo:nil
@@ -67,10 +91,17 @@ RCT_EXPORT_MODULE();
 
 - (NSArray<NSString *> *)supportedEvents
 {
-  return @[@"rn-playback"];
+  return @[@"rn-recordback", @"rn-playback"];
 }
 
-RCT_EXPORT_METHOD(startRecord:(NSString*)path
+RCT_EXPORT_METHOD(setSubscriptionDuration:(double)duration
+                  resolve:(RCTPromiseResolveBlock)resolve
+                  reject:(RCTPromiseRejectBlock)reject) {
+  subscriptionDuration = duration;
+  resolve(@"set subscription duration.");
+}
+
+RCT_EXPORT_METHOD(startRecorder:(NSString*)path
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
   
@@ -101,15 +132,20 @@ RCT_EXPORT_METHOD(startRecord:(NSString*)path
   
   [audioRecorder setDelegate:self];
   [audioRecorder record];
+  [self startRecorderTimer];
     
   NSString *filePath = self->audioFileURL.absoluteString;
   resolve(filePath);
 }
 
-RCT_EXPORT_METHOD(stopRecord:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(stopRecorder:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (audioRecorder) {
         [audioRecorder stop];
+        if (recordTimer != nil) {
+            [recordTimer invalidate];
+            recordTimer = nil;
+        }
 
         AVAudioSession *audioSession = [AVAudioSession sharedInstance];
         [audioSession setActive:NO error:nil];
@@ -121,10 +157,10 @@ RCT_EXPORT_METHOD(stopRecord:(RCTPromiseResolveBlock)resolve
     }
 }
 
-RCT_EXPORT_METHOD(startPlay:(NSString*)path
+RCT_EXPORT_METHOD(startPlayer:(NSString*)path
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    RCTLogInfo(@"startPlay %@", path);
+    RCTLogInfo(@"startPlayer %@", path);
 
     if ([[path substringToIndex:4] isEqualToString:@"http"]) {
         audioFileURL = [NSURL URLWithString:path];
@@ -136,7 +172,6 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
                 audioPlayer = [[AVAudioPlayer alloc] initWithData:data error:nil];
                 audioPlayer.delegate = self;
             }
-            
 
             // Able to play in silent mode
             [[AVAudioSession sharedInstance]
@@ -147,7 +182,7 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
             [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
 
             [audioPlayer play];
-            [self startTimer];
+            [self startPlayerTimer];
             NSString *filePath = audioFileURL.absoluteString;
             resolve(filePath);
         }];
@@ -172,14 +207,14 @@ RCT_EXPORT_METHOD(startPlay:(NSString*)path
             error: nil];
 
         [audioPlayer play];
-        [self startTimer];
+        [self startPlayerTimer];
 
         NSString *filePath = audioFileURL.absoluteString;
         resolve(filePath);
     }
 }
 
-RCT_EXPORT_METHOD(resume: (RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(resumePlayer: (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (!audioFileURL) {
         reject(@"audioRecorder resume", @"no audioFileURL", nil);
@@ -195,12 +230,12 @@ RCT_EXPORT_METHOD(resume: (RCTPromiseResolveBlock)resolve
         setCategory: AVAudioSessionCategoryPlayback
         error: nil];
     [audioPlayer play];
-    [self startTimer];
+    [self startPlayerTimer];
     NSString *filePath = audioFileURL.absoluteString;
     resolve(filePath);
 }
 
-RCT_EXPORT_METHOD(seekTo: (nonnull NSNumber*) time
+RCT_EXPORT_METHOD(seekToPlayer: (nonnull NSNumber*) time
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (audioPlayer) {
@@ -210,14 +245,14 @@ RCT_EXPORT_METHOD(seekTo: (nonnull NSNumber*) time
     }
 }
 
-RCT_EXPORT_METHOD(pausePlay: (RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(pausePlayer: (RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     RCTLogInfo(@"pause");
     if (audioPlayer && [audioPlayer isPlaying]) {
         [audioPlayer pause];
-        if (timer != nil) {
-            [timer invalidate];
-            timer = nil;
+        if (playTimer != nil) {
+            [playTimer invalidate];
+            playTimer = nil;
         } 
         resolve(@"pause play");
     } else {
@@ -226,12 +261,12 @@ RCT_EXPORT_METHOD(pausePlay: (RCTPromiseResolveBlock)resolve
 }
 
 
-RCT_EXPORT_METHOD(stopPlay:(RCTPromiseResolveBlock)resolve
+RCT_EXPORT_METHOD(stopPlayer:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
     if (audioPlayer) {
-        if (timer != nil) {
-            [timer invalidate];
-            timer = nil;
+        if (playTimer != nil) {
+            [playTimer invalidate];
+            playTimer = nil;
         }
         [audioPlayer stop];
         audioPlayer = nil;
