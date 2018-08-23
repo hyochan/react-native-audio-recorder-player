@@ -191,3 +191,7 @@ Also, above example helps you to setup manual path to record audio. Not giving p
 1. Goto `Example` folder by running `cd Example`.
 2. Run `npm install && npm start`.
 3. Run `npm run ios` to run on ios simulator and `npm run android` to run on your android device.
+
+
+## Special Thanks
+[mansya](https://github.com/mansya) - logo designer.
