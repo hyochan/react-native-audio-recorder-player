@@ -1,5 +1,7 @@
-
 # react-native-audio-recorder-player
+
+<img src="Logotype Primary.png" width="70%" height="70%" />
+
 <p align="left">
   <a href="https://npmjs.org/package/react-native-audio-recorder-player"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-audio-recorder-player.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-audio-recorder-player"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-audio-recorder-player.svg?style=flat-square"></a>
