@@ -2,7 +2,6 @@ export default class AudioRecorderPlayer {
   private _isRecording: boolean;
   private _isPlaying: boolean;
   private _subscription: any;
-  private _recordInterval: any;
 
   /**
    * Convert seconds into minute:second string format.
@@ -17,18 +16,6 @@ export default class AudioRecorderPlayer {
    * @returns {string} 00:00:00
    */
   public mmssss(milisecs: number) : string;
-
-  /**
-   * Set record interval.
-   * @returns {string}
-   */
-  public setRecordInterval(milisecs: number) : Promise<void>;
-
-  /**
-   * Remove record interval.
-   * @returns {void}
-   */
-  public removeRecordInterval(callBack) : void;
 
   /**
    * Add playback listener.

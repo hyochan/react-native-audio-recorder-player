@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.0.5]**
+  + Removed recordInterval from type.
 - **[2.0.4]**
   + resumePlayer type was missing.
 - **[2.1.0]**
