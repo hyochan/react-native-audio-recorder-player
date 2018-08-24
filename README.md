@@ -1,5 +1,7 @@
-
 # react-native-audio-recorder-player
+
+<img src="Logotype Primary.png" width="70%" height="70%" />
+
 <p align="left">
   <a href="https://npmjs.org/package/react-native-audio-recorder-player"><img alt="npm version" src="http://img.shields.io/npm/v/react-native-audio-recorder-player.svg?style=flat-square"></a>
   <a href="https://npmjs.org/package/react-native-audio-recorder-player"><img alt="npm version" src="http://img.shields.io/npm/dm/react-native-audio-recorder-player.svg?style=flat-square"></a>
@@ -189,3 +191,7 @@ Also, above example helps you to setup manual path to record audio. Not giving p
 1. Goto `Example` folder by running `cd Example`.
 2. Run `npm install && npm start`.
 3. Run `npm run ios` to run on ios simulator and `npm run android` to run on your android device.
+
+
+## Special Thanks
+[mansya](https://github.com/mansya) - logo designer.

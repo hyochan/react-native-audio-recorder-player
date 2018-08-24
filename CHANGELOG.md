@@ -1,6 +1,8 @@
 ## Changelogs
 - **[2.0.4]**
   + resumePlayer type was missing.
+- **[2.1.0]**
+  + Added beautiful logo made by [mansya](mansya)
 - **[2.0.2]**
   + Safer build setting for android.
   + Updated readme.
