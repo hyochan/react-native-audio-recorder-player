@@ -94,6 +94,12 @@ export default class AudioRecorderPlayer {
   public pausePlayer() : Promise<string>;
 
   /**
+   * Resume playing.
+   * @returns {Promise<string>}
+   */
+  public resumePlayer() : Promise<string>;
+
+  /**
    * Seek to.
    * @param {string} time position seek to in second.
    * @returns {Promise<string>}

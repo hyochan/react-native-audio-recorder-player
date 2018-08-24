@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.0.4]**
+  + resumePlayer type was missing.
 - **[2.0.2]**
   + Safer build setting for android.
   + Updated readme.
