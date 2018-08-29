@@ -1,4 +1,7 @@
 ## Changelogs
+- **[2.0.6]**
+  + Invalidate timer when audio duration is 0.
+  + volume control.
 - **[2.0.5]**
   + Removed recordInterval from type.
 - **[2.0.4]**

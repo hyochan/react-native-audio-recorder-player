@@ -26,9 +26,10 @@ This is a react-native link module for audio recorder and player. This is not a 
 | `pausePlay` | `pausePlayer` |
 | `resume` | `resumePlayer` |
 | `seekTo` | `seekToPlayer` |
-| `` | `setSubscriptionDuration` |
+| | `setSubscriptionDuration` |
 | `setRecordInterval` | `addRecordBackListener` |
 | `removeRecordInterval` | `` |
+| | `setVolume` |
 
 ## Getting started
 
@@ -104,16 +105,17 @@ All methods are implemented with promises.
 
 | Func  | Param  | Return | Description |
 | :------------ |:---------------:| :---------------:| :-----|
-| mmss | `number` seconds | `string` | Convert seconds to `minute:second` string.|
-| setRecordInterval |  | `Promise<void>` | Set record interval in second.|
-| removeRecordInterval | `Function` callBack | `void` | Remove record interval.|
-| addPlayBackListener | `Function` callBack | `void` | Get callback from native module. Will receive `duration`, `current_position`|
-| startRecord | `<string>` uri? | `Promise<void>` | Start recording. Not passing the param will save audio in default location.|
-| stopRecord | | `Promise<string>` | Stop recording.|
-| startPlay | `<string>` uri? | `Promise<string>` | Start playing. Not passing the param will play audio in default location.|
-| stopPlay | | `Promise<string>` | Stop playing.|
-| pausePlay | | `Promise<string>` | Pause playing.|
-| seekTo | `number` milliseconds | `Promise<string>` | Seek audio.|
+| mmss | `number` seconds | `string` | Convert seconds to `minute:second` string. |
+| setRecordInterval |  | `Promise<void>` | Set record interval in second. |
+| removeRecordInterval | `Function` callBack | `void` | Remove record interval. |
+| addPlayBackListener | `Function` callBack | `void` | Get callback from native module. Will receive `duration`, `current_position` |
+| startRecord | `<string>` uri? | `Promise<void>` | Start recording. Not passing the param will save audio in default location. |
+| stopRecord | | `Promise<string>` | Stop recording. |
+| startPlay | `<string>` uri? | `Promise<string>` | Start playing. Not passing the param will play audio in default location. |
+| stopPlay | | `Promise<string>` | Stop playing. |
+| pausePlay | | `Promise<string>` | Pause playing. |
+| seekTo | `number` milliseconds | `Promise<string>` | Seek audio. |
+| setVolume | `doulbe` value | `Promise<string>` | Set volume of audio player (default 1.0, range: 0.0 ~ 1.0). |
 
 ## Default Path
 * Default path for android uri is `sdcard/sound.mp4`.

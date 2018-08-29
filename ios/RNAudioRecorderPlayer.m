@@ -48,15 +48,23 @@ double subscriptionDuration = 0.1;
 
 - (void)updateProgress:(NSTimer*) timer
 {
-  NSLog(@"updateProgress");
   NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
   NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.currentTime * 1000];
+
+  NSLog(@"updateProgress: %@", duration);
+
+  if ([duration intValue] == 0) {
+    [playTimer invalidate];
+    [audioPlayer stop];
+    return;
+  }
   
   // NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
   NSDictionary *status = @{
                          @"duration" : [duration stringValue],
                          @"current_position" : [currentTime stringValue],
                          };
+
   [self sendEventWithName:@"rn-playback" body:status];
 }
 
@@ -157,11 +165,17 @@ RCT_EXPORT_METHOD(stopRecorder:(RCTPromiseResolveBlock)resolve
     }
 }
 
+RCT_EXPORT_METHOD(setVolume:(double) volume
+                  resolve:(RCTPromiseResolveBlock) resolve
+                  reject:(RCTPromiseRejectBlock) reject) {
+    [audioPlayer setVolume: volume];
+    resolve(@"setVolume");
+}
+
 RCT_EXPORT_METHOD(startPlayer:(NSString*)path
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
-    RCTLogInfo(@"startPlayer %@", path);
-
+    NSError *error;
     if ([[path substringToIndex:4] isEqualToString:@"http"]) {
         audioFileURL = [NSURL URLWithString:path];
 
@@ -169,14 +183,14 @@ RCT_EXPORT_METHOD(startPlayer:(NSString*)path
         dataTaskWithURL:audioFileURL completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
             // NSData *data = [NSData dataWithContentsOfURL:audioFileURL];
             if (!audioPlayer) {
-                audioPlayer = [[AVAudioPlayer alloc] initWithData:data error:nil];
+                audioPlayer = [[AVAudioPlayer alloc] initWithData:data error:&error];
                 audioPlayer.delegate = self;
             }
 
             // Able to play in silent mode
             [[AVAudioSession sharedInstance]
                 setCategory: AVAudioSessionCategoryPlayback
-                error: nil];
+                error: &error];
             // Able to play in background
             [[AVAudioSession sharedInstance] setActive: YES error: nil];
             [[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
@@ -206,6 +220,7 @@ RCT_EXPORT_METHOD(startPlayer:(NSString*)path
             setCategory: AVAudioSessionCategoryPlayback
             error: nil];
 
+        NSLog(@"Error %@",error);
         [audioPlayer play];
         [self startPlayerTimer];
 
