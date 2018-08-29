@@ -1,6 +1,6 @@
 ## Changelogs
 - **[2.0.6]**
-  + Invalidate timer when audio duration is 0.
+  + Invalidate timer when audio duration is 0 in ios.
   + volume control.
 - **[2.0.5]**
   + Removed recordInterval from type.

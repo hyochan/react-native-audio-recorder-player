@@ -194,6 +194,10 @@ Also, above example helps you to setup manual path to record audio. Not giving p
 2. Run `npm install && npm start`.
 3. Run `npm run ios` to run on ios simulator and `npm run android` to run on your android device.
 
+### TODO
+- [ ] Better android permission handling
+- [x] Volume Control
+- [x] Sync timing for recorder callback handler
 
 ## Special Thanks
 [mansya](https://github.com/mansya) - logo designer.

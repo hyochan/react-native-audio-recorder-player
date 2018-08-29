@@ -7,6 +7,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.Callback;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
@@ -14,6 +15,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.PermissionChecker;
 import android.util.Log;
 
 import com.facebook.react.bridge.Arguments;
@@ -21,6 +25,7 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.modules.core.PermissionListener;
 
 import org.json.JSONException;
 
@@ -30,7 +35,7 @@ import java.util.TimerTask;
 
 import javax.annotation.Nullable;
 
-public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
+public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule implements ActivityCompat.OnRequestPermissionsResultCallback{
   final private static String TAG = "RNAudioRecorderPlayer";
   final private static String FILE_LOCATION = "/sdcard/sound.mp4";
 
@@ -61,11 +66,11 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       if (
           Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
               (
-                  getReactApplicationContext().checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
-                  getCurrentActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                  ActivityCompat.checkSelfPermission(getCurrentActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
+                  ActivityCompat.checkSelfPermission(getCurrentActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
               )
           ) {
-        getCurrentActivity().requestPermissions(new String[]{
+        ActivityCompat.requestPermissions(getCurrentActivity(), new String[]{
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
         }, 0);
@@ -74,6 +79,8 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
       }
     } catch (NullPointerException ne) {
       Log.w(TAG, ne.toString());
+      promise.reject("No permission granted.", "Try again after adding permission.");
+      return;
     }
 
     if (mediaRecorder == null) {
@@ -127,6 +134,18 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
     mediaRecorder = null;
 
     promise.resolve("recorder stopped.");
+  }
+
+  @ReactMethod
+  public void setVolume(double volume, Promise promise) {
+    if (mediaPlayer == null) {
+      promise.reject("setVolume", "player is null.");
+      return;
+    }
+    float mVolume = (float) volume;
+    mediaPlayer.setVolume(mVolume, mVolume);
+
+    promise.resolve("set volume");
   }
 
   @ReactMethod
@@ -296,5 +315,10 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule {
   public void setSubscriptionDuration(double sec, Promise promise) {
     this.subsDurationMillis = (int) (sec * 1000);
     promise.resolve("setSubscriptionDuration: " + this.subsDurationMillis);
+  }
+
+  @Override
+  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    Log.d(TAG, "onRequestPermissionResult: " + requestCode + ", permissions: " + permissions);
   }
 }

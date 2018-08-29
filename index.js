@@ -168,14 +168,26 @@ class AudioRecorderPlayer {
 
   /**
    * seek to.
-   * @param {string} time position seek to in second.
+   * @param {number} time position seek to in second.
    * @returns {Promise<string>}
    */
-  seekToPlayer = async (time) => {
+  seekToPlayer = async (time: number) => {
     if (Platform.OS === 'ios') {
       time = time / 1000;
     }
     return await RNAudioRecorderPlayer.seekToPlayer(time);
+  }
+
+  /**
+   * set volume.
+   * @param {number} setVolume set volume.
+   * @returns {Promise<string>}
+   */
+  setVolume = async (volume: number) => {
+    if (volume < 0 || volume > 1) {
+      return console.warn('Value of volume should be between 0.0 to 1.0');
+    }
+    return await RNAudioRecorderPlayer.setVolume(volume);
   }
 
   /**

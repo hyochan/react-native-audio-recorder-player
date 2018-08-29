@@ -247,6 +247,7 @@ class Page extends Component<any, IState> {
   private onStartPlay = async () => {
     console.log('onStartPlay');
     const msg = await this.audioRecorderPlayer.startPlayer();
+    this.audioRecorderPlayer.setVolume(1.0);
     console.log(msg);
     this.audioRecorderPlayer.addPlayBackListener((e) => {
       if (e.current_position === e.duration) {

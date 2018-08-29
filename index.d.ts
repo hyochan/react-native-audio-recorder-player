@@ -94,6 +94,13 @@ export default class AudioRecorderPlayer {
   public seekToPlayer(time: number) : Promise<string>;
 
   /**
+   * Set volume.
+   * @param {string} volume volume range 0.0 to 1.0.
+   * @returns {Promise<string>}
+   */
+  public setVolume(volume: number) : Promise<string>;
+
+  /**
    * setSubscriptionDuration.
    * @param {number} sec subscription callback duration in seconds.
    * @returns {Promise<string>}
