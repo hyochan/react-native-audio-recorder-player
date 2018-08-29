@@ -35,7 +35,7 @@ import java.util.TimerTask;
 
 import javax.annotation.Nullable;
 
-public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule implements ActivityCompat.OnRequestPermissionsResultCallback{
+public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule implements PermissionListener{
   final private static String TAG = "RNAudioRecorderPlayer";
   final private static String FILE_LOCATION = "/sdcard/sound.mp4";
 
@@ -318,7 +318,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule impl
   }
 
   @Override
-  public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-    Log.d(TAG, "onRequestPermissionResult: " + requestCode + ", permissions: " + permissions);
+  public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    return true;
   }
 }

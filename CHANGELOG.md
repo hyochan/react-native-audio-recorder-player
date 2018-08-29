@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.0.7]**
+  + Try prevent quiting after permission request in android.
 - **[2.0.6]**
   + Invalidate timer when audio duration is 0 in ios.
   + volume control.
