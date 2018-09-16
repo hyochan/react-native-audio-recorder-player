@@ -183,7 +183,7 @@ If you want to get actual uri from the record or play file to actually grab it a
 ```javascript
 const path = Platform.select({
   ios: 'hello.m4a',
-  android: 'hello.mp4',
+  android: 'sdcard/hello.mp4', // should give extra dir name in android. Won't grant permission to the first level of dir.
 });
 const uri = await audioRecorderPlayer.startRecord(path);
 ```
