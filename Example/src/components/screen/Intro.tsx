@@ -11,6 +11,7 @@ import {
   View,
   FlatList,
   InteractionManager,
+  PermissionsAndroid,
 } from 'react-native';
 
 import { ratio, colors, screenWidth } from '@utils/Styles';
@@ -224,7 +225,51 @@ class Page extends Component<any, IState> {
   }
 
   private onStartRecord = async () => {
-    const result = await this.audioRecorderPlayer.startRecorder();
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Permissions for write access',
+            message: 'Give permission to your storage to write a file',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can use the camera');
+        } else {
+          console.log('permission denied');
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+        return;
+      }
+    }
+    if (Platform.OS === 'android') {
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+          {
+            title: 'Permissions for write access',
+            message: 'Give permission to your storage to write a file',
+          },
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('You can use the camera');
+        } else {
+          console.log('permission denied');
+          return;
+        }
+      } catch (err) {
+        console.warn(err);
+        return;
+      }
+    }
+    const path = Platform.select({
+      ios: 'hello.m4a',
+      android: 'sdcard/hello.mp4',
+    });
+    const uri = await this.audioRecorderPlayer.startRecorder(path);
     this.audioRecorderPlayer.addRecordBackListener((e) => {
       this.setState({
         recordSecs: e.current_position,
@@ -232,7 +277,7 @@ class Page extends Component<any, IState> {
       });
       return;
     });
-    console.log(result);
+    console.log(`uri: ${uri}`);
   }
 
   private onStopRecord = async () => {
@@ -246,7 +291,11 @@ class Page extends Component<any, IState> {
 
   private onStartPlay = async () => {
     console.log('onStartPlay');
-    const msg = await this.audioRecorderPlayer.startPlayer();
+    const path = Platform.select({
+      ios: 'hello.m4a',
+      android: 'sdcard/hello.mp4',
+    });
+    const msg = await this.audioRecorderPlayer.startPlayer(path);
     this.audioRecorderPlayer.setVolume(1.0);
     console.log(msg);
     this.audioRecorderPlayer.addPlayBackListener((e) => {

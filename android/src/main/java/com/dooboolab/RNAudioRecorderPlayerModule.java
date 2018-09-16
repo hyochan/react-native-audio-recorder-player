@@ -66,8 +66,8 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule impl
       if (
           Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
               (
-                  ActivityCompat.checkSelfPermission(getCurrentActivity(), Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
-                  ActivityCompat.checkSelfPermission(getCurrentActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+                  ActivityCompat.checkSelfPermission(reactContext, Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED &&
+                  ActivityCompat.checkSelfPermission(reactContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
               )
           ) {
         ActivityCompat.requestPermissions(getCurrentActivity(), new String[]{
@@ -319,6 +319,13 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule impl
 
   @Override
   public boolean onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-    return true;
+    final int REQUEST_RECORD_AUDIO_PERMISSION = 200;
+    switch (requestCode) {
+      case REQUEST_RECORD_AUDIO_PERMISSION:
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+          return true;
+        break;
+    }
+    return false;
   }
 }
