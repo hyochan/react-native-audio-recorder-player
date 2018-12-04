@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.0.9]**
+  + Avoid iml file in npm that may result in build failure.
 - **[2.0.7]**
   + Try prevent quiting after permission request in android.
 - **[2.0.6]**
