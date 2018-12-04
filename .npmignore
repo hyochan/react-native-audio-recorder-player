@@ -2,3 +2,5 @@ Example/
 .idea/
 gen/
 node_modules/
+android/react-native-audio-recorder-player.iml
+android/android.iml
