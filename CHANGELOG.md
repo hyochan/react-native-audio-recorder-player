@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.1.1]**
+  + Support gradle 4.0+ and drop below.
 - **[2.0.9]**
   + Avoid iml file in npm that may result in build failure.
 - **[2.0.7]**
