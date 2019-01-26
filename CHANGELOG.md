@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.1.2]**
+  + Update build gradle.
 - **[2.1.1]**
   + Support gradle 4.0+ and drop below.
 - **[2.0.9]**
