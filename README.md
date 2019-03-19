@@ -2,17 +2,10 @@
 
 <img src="Logotype Primary.png" width="70%" height="70%" />
 
-<p align="left">
-  <a href="https://npmjs.org/package/react-native-audio-recorder-player">
-    <img alt="npm version" src="http://img.shields.io/npm/v/react-native-audio-recorder-player.svg?style=flat-square">
-  </a>
-  <a href="https://npmjs.org/package/react-native-audio-recorder-player">
-    <img src="http://img.shields.io/npm/dm/react-native-audio-recorder-player.svg?style=flat-square">
-  </a>
-    <a href="https://npmjs.org/package/react-native-audio-recorder-player">
-    <img src="http://img.shields.io/npm/l/react-native-audio-recorder-player.svg?style=flat-square">
-  </a>
-</p>
+[![Npm Version](http://img.shields.io/npm/v/react-native-audio-recorder-player.svg?style=flat-square)](https://npmjs.org/package/react-native-audio-recorder-player)
+[![Downloads](http://img.shields.io/npm/dm/react-native-audio-recorder-player.svg?style=flat-square)](https://npmjs.org/package/react-native-audio-recorder-player)
+[![Build Status](https://travis-ci.com/dooboolab/react-native-audio-recorder-player.svg?branch=master)](https://travis-ci.com/dooboolab/react-native-audio-recorder-player)
+![License](http://img.shields.io/npm/l/react-native-audio-recorder-player.svg?style=flat-square)
 
 This is a react-native link module for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities for both `android` and `ios` platforms. This only supports default file extension for each platform. This module can also handle file from url.
 
