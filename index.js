@@ -97,7 +97,7 @@ class AudioRecorderPlayer {
     }
     if (!this._isRecording) {
       this._isRecording = true;
-      return await RNAudioRecorderPlayer.startRecorder(uri);
+      return RNAudioRecorderPlayer.startRecorder(uri);
     }
     console.log('Already recording');
   }
@@ -109,7 +109,7 @@ class AudioRecorderPlayer {
   stopRecorder = async() => {
     if (this._isRecording) {
       this._isRecording = false;
-      return await RNAudioRecorderPlayer.stopRecorder();
+      return RNAudioRecorderPlayer.stopRecorder();
     }
     console.log('Already stopped recording');
   }
@@ -118,10 +118,10 @@ class AudioRecorderPlayer {
    * resume playing.
    * @returns {Promise<string>}
    */
-  resumePlayer = async () => {
+  resumePlayer = async() => {
     if (!this._isPlaying) {
       this._isPlaying = true;
-      return await RNAudioRecorderPlayer.resumePlayer();
+      return RNAudioRecorderPlayer.resumePlayer();
     }
     console.log('Already playing');
   }
@@ -131,13 +131,13 @@ class AudioRecorderPlayer {
    * @param {string} uri audio uri.
    * @returns {Promise<string>}
    */
-  startPlayer = async (uri) => {
+  startPlayer = async(uri) => {
     if (!uri) {
       uri = 'DEFAULT';
     }
     if (!this._isPlaying) {
       this._isPlaying = true;
-      return await RNAudioRecorderPlayer.startPlayer(uri);
+      return RNAudioRecorderPlayer.startPlayer(uri);
     }
     console.log('Already started playing');
   }
@@ -146,10 +146,10 @@ class AudioRecorderPlayer {
    * stop playing.
    * @returns {Promise<string>}
    */
-  stopPlayer = async () => {
+  stopPlayer = async() => {
     if (this._isPlaying) {
       this._isPlaying = false;
-      return await RNAudioRecorderPlayer.stopPlayer();
+      return RNAudioRecorderPlayer.stopPlayer();
     }
     console.log('Already stopped playing');
   }
@@ -158,10 +158,10 @@ class AudioRecorderPlayer {
    * pause playing.
    * @returns {Promise<string>}
    */
-  pausePlayer = async () => {
+  pausePlayer = async() => {
     if (this._isPlaying) {
       this._isPlaying = false;
-      return await RNAudioRecorderPlayer.pausePlayer();
+      return RNAudioRecorderPlayer.pausePlayer();
     }
     console.log('Already paused or stopped');
   }
@@ -171,11 +171,11 @@ class AudioRecorderPlayer {
    * @param {number} time position seek to in second.
    * @returns {Promise<string>}
    */
-  seekToPlayer = async (time: number) => {
+  seekToPlayer = async(time: number) => {
     if (Platform.OS === 'ios') {
       time = time / 1000;
     }
-    return await RNAudioRecorderPlayer.seekToPlayer(time);
+    return RNAudioRecorderPlayer.seekToPlayer(time);
   }
 
   /**
@@ -183,11 +183,11 @@ class AudioRecorderPlayer {
    * @param {number} setVolume set volume.
    * @returns {Promise<string>}
    */
-  setVolume = async (volume: number) => {
+  setVolume = async(volume: number) => {
     if (volume < 0 || volume > 1) {
       return console.warn('Value of volume should be between 0.0 to 1.0');
     }
-    return await RNAudioRecorderPlayer.setVolume(volume);
+    return RNAudioRecorderPlayer.setVolume(volume);
   }
 
   /**
@@ -195,10 +195,9 @@ class AudioRecorderPlayer {
    * @param {number} sec subscription callback duration in seconds.
    * @returns {Promise<string>}
    */
-  setSubscriptionDuration = async (sec) => {
-    return await RNAudioRecorderPlayer.setSubscriptionDuration(sec);
+  setSubscriptionDuration = async(sec) => {
+    return RNAudioRecorderPlayer.setSubscriptionDuration(sec);
   }
 }
 
 export default AudioRecorderPlayer;
-
