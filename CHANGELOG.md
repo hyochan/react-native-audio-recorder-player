@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.1.4]**
+  + remove extra ext from `android` gradle versions references as rootProjet [#47](remove extra ext from android gradle versions references as rootProje).
 - **[2.1.2]**
   + Update build gradle.
 - **[2.1.1]**
