@@ -12,6 +12,12 @@ This is a react-native link module for audio recorder and player. This is not a 
 ## Free read
   - Happy [Blog](https://medium.com/@dooboolab/react-native-audio-recorder-and-player-4aa5f26a666).
 
+## Breaking Changes
+* Migrated to Android X in `2.2.0`. Please check the [Migration Guide](#migration-guide).
+
+ ## Migration Guide
+To migrate to `2.2.0` you must migrate your Android app to Android X by following the [Migrating to AndroidX Guide](https://developer.android.com/jetpack/androidx/migrate).
+
 ## Preview
 <img src="https://firebasestorage.googleapis.com/v0/b/flutterdart-5d354.appspot.com/o/react-native-audio-recorder-player.gif?alt=media&token=2bff9eeb-bab6-4265-918b-aa0c83ae0faf"/>
 
