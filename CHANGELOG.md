@@ -1,34 +1,36 @@
 ## Changelogs
+
 - **[2.2.+]**
-  + Migrated to androidx [#82](https://github.com/dooboolab/react-native-audio-recorder-player/pull/82)
-  + Makes path param in startRecord to behave as a path on iOS [#94](https://github.com/dooboolab/react-native-audio-recorder-player/pull/94)
-  + Update podspec for RN 0.60 [#93](https://github.com/dooboolab/react-native-audio-recorder-player/pull/93)
+  - Migrated to androidx [#82](https://github.com/dooboolab/react-native-audio-recorder-player/pull/82)
+  - Makes path param in startRecord to behave as a path on iOS [#94](https://github.com/dooboolab/react-native-audio-recorder-player/pull/94)
+  - Update podspec for RN 0.60 [#93](https://github.com/dooboolab/react-native-audio-recorder-player/pull/93)
+  - fixed RN60 CocoaPods installation [#106](https://github.com/dooboolab/react-native-audio-recorder-player/pull/106)
 - **[2.1.4]**
-  + remove extra ext from `android` gradle versions references as rootProjet [#47](remove extra ext from android gradle versions references as rootProje).
+  - remove extra ext from `android` gradle versions references as rootProjet [#47](remove extra ext from android gradle versions references as rootProje).
 - **[2.1.2]**
-  + Update build gradle.
+  - Update build gradle.
 - **[2.1.1]**
-  + Support gradle 4.0+ and drop below.
+  - Support gradle 4.0+ and drop below.
 - **[2.0.9]**
-  + Avoid iml file in npm that may result in build failure.
+  - Avoid iml file in npm that may result in build failure.
 - **[2.0.7]**
-  + Try prevent quiting after permission request in android.
+  - Try prevent quiting after permission request in android.
 - **[2.0.6]**
-  + Invalidate timer when audio duration is 0 in ios.
-  + volume control.
+  - Invalidate timer when audio duration is 0 in ios.
+  - volume control.
 - **[2.0.5]**
-  + Removed recordInterval from type.
+  - Removed recordInterval from type.
 - **[2.0.4]**
-  + resumePlayer type was missing.
+  - resumePlayer type was missing.
 - **[2.1.0]**
-  + Added beautiful logo made by [mansya](mansya)
+  - Added beautiful logo made by [mansya](mansya)
 - **[2.0.2]**
-  + Safer build setting for android.
-  + Updated readme.
+  - Safer build setting for android.
+  - Updated readme.
 - **[2.0.0]**
-  + Propler callback handler for recorder.
-  + Improved codes and types.
-  + Methods renaming.
-  + Upgraded example projects.
+  - Propler callback handler for recorder.
+  - Improved codes and types.
+  - Methods renaming.
+  - Upgraded example projects.
 - **[1.2.2]**
-  + Set android build version to that of `rootProject`'s to prevent from build failing cause of mismatched version.
+  - Set android build version to that of `rootProject`'s to prevent from build failing cause of mismatched version.
