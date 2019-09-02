@@ -5,6 +5,7 @@
   - Makes path param in startRecord to behave as a path on iOS [#94](https://github.com/dooboolab/react-native-audio-recorder-player/pull/94)
   - Update podspec for RN 0.60 [#93](https://github.com/dooboolab/react-native-audio-recorder-player/pull/93)
   - fixed RN60 CocoaPods installation [#106](https://github.com/dooboolab/react-native-audio-recorder-player/pull/106)
+  - Update RNAudioRecorderPlayerModule.java [#107](https://github.com/dooboolab/react-native-audio-recorder-player/pull/107)
 - **[2.1.4]**
   - remove extra ext from `android` gradle versions references as rootProjet [#47](remove extra ext from android gradle versions references as rootProje).
 - **[2.1.2]**
