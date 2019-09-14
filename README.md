@@ -15,11 +15,7 @@ This is a react-native link module for audio recorder and player. This is not a 
 
 ## Breaking Changes
 
-- Migrated to Android X in `2.2.0`. Please check the [Migration Guide](#migration-guide).
-
-## Migration Guide
-
-To migrate to `2.2.0` you must migrate your Android app to Android X by following the [Migrating to AndroidX Guide](https://developer.android.com/jetpack/androidx/migrate).
+- There has been vast improvements in [#114](https://github.com/dooboolab/react-native-audio-recorder-player/pull/114) which is released in `2.3.0`. We now support all `RN` versions without any version differenciating. See below installation guide for your understanding.
 
 ## Preview
 
@@ -177,7 +173,7 @@ All methods are implemented with promises.
 | seekToPlayer          |  `number` seconds   | `Promise<string>` | Seek audio.                                                                  |
 | setVolume             |   `doulbe` value    | `Promise<string>` | Set volume of audio player (default 1.0, range: 0.0 ~ 1.0).                  |
 
-## Customizing recorded audio quality
+## Customizing recorded audio quality (from `2.3.0`)
 
 ```
 interface AudioSet {
