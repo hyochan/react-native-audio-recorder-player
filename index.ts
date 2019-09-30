@@ -1,5 +1,6 @@
 import {
   DeviceEventEmitter,
+  EmitterSubscription,
   NativeEventEmitter,
   NativeModules,
   Platform,
@@ -7,80 +8,105 @@ import {
 
 const { RNAudioRecorderPlayer } = NativeModules;
 
-const pad = (num) => {
+export enum AudioSourceAndroidType {
+  DEFAULT = 0,
+  MIC,
+  VOICE_UPLINK,
+  VOICE_DOWNLINK,
+  VOICE_CALL,
+  CAMCORDER,
+  VOICE_RECOGNITION,
+  VOICE_COMMUNICATION,
+  REMOTE_SUBMIX,
+  UNPROCESSED,
+  RADIO_TUNER = 1998,
+  HOTWORD,
+}
+
+export enum OutputFormatAndroidType {
+  DEFAULT = 0,
+  THREE_GPP,
+  MPEG_4,
+  AMR_NB,
+  AMR_WB,
+  AAC_ADIF,
+  AAC_ADTS,
+  OUTPUT_FORMAT_RTP_AVP,
+  MPEG_2_TS,
+  WEBM,
+}
+
+export enum AudioEncoderAndroidType {
+  DEFAULT = 0,
+  AMR_NB,
+  AMR_WB,
+  AAC,
+  HE_AAC,
+  AAC_ELD,
+  VORBIS,
+}
+
+type AVEncodingType =
+  | AVEncodingOption.lpcm
+  | AVEncodingOption.ima4
+  | AVEncodingOption.aac
+  | AVEncodingOption.MAC3
+  | AVEncodingOption.MAC6
+  | AVEncodingOption.ulaw
+  | AVEncodingOption.alaw
+  | AVEncodingOption.mp1
+  | AVEncodingOption.mp2
+  | AVEncodingOption.alac
+  | AVEncodingOption.amr
+  | AVEncodingOption.flac
+  | AVEncodingOption.opus;
+
+export enum AVEncodingOption {
+  lpcm = 'lpcm',
+  ima4 = 'ima4',
+  aac = 'aac',
+  MAC3 = 'MAC3',
+  MAC6 = 'MAC6',
+  ulaw = 'ulaw',
+  alaw = 'alaw',
+  mp1 = 'mp1',
+  mp2 = 'mp2',
+  alac = 'alac',
+  amr = 'amr',
+  flac = 'flac',
+  opus = 'opus',
+}
+
+export enum AVEncoderAudioQualityIOSType {
+  min = 0,
+  low = 32,
+  medium = 64,
+  high = 96,
+  max = 127,
+}
+
+interface AudioSet {
+  AVSampleRateKeyIOS?: number;
+  AVFormatIDKeyIOS?: AVEncodingType;
+  AVNumberOfChannelsKeyIOS?: number;
+  AVEncoderAudioQualityKeyIOS?: AVEncoderAudioQualityIOSType;
+  AudioSourceAndroid?: AudioSourceAndroidType;
+  OutputFormatAndroid?: OutputFormatAndroidType;
+  AudioEncoderAndroid?: AudioEncoderAndroidType;
+}
+
+const pad = (num: number): string => {
   return ('0' + num).slice(-2);
 };
 
-export const AudioSourceAndroidType = {
-  DEFAULT: 0,
-  MIC: 1,
-  VOICE_UPLINK: 2,
-  VOICE_DOWNLINK: 3,
-  VOICE_CALL: 4,
-  CAMCORDER: 5,
-  VOICE_RECOGNITION: 6,
-  VOICE_COMMUNICATION: 7,
-  REMOTE_SUBMIX: 8,
-  UNPROCESSED: 9,
-  RADIO_TUNER: 1998,
-  HOTWORD: 1999,
-};
-
-export const OutputFormatAndroidType = {
-  DEFAULT: 0,
-  THREE_GPP: 1,
-  MPEG_4: 2,
-  AMR_NB: 3,
-  AMR_WB: 4,
-  AAC_ADIF: 5,
-  AAC_ADTS: 6,
-  OUTPUT_FORMAT_RTP_AVP: 7,
-  MPEG_2_TS: 8,
-  WEBM: 9,
-};
-
-export const AudioEncoderAndroidType = {
-  DEFAULT: 0,
-  AMR_NB: 1,
-  AMR_WB: 2,
-  AAC: 3,
-  HE_AAC: 4,
-  AAC_ELD: 5,
-  VORBIS: 6,
-};
-
-export const AVEncodingOption = {
-  lpcm: 'lpcm',
-  ima4: 'ima4',
-  aac: 'aac',
-  MAC3: 'MAC3',
-  MAC6: 'MAC6',
-  ulaw: 'ulaw',
-  alaw: 'alaw',
-  mp1: 'mp1',
-  mp2: 'mp2',
-  alac: 'alac',
-  amr: 'amr',
-  flac: 'flac',
-  opus: 'opus',
-};
-
-export const AVEncoderAudioQualityIOSType = {
-  min: 0,
-  low: 32,
-  medium: 64,
-  high: 96,
-  max: 127,
-};
-
 class AudioRecorderPlayer {
-  static _isRecording;
-  static _isPlaying;
-  static _recorderSubscription;
-  static _playerSubscription;
-  static _recordInterval;
+  private _isRecording: boolean;
+  private _isPlaying: boolean;
+  private _recorderSubscription: EmitterSubscription;
+  private _playerSubscription: EmitterSubscription;
+  private _recordInterval: number;
 
-  mmss = (secs) => {
+  mmss = (secs: number): string => {
     let minutes = Math.floor(secs / 60);
     secs = secs % 60;
     minutes = minutes % 60;
@@ -89,7 +115,7 @@ class AudioRecorderPlayer {
     return pad(minutes) + ':' + pad(secs);
   };
 
-  mmssss = (milisecs) => {
+  mmssss = (milisecs: number): string => {
     const secs = Math.floor(milisecs / 1000);
     const minutes = Math.floor(secs / 60);
     const seconds = secs % 60;
@@ -99,9 +125,9 @@ class AudioRecorderPlayer {
 
   /**
    * set listerner from native module for recorder.
-   * @returns {callBack(e: Event)}
+   * @returns {callBack(e: any)}
    */
-  addRecordBackListener = (e: Event) => {
+  addRecordBackListener = (e): void => {
     if (Platform.OS === 'android') {
       this._recorderSubscription = DeviceEventEmitter.addListener(
         'rn-recordback',
@@ -117,7 +143,7 @@ class AudioRecorderPlayer {
    * remove listener for recorder.
    * @returns {void}
    */
-  removeRecordBackListener = () => {
+  removeRecordBackListener = (): void => {
     if (this._recorderSubscription) {
       this._recorderSubscription.remove();
       this._recorderSubscription = null;
@@ -128,7 +154,7 @@ class AudioRecorderPlayer {
    * set listener from native module for player.
    * @returns {callBack(e: Event)}
    */
-  addPlayBackListener = (e: Event) => {
+  addPlayBackListener = (e): void => {
     if (Platform.OS === 'android') {
       this._playerSubscription = DeviceEventEmitter.addListener(
         'rn-playback',
@@ -144,7 +170,7 @@ class AudioRecorderPlayer {
    * remove listener for player.
    * @returns {void}
    */
-  removePlayBackListener = () => {
+  removePlayBackListener = (): void => {
     if (this._playerSubscription) {
       this._playerSubscription.remove();
       this._playerSubscription = null;
@@ -156,7 +182,7 @@ class AudioRecorderPlayer {
    * @param {string} uri audio uri.
    * @returns {Promise<string>}
    */
-  startRecorder = async (uri, audioSets) => {
+  startRecorder = async (uri: string, audioSets: AudioSet): Promise<string> => {
     if (!uri) {
       uri = 'DEFAULT';
     }
@@ -165,30 +191,31 @@ class AudioRecorderPlayer {
       this._isRecording = true;
       return RNAudioRecorderPlayer.startRecorder(uri, audioSets);
     }
-    console.log('Already recording');
+    return 'Already recording';
   };
 
   /**
    * stop recording.
    * @returns {Promise<string>}
    */
-  stopRecorder = async () => {
+  stopRecorder = async (): Promise<string> => {
     if (this._isRecording) {
       this._isRecording = false;
       return RNAudioRecorderPlayer.stopRecorder();
     }
+    return 'Already stopped';
   };
 
   /**
    * resume playing.
    * @returns {Promise<string>}
    */
-  resumePlayer = async () => {
+  resumePlayer = async (): Promise<string> => {
     if (!this._isPlaying) {
       this._isPlaying = true;
       return RNAudioRecorderPlayer.resumePlayer();
     }
-    console.log('Already playing');
+    return 'Already playing';
   };
 
   /**
@@ -196,7 +223,7 @@ class AudioRecorderPlayer {
    * @param {string} uri audio uri.
    * @returns {Promise<string>}
    */
-  startPlayer = async (uri) => {
+  startPlayer = async (uri: string): Promise<string> => {
     if (!uri) {
       uri = 'DEFAULT';
     }
@@ -210,19 +237,19 @@ class AudioRecorderPlayer {
    * stop playing.
    * @returns {Promise<string>}
    */
-  stopPlayer = async () => {
+  stopPlayer = async (): Promise<string> => {
     if (this._isPlaying) {
       this._isPlaying = false;
       return RNAudioRecorderPlayer.stopPlayer();
     }
-    console.log('Already stopped playing');
+    return 'Already stopped playing';
   };
 
   /**
    * pause playing.
    * @returns {Promise<string>}
    */
-  pausePlayer = async () => {
+  pausePlayer = async (): Promise<string> => {
     if (this._isPlaying) {
       this._isPlaying = false;
       return RNAudioRecorderPlayer.pausePlayer();
@@ -234,7 +261,7 @@ class AudioRecorderPlayer {
    * @param {number} time position seek to in second.
    * @returns {Promise<string>}
    */
-  seekToPlayer = async (time: number) => {
+  seekToPlayer = async (time: number): Promise<string> => {
     if (Platform.OS === 'ios') {
       time = time / 1000;
     }
@@ -246,9 +273,9 @@ class AudioRecorderPlayer {
    * @param {number} setVolume set volume.
    * @returns {Promise<string>}
    */
-  setVolume = async (volume: number) => {
+  setVolume = async (volume: number): Promise<string> => {
     if (volume < 0 || volume > 1) {
-      return console.warn('Value of volume should be between 0.0 to 1.0');
+      throw new Error('Value of volume should be between 0.0 to 1.0');
     }
     return RNAudioRecorderPlayer.setVolume(volume);
   };
@@ -258,7 +285,7 @@ class AudioRecorderPlayer {
    * @param {number} sec subscription callback duration in seconds.
    * @returns {Promise<string>}
    */
-  setSubscriptionDuration = async (sec) => {
+  setSubscriptionDuration = async (sec: number): Promise<string> => {
     return RNAudioRecorderPlayer.setSubscriptionDuration(sec);
   };
 }
