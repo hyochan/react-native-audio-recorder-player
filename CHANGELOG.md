@@ -1,5 +1,7 @@
 ## Changelogs
-
+- **[2.5.0]**
+  - Handle stop once player is paused [#169](https://github.com/dooboolab/react-native-audio-recorder-player/pull/169)
+  - Add custom path for ios [#168](https://github.com/dooboolab/react-native-audio-recorder-player/pull/168)
 - **[2.4.+]**
   - Migrated to `ts` project and also support `flow` types.
 - **[2.3.+]**
