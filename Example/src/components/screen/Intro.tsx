@@ -221,11 +221,11 @@ class Page extends Component<any, State> {
     console.log(`currentPosition: ${currentPosition}`);
 
     if (playWidth && playWidth < touchX) {
-      const addSecs = Math.round(currentPosition + 3000);
+      const addSecs = Math.round(currentPosition + 1000);
       this.audioRecorderPlayer.seekToPlayer(addSecs);
       console.log(`addSecs: ${addSecs}`);
     } else {
-      const subSecs = Math.round(currentPosition - 3000);
+      const subSecs = Math.round(currentPosition - 1000);
       this.audioRecorderPlayer.seekToPlayer(subSecs);
       console.log(`subSecs: ${subSecs}`);
     }

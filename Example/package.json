@@ -32,13 +32,15 @@
     "build:android": "react-native bundle --entry-file index.js --platform android --dev false --bundle-output android/main.jsbundle --assets-dest ./android"
   },
   "dependencies": {
+    "@react-native-community/masked-view": "^0.1.6",
     "moment": "^2.24.0",
-    "react": "16.11.0",
+    "react": "16.9.0",
     "react-native": "0.61.4",
     "react-native-audio-recorder-player": "file:../",
     "react-native-gesture-handler": "git://github.com/hyochan/react-native-gesture-handler.git#package-names",
     "react-native-localization": "^2.1.6",
     "react-native-reanimated": "^1.2.0",
+    "react-native-safe-area-context": "^0.7.3",
     "react-navigation": "^4.0.2",
     "react-navigation-stack": "^2.0.12",
     "styled-components": "^4.3.2"
@@ -77,8 +79,8 @@
     "jsc-android": "^241213.1.0",
     "metro-react-native-babel-preset": "^0.57.0",
     "prettier": "^1.18.2",
-    "react-dom": "^16.11.0",
-    "react-test-renderer": "^16.11.0",
+    "react-dom": "^16.9.0",
+    "react-test-renderer": "^16.9.0",
     "ts-jest": "^24.0.2",
     "typescript": "^3.6.3"
   }

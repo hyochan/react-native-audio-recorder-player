@@ -185,17 +185,17 @@ if (Platform.OS === 'android') {
 All methods are implemented with promises.
 
 | Func                  |        Param        |      Return       | Description                                                                  |
-| :-------------------- | :-----------------: | :---------------: | :--------------------------------------------------------------------------- |
-| mmss                  |  `number` seconds   |     `string`      | Convert seconds to `minute:second` string.                                   |
-| addRecordBackListener |                     |  `Promise<void>`  | Set record interval in second.                                               |
-| addPlayBackListener   | `Function` callBack |      `void`       | Get callback from native module. Will receive `duration`, `current_position` |
-| startRecorder         |   `<string>` uri?   |  `Promise<void>`  | Start recording. Not passing the param will save audio in default location.  |
-| stopRecorder          |                     | `Promise<string>` | Stop recording.                                                              |
-| startPlayer           |   `<string>` uri?   | `Promise<string>` | Start playing. Not passing the param will play audio in default location.    |
-| stopPlayer            |                     | `Promise<string>` | Stop playing.                                                                |
-| pausePlayer           |                     | `Promise<string>` | Pause playing.                                                               |
-| seekToPlayer          |  `number` seconds   | `Promise<string>` | Seek audio.                                                                  |
-| setVolume             |   `doulbe` value    | `Promise<string>` | Set volume of audio player (default 1.0, range: 0.0 ~ 1.0).                  |
+| :-------------------- | :--------------------: | :---------------: | :--------------------------------------------------------------------------- |
+| mmss                  |  `number` seconds       |     `string`      | Convert seconds to `minute:second` string.                                   |
+| addRecordBackListener |                         |  `Promise<void>`  | Set record interval in second.                                               |
+| addPlayBackListener   | `Function` callBack     |      `void`       | Get callback from native module. Will receive `duration`, `current_position` |
+| startRecorder         |   `<string>` uri?       |  `Promise<void>`  | Start recording. Not passing the param will save audio in default location.  |
+| stopRecorder          |                         | `Promise<string>` | Stop recording.                                                              |
+| startPlayer           |   `<string>` uri?       | `Promise<string>` | Start playing. Not passing the param will play audio in default location.    |
+| stopPlayer            |                         | `Promise<string>` | Stop playing.                                                                |
+| pausePlayer           |                         | `Promise<string>` | Pause playing.                                                               |
+| seekToPlayer          |  `number` miliseconds   | `Promise<string>` | Seek audio.                                                                  |
+| setVolume             |   `doulbe` value        | `Promise<string>` | Set volume of audio player (default 1.0, range: 0.0 ~ 1.0).                  |
 
 ## Customizing recorded audio quality (from `2.3.0`)
 
