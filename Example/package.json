@@ -34,7 +34,7 @@
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.6",
     "moment": "^2.24.0",
-    "react": "16.9.0",
+    "react": "16.13.0",
     "react-native": "0.61.4",
     "react-native-audio-recorder-player": "file:../",
     "react-native-gesture-handler": "git://github.com/hyochan/react-native-gesture-handler.git#package-names",
@@ -79,8 +79,8 @@
     "jsc-android": "^241213.1.0",
     "metro-react-native-babel-preset": "^0.57.0",
     "prettier": "^1.18.2",
-    "react-dom": "^16.9.0",
-    "react-test-renderer": "^16.9.0",
+    "react-dom": "^16.13.0",
+    "react-test-renderer": "^16.13.0",
     "ts-jest": "^25.2.1",
     "typescript": "^3.6.3"
   }
