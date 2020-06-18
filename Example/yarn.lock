@@ -6561,10 +6561,10 @@ react-localization@^1.0.14:
   dependencies:
     localized-strings "^0.2.0"
 
-react-native-audio-recorder-player@^2.5.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/react-native-audio-recorder-player/-/react-native-audio-recorder-player-2.5.0.tgz#f837c0622962c03e790acc765b85477434eb3801"
-  integrity sha512-mg6Ys3vsRIkZGa9AJAEFTZc17Q0fFD8OG2GRZa4ijJWyU0eDn6iVkkgFuNRuckJFtqNsOq0LK575nDxg+2dJqw==
+react-native-audio-recorder-player@^2.5.1:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/react-native-audio-recorder-player/-/react-native-audio-recorder-player-2.5.1.tgz#c57f33ec8920b2be182ab6d305da5fa4b9324c8a"
+  integrity sha512-qXE7/LLPdgoDNd88yv+uqmkBj8EOQa/yU2CUYCtC5bfeNQPiH1cVEbxfxGY+0hUawtd5uR2XxKM+Y5tUJOGzMQ==
   dependencies:
     dooboolab-welcome "^1.1.1"
 
@@ -6597,10 +6597,10 @@ react-native-reanimated@^1.8.0:
   dependencies:
     fbjs "^1.0.0"
 
-react-native-safe-area-context@^0.7.3:
-  version "0.7.3"
-  resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-0.7.3.tgz#ad6bd4abbabe195332c53810e4ce5851eb21aa2a"
-  integrity sha512-9Uqu1vlXPi+2cKW/CW6OnHxA76mWC4kF3wvlqzq4DY8hn37AeiXtLFs2WkxH4yXQRrnJdP6ivc65Lz+MqwRZAA==
+react-native-safe-area-context@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/react-native-safe-area-context/-/react-native-safe-area-context-1.0.0.tgz#8b4d79b06d6a9ed5ff3b2c3f0ba25d85538a3149"
+  integrity sha512-8Poo0FHSS/KE0fP6JUH9Mnjg2KQ5MfZAJN3G8/gW2HoFSypWSfFmDp5msETU0Ix3OnRsmBZTJpmgHFEl9OfNAg==
 
 react-native-safe-area-view@^0.14.8:
   version "0.14.8"
