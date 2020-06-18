@@ -185,15 +185,19 @@ class AudioRecorderPlayer {
    */
   startRecorder = async (
     uri?: string,
+    meteringEnabled?: boolean,
     audioSets?: AudioSet,
   ): Promise<string> => {
     if (!uri) {
       uri = 'DEFAULT';
     }
+    if (!meteringEnabled) {
+      meteringEnabled = false;
+    }
 
     if (!this._isRecording) {
       this._isRecording = true;
-      return RNAudioRecorderPlayer.startRecorder(uri, audioSets);
+      return RNAudioRecorderPlayer.startRecorder(uri, meteringEnabled, audioSets);
     }
     return 'Already recording';
   };

@@ -42,6 +42,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule impl
   private String audioFileURL = "";
 
   private int subsDurationMillis = 100;
+  private boolean _meteringEnabled = false;
 
   private final ReactApplicationContext reactContext;
   private MediaRecorder mediaRecorder;
@@ -63,7 +64,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule impl
   }
 
   @ReactMethod
-  public void startRecorder(final String path, final ReadableMap audioSet, Promise promise) {
+  public void startRecorder(final String path, final Boolean meteringEnabled, final ReadableMap audioSet, Promise promise) {
     try {
       if (
           Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
@@ -86,6 +87,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule impl
     }
 
     audioFileURL = (path.equals("DEFAULT")) ? FILE_LOCATION : path;
+    _meteringEnabled = meteringEnabled;
 
     if (mediaRecorder == null) {
       mediaRecorder = new MediaRecorder();
@@ -116,6 +118,20 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule impl
           long time = SystemClock.elapsedRealtime() - systemTime;
           WritableMap obj = Arguments.createMap();
           obj.putDouble("current_position", time);
+          if (_meteringEnabled) {
+            int maxAmplitude = 0;
+            if (mediaRecorder != null) {
+              maxAmplitude = mediaRecorder.getMaxAmplitude();
+
+            }
+            double dB = -160;
+            double maxAudioSize = 32767;
+            if (maxAmplitude > 0){
+              dB = 20 * Math.log10(maxAmplitude / maxAudioSize);
+            }
+
+            obj.putInt("current_metering", (int) dB);
+          }
           sendEvent(reactContext, "rn-recordback", obj);
           recordHandler.postDelayed(this, subsDurationMillis);
         }

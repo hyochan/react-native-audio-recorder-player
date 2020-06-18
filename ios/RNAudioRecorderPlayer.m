@@ -21,13 +21,13 @@ NSString* GetDirectoryOfType_Sound(NSSearchPathDirectory dir) {
   AVAudioPlayer *audioPlayer;
   NSTimer *recordTimer;
   NSTimer *playTimer;
+  BOOL _meteringEnabled;
 }
 double subscriptionDuration = 0.1;
 
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
   NSLog(@"audioPlayerDidFinishPlaying");
   NSNumber *duration = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
-  NSNumber *currentTime = [NSNumber numberWithDouble:audioPlayer.duration * 1000];
 
   // Send last event then finish it.
   // NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
@@ -46,8 +46,15 @@ double subscriptionDuration = 0.1;
 {
   NSNumber *currentTime = [NSNumber numberWithDouble:audioRecorder.currentTime * 1000];
   // NSString* status = [NSString stringWithFormat:@"{\"current_position\": \"%@\"}", [currentTime stringValue]];
+  NSNumber *currentMetering = [NSNumber numberWithDouble:0];
+  if (_meteringEnabled) {
+      [audioRecorder updateMeters];
+      currentMetering = [NSNumber numberWithDouble:[audioRecorder averagePowerForChannel: 0]];
+  }
+
   NSDictionary *status = @{
                          @"current_position" : [currentTime stringValue],
+                         @"current_metering" : [currentMetering stringValue],
                          };
   [self sendEventWithName:@"rn-recordback" body:status];
 }
@@ -64,7 +71,7 @@ double subscriptionDuration = 0.1;
     [audioPlayer stop];
     return;
   }
-  
+
   // NSString* status = [NSString stringWithFormat:@"{\"duration\": \"%@\", \"current_position\": \"%@\"}", [duration stringValue], [currentTime stringValue]];
   NSDictionary *status = @{
                          @"duration" : [duration stringValue],
@@ -116,6 +123,7 @@ RCT_EXPORT_METHOD(setSubscriptionDuration:(double)duration
 }
 
 RCT_EXPORT_METHOD(startRecorder:(NSString*)path
+                  meteringEnabled:(BOOL)meteringEnabled
                   audioSets: (NSDictionary*)audioSets
                   resolve:(RCTPromiseResolveBlock)resolve
                   reject:(RCTPromiseRejectBlock)reject) {
@@ -125,6 +133,7 @@ RCT_EXPORT_METHOD(startRecorder:(NSString*)path
   NSNumber *numberOfChannel = [RCTConvert NSNumber:audioSets[@"AVNumberOfChannelsKeyIOS"]];
   NSNumber *avFormat;
   NSNumber *audioQuality = [RCTConvert NSNumber:audioSets[@"AVEncoderAudioQualityKeyIOS"]];
+  _meteringEnabled = meteringEnabled;
 
   if ([path isEqualToString:@"DEFAULT"]) {
       audioFileURL = [NSURL fileURLWithPath:[GetDirectoryOfType_Sound(NSCachesDirectory) stringByAppendingString:@"sound.m4a"]];
@@ -186,7 +195,7 @@ RCT_EXPORT_METHOD(startRecorder:(NSString*)path
 
   // Setup audio session
   AVAudioSession *session = [AVAudioSession sharedInstance];
-  [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+  [session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions:AVAudioSessionCategoryOptionAllowBluetooth error:nil];
 
   // set volume default to speaker
   UInt32 doChangeDefaultRoute = 1;
@@ -196,11 +205,12 @@ RCT_EXPORT_METHOD(startRecorder:(NSString*)path
                         initWithURL:audioFileURL
                         settings:audioSettings
                         error:nil];
-  
+  audioRecorder.meteringEnabled = _meteringEnabled;
+
   [audioRecorder setDelegate:self];
   [audioRecorder record];
   [self startRecorderTimer];
-    
+
   NSString *filePath = self->audioFileURL.absoluteString;
   resolve(filePath);
 }
@@ -271,7 +281,7 @@ RCT_EXPORT_METHOD(startPlayer:(NSString*)path
                 audioFileURL = [NSURL URLWithString:path];
             }
         }
-                
+
         NSLog(@"Error %@",error);
 
         if (!audioPlayer) {
@@ -333,7 +343,7 @@ RCT_EXPORT_METHOD(pausePlayer: (RCTPromiseResolveBlock)resolve
         if (playTimer != nil) {
             [playTimer invalidate];
             playTimer = nil;
-        } 
+        }
         resolve(@"pause play");
     } else {
         reject(@"audioPlayer pause", @"audioPlayer is not playing", nil);
