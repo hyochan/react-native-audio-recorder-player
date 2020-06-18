@@ -60,7 +60,7 @@
     "prettier": "^2.0.4",
     "react-dom": "^16.13.0",
     "react-test-renderer": "^16.13.0",
-    "ts-jest": "^25.2.1",
+    "ts-jest": "^26.0.0",
     "typescript": "^3.6.3"
   }
 }
