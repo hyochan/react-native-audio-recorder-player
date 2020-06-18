@@ -228,7 +228,7 @@ class AudioRecorderPlayer {
    * @param {string} uri audio uri.
    * @returns {Promise<string>}
    */
-  startPlayer = async (uri: string): Promise<string> => {
+  startPlayer = async (uri?: string): Promise<string> => {
     if (!uri) {
       uri = 'DEFAULT';
     }
