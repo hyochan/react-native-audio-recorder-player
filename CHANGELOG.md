@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.5.3]**
+  - Add try catch block on `mediaRecorder.stop()` [#220](https://github.com/dooboolab/react-native-audio-recorder-player/pull/220)
 - **[2.5.2]**
   - Add android record parameters [#210](dooboolab/react-native-audio-recorder-player/issues/210)
   - Play music in bluetooth earpiece while recording [#192](dooboolab/react-native-audio-recorder-player/issues/192)
