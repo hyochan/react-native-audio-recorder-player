@@ -46,21 +46,6 @@ export enum AudioEncoderAndroidType {
   VORBIS,
 }
 
-type AVEncodingType =
-  | AVEncodingOption.lpcm
-  | AVEncodingOption.ima4
-  | AVEncodingOption.aac
-  | AVEncodingOption.MAC3
-  | AVEncodingOption.MAC6
-  | AVEncodingOption.ulaw
-  | AVEncodingOption.alaw
-  | AVEncodingOption.mp1
-  | AVEncodingOption.mp2
-  | AVEncodingOption.alac
-  | AVEncodingOption.amr
-  | AVEncodingOption.flac
-  | AVEncodingOption.opus;
-
 export enum AVEncodingOption {
   lpcm = 'lpcm',
   ima4 = 'ima4',
@@ -76,6 +61,21 @@ export enum AVEncodingOption {
   flac = 'flac',
   opus = 'opus',
 }
+
+type AVEncodingType =
+  | AVEncodingOption.lpcm
+  | AVEncodingOption.ima4
+  | AVEncodingOption.aac
+  | AVEncodingOption.MAC3
+  | AVEncodingOption.MAC6
+  | AVEncodingOption.ulaw
+  | AVEncodingOption.alaw
+  | AVEncodingOption.mp1
+  | AVEncodingOption.mp2
+  | AVEncodingOption.alac
+  | AVEncodingOption.amr
+  | AVEncodingOption.flac
+  | AVEncodingOption.opus;
 
 export enum AVEncoderAudioQualityIOSType {
   min = 0,
