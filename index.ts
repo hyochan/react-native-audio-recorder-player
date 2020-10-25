@@ -46,6 +46,21 @@ export enum AudioEncoderAndroidType {
   VORBIS,
 }
 
+type AVEncodingType =
+  | AVEncodingOption.lpcm
+  | AVEncodingOption.ima4
+  | AVEncodingOption.aac
+  | AVEncodingOption.MAC3
+  | AVEncodingOption.MAC6
+  | AVEncodingOption.ulaw
+  | AVEncodingOption.alaw
+  | AVEncodingOption.mp1
+  | AVEncodingOption.mp2
+  | AVEncodingOption.alac
+  | AVEncodingOption.amr
+  | AVEncodingOption.flac
+  | AVEncodingOption.opus;
+
 export enum AVEncodingOption {
   lpcm = 'lpcm',
   ima4 = 'ima4',
@@ -61,21 +76,6 @@ export enum AVEncodingOption {
   flac = 'flac',
   opus = 'opus',
 }
-
-type AVEncodingType =
-  | AVEncodingOption.lpcm
-  | AVEncodingOption.ima4
-  | AVEncodingOption.aac
-  | AVEncodingOption.MAC3
-  | AVEncodingOption.MAC6
-  | AVEncodingOption.ulaw
-  | AVEncodingOption.alaw
-  | AVEncodingOption.mp1
-  | AVEncodingOption.mp2
-  | AVEncodingOption.alac
-  | AVEncodingOption.amr
-  | AVEncodingOption.flac
-  | AVEncodingOption.opus;
 
 export enum AVEncoderAudioQualityIOSType {
   min = 0,
@@ -181,19 +181,12 @@ class AudioRecorderPlayer {
    */
   startRecorder = async (
     uri?: string,
-    meteringEnabled?: boolean,
     audioSets?: AudioSet,
+    meteringEnabled?: boolean,
   ): Promise<string> => {
-    if (!uri) {
-      uri = 'DEFAULT';
-    }
-    if (!meteringEnabled) {
-      meteringEnabled = false;
-    }
-
     if (!this._isRecording) {
       this._isRecording = true;
-      return RNAudioRecorderPlayer.startRecorder(uri, meteringEnabled, audioSets);
+      return RNAudioRecorderPlayer.startRecorder(uri ?? 'DEFAULT', meteringEnabled ?? false, audioSets);
     }
     return 'Already recording';
   };

@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.5.4]**
+  - Fixes on wrong arg type issue when recording [#230](https://github.com/dooboolab/react-native-audio-recorder-player/issues/230)
 - **[2.5.3]**
   - Add try catch block on `mediaRecorder.stop()` [#220](https://github.com/dooboolab/react-native-audio-recorder-player/pull/220)
 - **[2.5.2]**
