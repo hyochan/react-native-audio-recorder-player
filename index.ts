@@ -46,21 +46,6 @@ export enum AudioEncoderAndroidType {
   VORBIS,
 }
 
-type AVEncodingType =
-  | AVEncodingOption.lpcm
-  | AVEncodingOption.ima4
-  | AVEncodingOption.aac
-  | AVEncodingOption.MAC3
-  | AVEncodingOption.MAC6
-  | AVEncodingOption.ulaw
-  | AVEncodingOption.alaw
-  | AVEncodingOption.mp1
-  | AVEncodingOption.mp2
-  | AVEncodingOption.alac
-  | AVEncodingOption.amr
-  | AVEncodingOption.flac
-  | AVEncodingOption.opus;
-
 export enum AVEncodingOption {
   lpcm = 'lpcm',
   ima4 = 'ima4',
@@ -76,6 +61,21 @@ export enum AVEncodingOption {
   flac = 'flac',
   opus = 'opus',
 }
+
+type AVEncodingType =
+  | AVEncodingOption.lpcm
+  | AVEncodingOption.ima4
+  | AVEncodingOption.aac
+  | AVEncodingOption.MAC3
+  | AVEncodingOption.MAC6
+  | AVEncodingOption.ulaw
+  | AVEncodingOption.alaw
+  | AVEncodingOption.mp1
+  | AVEncodingOption.mp2
+  | AVEncodingOption.alac
+  | AVEncodingOption.amr
+  | AVEncodingOption.flac
+  | AVEncodingOption.opus;
 
 export enum AVEncoderAudioQualityIOSType {
   min = 0,
@@ -219,16 +219,23 @@ class AudioRecorderPlayer {
   /**
    * start playing with param.
    * @param {string} uri audio uri.
+   * @param {Record<string, string>} httpHeaders Set of http headers.
    * @returns {Promise<string>}
    */
-  startPlayer = async (uri?: string): Promise<string> => {
+  startPlayer = async (
+    uri?: string,
+    httpHeaders?: Record<string, string>,
+  ): Promise<string> => {
     if (!uri) {
       uri = 'DEFAULT';
     }
     if (!this._isPlaying || this._hasPaused) {
       this._isPlaying = true;
       this._hasPaused = false;
-      return RNAudioRecorderPlayer.startPlayer(uri);
+      return Platform.select({
+        android: RNAudioRecorderPlayer.startPlayer(uri, httpHeaders),
+        default: RNAudioRecorderPlayer.startPlayer(uri),
+      });
     }
   };
 

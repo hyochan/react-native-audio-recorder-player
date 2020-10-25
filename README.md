@@ -191,7 +191,7 @@ All methods are implemented with promises.
 | addPlayBackListener   | `Function` callBack     |      `void`       | Get callback from native module. Will receive `duration`, `current_position` |
 | startRecorder         |   `<string>` uri?       |  `Promise<void>`  | Start recording. Not passing the param will save audio in default location.  |
 | stopRecorder          |                         | `Promise<string>` | Stop recording.                                                              |
-| startPlayer           |   `<string>` uri?       | `Promise<string>` | Start playing. Not passing the param will play audio in default location.    |
+| startPlayer           |   `string` uri? `Record<string, string>` httpHeaders?       | `Promise<string>` | Start playing. Not passing the param will play audio in default location.    |
 | stopPlayer            |                         | `Promise<string>` | Stop playing.                                                                |
 | pausePlayer           |                         | `Promise<string>` | Pause playing.                                                               |
 | seekToPlayer          |  `number` miliseconds   | `Promise<string>` | Seek audio.                                                                  |

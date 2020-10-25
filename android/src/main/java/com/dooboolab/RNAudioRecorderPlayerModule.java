@@ -12,6 +12,7 @@ import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -24,6 +25,7 @@ import android.util.Log;
 import com.facebook.react.bridge.Arguments;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactContext;
+import com.facebook.react.bridge.ReadableMapKeySetIterator;
 import com.facebook.react.bridge.WritableMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.modules.core.PermissionListener;
@@ -31,6 +33,8 @@ import com.facebook.react.modules.core.PermissionListener;
 import org.json.JSONException;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -186,7 +190,7 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule impl
   }
 
   @ReactMethod
-  public void startPlayer(final String path, final Promise promise) {
+  public void startPlayer(final String path, final ReadableMap httpHeaders, final Promise promise) {
     if (mediaPlayer != null) {
       Boolean isPaused = !mediaPlayer.isPlaying() && mediaPlayer.getCurrentPosition() > 1;
 
@@ -206,7 +210,18 @@ public class RNAudioRecorderPlayerModule extends ReactContextBaseJavaModule impl
       if (path.equals("DEFAULT")) {
         mediaPlayer.setDataSource(FILE_LOCATION);
       } else {
-        mediaPlayer.setDataSource(path);
+        if (httpHeaders != null) {
+          Map headers = new HashMap();
+          ReadableMapKeySetIterator iterator = httpHeaders.keySetIterator();
+          while (iterator.hasNextKey()) {
+            String key = iterator.nextKey();
+            headers.put(key, httpHeaders.getString(key));
+          }
+
+          mediaPlayer.setDataSource(getCurrentActivity().getApplicationContext(), Uri.parse(path), headers);
+        } else {
+          mediaPlayer.setDataSource(path);
+        }
       }
       mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
         @Override
