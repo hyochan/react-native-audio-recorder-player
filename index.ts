@@ -232,10 +232,11 @@ class AudioRecorderPlayer {
     if (!this._isPlaying || this._hasPaused) {
       this._isPlaying = true;
       this._hasPaused = false;
-      return Platform.select({
-        android: RNAudioRecorderPlayer.startPlayer(uri, httpHeaders ?? null),
-        default: RNAudioRecorderPlayer.startPlayer(uri),
-      });
+      if (Platform.OS === 'android') {
+        return RNAudioRecorderPlayer.startPlayer(uri, httpHeaders);
+      }
+
+      return RNAudioRecorderPlayer.startPlayer(uri);
     }
   };
 
