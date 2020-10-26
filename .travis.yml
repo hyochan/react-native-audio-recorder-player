@@ -19,7 +19,7 @@ matrix:
       directories:
         - node_modules
     install:
-      - npm install
+      - npm install --legacy-peer-deps
 
     script:
       - npm run lint
