@@ -187,9 +187,9 @@ All methods are implemented with promises.
 | Func                  |        Param        |      Return       | Description                                                                  |
 | :-------------------- | :--------------------: | :---------------: | :--------------------------------------------------------------------------- |
 | mmss                  |  `number` seconds       |     `string`      | Convert seconds to `minute:second` string.                                   |
-| addRecordBackListener |                         |  `Promise<void>`  | Set record interval in second.                                               |
+| addRecordBackListener | `Function` callBack     |     `void`        | Get callback from native module. Will receive `current_position`, `current_metering` (if configured in startRecorder)          |
 | addPlayBackListener   | `Function` callBack     |      `void`       | Get callback from native module. Will receive `duration`, `current_position` |
-| startRecorder         |   `<string>` uri?       |  `Promise<void>`  | Start recording. Not passing the param will save audio in default location.  |
+| startRecorder         |   `<string>` uri? `<boolean>` meteringEnabled?      |  `Promise<void>`  | Start recording. Not passing uri will save audio in default location.  |
 | stopRecorder          |                         | `Promise<string>` | Stop recording.                                                              |
 | startPlayer           |   `string` uri? `Record<string, string>` httpHeaders?       | `Promise<string>` | Start playing. Not passing the param will play audio in default location.    |
 | stopPlayer            |                         | `Promise<string>` | Stop playing.                                                                |
