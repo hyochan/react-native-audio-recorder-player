@@ -233,7 +233,7 @@ class AudioRecorderPlayer {
       this._isPlaying = true;
       this._hasPaused = false;
       return Platform.select({
-        android: RNAudioRecorderPlayer.startPlayer(uri, httpHeaders),
+        android: RNAudioRecorderPlayer.startPlayer(uri, httpHeaders ?? null),
         default: RNAudioRecorderPlayer.startPlayer(uri),
       });
     }
