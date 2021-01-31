@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.6.1]**
+  - Remove extra stopping condition in playback listener [#251](https://github.com/dooboolab/react-native-audio-recorder-player/pull/251)
 - **[2.6.0]**
   - Add support on adding `httpHeaders` for the audio that is not permitted to play without network authorization.
   - Bugfix on seeking player [#242](https://github.com/dooboolab/react-native-audio-recorder-player/pull/242)

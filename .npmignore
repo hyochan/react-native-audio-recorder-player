@@ -4,3 +4,9 @@ gen/
 node_modules/
 android/react-native-audio-recorder-player.iml
 android/android.iml
+index.ts
+CONTRIBUTING.md
+greenkeeper.json
+issue_template.md
+LogoType Primary.png
+tsconfig.json

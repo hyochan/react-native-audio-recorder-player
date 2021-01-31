@@ -1,0 +1,6 @@
+{
+  "reject": [
+    "react",
+    "react-native"
+  ]
+}
