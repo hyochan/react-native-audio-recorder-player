@@ -4,7 +4,7 @@
 
 [![Npm Version](http://img.shields.io/npm/v/react-native-audio-recorder-player.svg?style=flat-square)](https://npmjs.org/package/react-native-audio-recorder-player)
 [![Downloads](http://img.shields.io/npm/dm/react-native-audio-recorder-player.svg?style=flat-square)](https://npmjs.org/package/react-native-audio-recorder-player)
-[![Build Status](https://travis-ci.com/dooboolab/react-native-audio-recorder-player.svg?branch=master)](https://travis-ci.com/dooboolab/react-native-audio-recorder-player) [![Greenkeeper badge](https://badges.greenkeeper.io/dooboolab/react-native-audio-recorder-player.svg)](https://greenkeeper.io/)
+[![Build Status](https://travis-ci.com/hyochan/react-native-audio-recorder-player.svg?branch=master)](https://travis-ci.com/hyochan/react-native-audio-recorder-player) [![Greenkeeper badge](https://badges.greenkeeper.io/hyochan/react-native-audio-recorder-player.svg)](https://greenkeeper.io/)
 ![License](http://img.shields.io/npm/l/react-native-audio-recorder-player.svg?style=flat-square)
 
 This is a react-native link module for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities for both `android` and `ios` platforms. This only supports default file extension for each platform. This module can also handle file from url.
@@ -16,10 +16,6 @@ This is a react-native link module for audio recorder and player. This is not a 
 ## Breaking Changes
 
 - There has been vast improvements in [#114](https://github.com/dooboolab/react-native-audio-recorder-player/pull/114) which is released in `2.3.0`. We now support all `RN` versions without any version differenciating. See below installation guide for your understanding.
-
-## Preview
-
-<img src="https://firebasestorage.googleapis.com/v0/b/flutterdart-5d354.appspot.com/o/react-native-audio-recorder-player.gif?alt=media&token=2bff9eeb-bab6-4265-918b-aa0c83ae0faf"/>
 
 ## Migration Guide
 
