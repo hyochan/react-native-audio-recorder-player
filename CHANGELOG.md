@@ -1,4 +1,6 @@
 ## Changelogs
+- **[2.7.0]**
+  - Migrate `android` module to `kotlin`.
 - **[2.6.2]**
   - Support for Linear PCM format settings [#269](https://github.com/dooboolab/react-native-audio-recorder-player/pull/269)
 - **[2.6.1]**
