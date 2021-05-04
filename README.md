@@ -4,7 +4,8 @@
 
 [![yarn Version](http://img.shields.io/npm/v/react-native-audio-recorder-player.svg?style=flat-square)](https://npmjs.org/package/react-native-audio-recorder-player)
 [![Downloads](http://img.shields.io/npm/dm/react-native-audio-recorder-player.svg?style=flat-square)](https://npmjs.org/package/react-native-audio-recorder-player)
-[![Build Status](https://travis-ci.com/hyochan/react-native-audio-recorder-player.svg?branch=master)](https://travis-ci.com/hyochan/react-native-audio-recorder-player) [![Greenkeeper badge](https://badges.greenkeeper.io/hyochan/react-native-audio-recorder-player.svg)](https://greenkeeper.io/)
+[![CI](https://github.com/hyochan/react-native-audio-recorder-player/actions/workflows/ci.yml/badge.svg)](https://github.com/hyochan/react-native-audio-recorder-player/actions/workflows/ci.yml)
+[![publish-package](https://github.com/hyochan/react-native-audio-recorder-player/actions/workflows/publish-package.yml/badge.svg)](https://github.com/hyochan/react-native-audio-recorder-player/actions/workflows/publish-package.yml)
 ![License](http://img.shields.io/npm/l/react-native-audio-recorder-player.svg?style=flat-square)
 
 This is a react-native link module for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities for both `android` and `ios` platforms. This only supports default file extension for each platform. This module can also handle file from url.
@@ -297,7 +298,6 @@ Also, above example helps you to setup manual path to record audio. Not giving p
 
 ### TODO
 
-- [ ] Better android permission handling
 - [x] Volume Control
 - [x] Sync timing for recorder callback handler
 
