@@ -1,9 +1,4 @@
 {
-  "name": "dooboo",
-  "displayName": "dooboo",
-  "entryPoint": "index.js",
-  "packagerOpts": {
-    "assetExts": ["ttf", "png"],
-    "sourceExts": ["ts", "tsx"]
-  }
+  "name": "RNAudioRecorderPlayer",
+  "displayName": "RNAudioRecorderPlayer"
 }
