@@ -21,11 +21,13 @@ This is a react-native link module for audio recorder and player. This is not a 
 ## Breaking Changes
 
 - From version `3.0.+`, a critical migration has been done. Current version is not much different from version `2.0.+` in usability, but there are many changes internally.
-  1. Codebase has been re-written to [kotlin for Android](https://kotlinlang.org) and [swift for iOS](https://swift.org).
-  [iOS]
-  * [AVAudioPlayer](https://developer.apple.com/documentation/avfaudio/avaudioplayer) has been migrated to [AVPlayer](https://developer.apple.com/documentation/avfoundation/avplayer) which supports stream and more possibilities [#231](https://github.com/hyochan/react-native-audio-recorder-player/issues/231), [#245](https://github.com/hyochan/react-native-audio-recorder-player/issues/245), [#275](https://github.com/hyochan/react-native-audio-recorder-player/issues/275).
+  1. Codebase has been re-written to [kotlin for Android](https://kotlinlang.org) and [swift for iOS](https://swift.org). Please follow the [post installation](https://github.com/hyochan/react-native-audio-recorder-player#post-installation) for this changes.
+
+     [iOS]
+     * [AVAudioPlayer](https://developer.apple.com/documentation/avfaudio/avaudioplayer) has been migrated to [AVPlayer](https://developer.apple.com/documentation/avfoundation/avplayer) which supports stream and more possibilities [#231](https://github.com/hyochan/react-native-audio-recorder-player/issues/231), [#245](https://github.com/hyochan/react-native-audio-recorder-player/issues/245), [#275](https://github.com/hyochan/react-native-audio-recorder-player/issues/275).
   2. `pauseRecorder` and `resumeRecorder` features are added.
-     - **Caveat** Android now requires `minSdk` of `24`.
+     - **Caveat**
+       Android now requires `minSdk` of `24`.
   3. Renamed callback variables.
       ```ts
       export type RecordBackType = {
@@ -66,7 +68,7 @@ This is a react-native link module for audio recorder and player. This is not a 
 
 ## Getting started
 
-`$ yarn add react-native-audio-recorder-player --save`
+`$ yarn add react-native-audio-recorder-player`
 
 ## Installation
 
@@ -175,7 +177,7 @@ buildscript {
       minSdkVersion = 21
       compileSdkVersion = 29
       targetSdkVersion = 29
-+     kotlinVersion = '1.3.41'
++     kotlinVersion = '1.5.0'
 
       ndkVersion = "20.1.5948944"
   }
@@ -197,17 +199,19 @@ All methods are implemented with promises.
 
 | Func                  |        Param        |      Return       | Description                                                                  |
 | :-------------------- | :--------------------: | :---------------: | :--------------------------------------------------------------------------- |
-| mmss                  |  `number` seconds       |     `string`      | Convert seconds to `minute:second` string.                                   |
+| mmss                  |  `number` seconds       |     `string`      | Convert seconds to `minute:second` string       |
+| setSubscriptionDuration |                        | `void` | Set default callback time when starting recorder or player. Default to `0.5` which is `500ms` |
 | addRecordBackListener | `Function` callBack     |     `void`        | Get callback from native module. Will receive `currentPosition`, `currentMetering` (if configured in startRecorder)          |
 | addPlayBackListener   | `Function` callBack     |      `void`       | Get callback from native module. Will receive `duration`, `currentPosition` |
 | startRecorder         |   `<string>` uri? `<boolean>` meteringEnabled?      |  `Promise<void>`  | Start recording. Not passing uri will save audio in default location.  |
-| pauseRecorder         |                         | `Promise<string>` | Pause recording.                                                              |
-| stopRecorder          |                         | `Promise<string>` | Stop recording.                                                              |
+| pauseRecorder         |                         | `Promise<string>` | Pause recording.      |
+| resumeRecorder        |                         | `Promise<string>` | Resume recording.     |
+| stopRecorder          |                         | `Promise<string>` | Stop recording.       |
 | startPlayer           |   `string` uri? `Record<string, string>` httpHeaders?       | `Promise<string>` | Start playing. Not passing the param will play audio in default location.    |
-| stopPlayer            |                         | `Promise<string>` | Stop playing.                                                                |
-| pausePlayer           |                         | `Promise<string>` | Pause playing.                                                               |
-| seekToPlayer          |  `number` miliseconds   | `Promise<string>` | Seek audio.                                                                  |
-| setVolume             |   `doulbe` value        | `Promise<string>` | Set volume of audio player (default 1.0, range: 0.0 ~ 1.0).                  |
+| stopPlayer            |                         | `Promise<string>` | Stop playing.         |
+| pausePlayer           |                         | `Promise<string>` | Pause playing.        |
+| seekToPlayer          |  `number` miliseconds   | `Promise<string>` | Seek audio.           |
+| setVolume             |   `doulbe` value        | `Promise<string>` | Set volume of audio player (default 1.0, range: 0.0 ~ 1.0). |
 
 ## Able to customize recorded audio quality (from `2.3.0`)
 
@@ -225,32 +229,32 @@ interface AudioSet {
 
 > More description on each parameter types are described in `index.d.ts`. Below is an example code.
 
-```
-    const audioSet: AudioSet = {
-      AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-      AudioSourceAndroid: AudioSourceAndroidType.MIC,
-      AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
-      AVNumberOfChannelsKeyIOS: 2,
-      AVFormatIDKeyIOS: AVEncodingOption.aac,
-    };
-    const meteringEnabled = false; 
+```ts
+const audioSet: AudioSet = {
+  AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+  AudioSourceAndroid: AudioSourceAndroidType.MIC,
+  AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+  AVNumberOfChannelsKeyIOS: 2,
+  AVFormatIDKeyIOS: AVEncodingOption.aac,
+};
+const meteringEnabled = false; 
 
-    const uri = await this.audioRecorderPlayer.startRecorder(path, meteringEnabled, audioSet);
-    
-    this.audioRecorderPlayer.addRecordBackListener((e: any) => {
-      this.setState({
-        recordSecs: e.currentPosition,
-        recordTime: this.audioRecorderPlayer.mmssss(
-          Math.floor(e.currentPosition),
-        ),
-      });
-    });
+const uri = await this.audioRecorderPlayer.startRecorder(path, meteringEnabled, audioSet);
+
+this.audioRecorderPlayer.addRecordBackListener((e: any) => {
+  this.setState({
+    recordSecs: e.currentPosition,
+    recordTime: this.audioRecorderPlayer.mmssss(
+      Math.floor(e.currentPosition),
+    ),
+  });
+});
 ```
 
 ## Default Path
 
-- Default path for android uri is `sdcard/sound.mp4`.
-- Default path for ios uri is `sound.m4a`.
+- Default path for android uri is `{cacheDir}/sound.mp4`.
+- Default path for ios uri is `{cacheDir}/sound.m4a`.
 
 ## Usage
 
@@ -331,11 +335,6 @@ Also, above example helps you to setup manual path to record audio. Not giving p
 1. Goto `Example` folder by running `cd Example`.
 2. Run `yarn install && yarn start`.
 3. Run `yarn ios` to run on ios simulator and `yarn android` to run on your android device.
-
-### TODO
-
-- [x] Volume Control
-- [x] Sync timing for recorder callback handler
 
 ## Special Thanks
 
