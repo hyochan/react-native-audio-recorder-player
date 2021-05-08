@@ -29,7 +29,7 @@ This is a react-native link module for audio recorder and player. This is not a 
 
 ## Migration Guide
 
-| 1._._                  | 2._._                     |
+| 1.x.x                  | 2.x.x & 3.x.x             |
 | ---------------------- | ------------------------- |
 | `startRecord`          | `startRecorder`           |
 | `stopRecord`           | `stopRecorder`            |
