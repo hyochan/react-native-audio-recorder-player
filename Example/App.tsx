@@ -4,11 +4,14 @@ import AudioRecorderPlayer, {
   AudioEncoderAndroidType,
   AudioSet,
   AudioSourceAndroidType,
+  PlayBackType,
+  RecordBackType,
 } from 'react-native-audio-recorder-player';
 import {
   Dimensions,
   PermissionsAndroid,
   Platform,
+  SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -144,7 +147,7 @@ class Page extends Component<any, State> {
     }
 
     return (
-      <View style={styles.container}>
+      <SafeAreaView style={styles.container}>
         <Text style={styles.titleTxt}>Audio Recorder Player</Text>
         <Text style={styles.txtRecordCounter}>{this.state.recordTime}</Text>
         <View style={styles.viewRecorder}>
@@ -154,6 +157,28 @@ class Page extends Component<any, State> {
               onPress={this.onStartRecord}
               textStyle={styles.txt}>
               Record
+            </Button>
+            <Button
+              style={[
+                styles.btn,
+                {
+                  marginLeft: 12,
+                },
+              ]}
+              onPress={this.onPauseRecord}
+              textStyle={styles.txt}>
+              Pause
+            </Button>
+            <Button
+              style={[
+                styles.btn,
+                {
+                  marginLeft: 12,
+                },
+              ]}
+              onPress={this.onResumeRecord}
+              textStyle={styles.txt}>
+              Resume
             </Button>
             <Button
               style={[styles.btn, {marginLeft: 12}]}
@@ -199,13 +224,24 @@ class Page extends Component<any, State> {
                   marginLeft: 12,
                 },
               ]}
+              onPress={this.onResumePlay}
+              textStyle={styles.txt}>
+              Resume
+            </Button>
+            <Button
+              style={[
+                styles.btn,
+                {
+                  marginLeft: 12,
+                },
+              ]}
               onPress={this.onStopPlay}
               textStyle={styles.txt}>
               Stop
             </Button>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 
@@ -275,15 +311,27 @@ class Page extends Component<any, State> {
       audioSet,
     );
 
-    this.audioRecorderPlayer.addRecordBackListener((e: any) => {
+    this.audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
       this.setState({
-        recordSecs: e.current_position,
+        recordSecs: e.currentPosition,
         recordTime: this.audioRecorderPlayer.mmssss(
-          Math.floor(e.current_position),
+          Math.floor(e.currentPosition),
         ),
       });
     });
     console.log(`uri: ${uri}`);
+  };
+
+  private onPauseRecord = async () => {
+    try {
+      await this.audioRecorderPlayer.pauseRecorder();
+    } catch (err) {
+      console.log('pauseRecord', err);
+    }
+  };
+
+  private onResumeRecord = async () => {
+    await this.audioRecorderPlayer.resumeRecorder();
   };
 
   private onStopRecord = async () => {
@@ -301,16 +349,16 @@ class Page extends Component<any, State> {
     const volume = await this.audioRecorderPlayer.setVolume(1.0);
     console.log(`file: ${msg}`, `volume: ${volume}`);
 
-    this.audioRecorderPlayer.addPlayBackListener((e: any) => {
-      if (e.current_position === e.duration) {
+    this.audioRecorderPlayer.addPlayBackListener((e: PlayBackType) => {
+      if (e.currentPosition === e.duration) {
         console.log('finished');
         this.audioRecorderPlayer.stopPlayer();
       }
       this.setState({
-        currentPositionSec: e.current_position,
+        currentPositionSec: e.currentPosition,
         currentDurationSec: e.duration,
         playTime: this.audioRecorderPlayer.mmssss(
-          Math.floor(e.current_position),
+          Math.floor(e.currentPosition),
         ),
         duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
       });
@@ -319,6 +367,10 @@ class Page extends Component<any, State> {
 
   private onPausePlay = async () => {
     await this.audioRecorderPlayer.pausePlayer();
+  };
+
+  private onResumePlay = async () => {
+    await this.audioRecorderPlayer.resumePlayer();
   };
 
   private onStopPlay = async () => {
