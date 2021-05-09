@@ -4,10 +4,12 @@
     [Android]
     1. Fix `Android` default path to `cacheDir`.
        * Fix [#283](https://github.com/hyochan/react-native-audio-recorder-player/issues/283).
+         - Related [#241](https://github.com/hyochan/react-native-audio-recorder-player/issues/283)
  
   - beta.2
     1. Add `resumeRecorder` and `pauseRecorder` features.
-      - **Caveat**: Android now requires min sdk of `24`.
+      - **Caveat**
+        Android now requires min sdk of `24`.
     2. Renamed listener callback variables from `snake_case` to `camelCase`.
        * Below are return types.
          ```ts
@@ -27,6 +29,7 @@
        * Resolve [#273](https://github.com/hyochan/react-native-audio-recorder-player/issues/273)
        
   - beta.1
+
     [iOS]
     1. Codebase re-written in `Swift`.
     2. Migrate `AVAudioPlayer` to `AVPlayer`.

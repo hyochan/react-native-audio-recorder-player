@@ -7,6 +7,10 @@
 [![CI](https://github.com/hyochan/react-native-audio-recorder-player/actions/workflows/ci.yml/badge.svg)](https://github.com/hyochan/react-native-audio-recorder-player/actions/workflows/ci.yml)
 [![publish-package](https://github.com/hyochan/react-native-audio-recorder-player/actions/workflows/publish-package.yml/badge.svg)](https://github.com/hyochan/react-native-audio-recorder-player/actions/workflows/publish-package.yml)
 ![License](http://img.shields.io/npm/l/react-native-audio-recorder-player.svg?style=flat-square)
+[![supports iOS](https://img.shields.io/badge/iOS-4630EB.svg?style=flat-square&logo=APPLE&labelColor=999999&logoColor=fff)](https://itunes.apple.com/app/apple-store/id982107779)
+[![supports Android](https://img.shields.io/badge/Android-4630EB.svg?style=flat-square&logo=ANDROID&labelColor=A4C639&logoColor=fff)](https://play.google.com/store/apps/details?id=host.exp.exponent&referrer=www)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
+[![LICENSE](http://img.shields.io/npm/l/@react-native-seoul/masonry-list.svg?style=flat-square)](https://npmjs.org/package/@react-native-seoul/masonry-list)
 
 This is a react-native link module for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities for both `android` and `ios` platforms. This only supports default file extension for each platform. This module can also handle file from url.
 
@@ -15,6 +19,8 @@ This is a react-native link module for audio recorder and player. This is not a 
 <img src="https://user-images.githubusercontent.com/27461460/117547014-3fe52000-b068-11eb-9f34-2bfc1e5092fd.gif" width=300/>
 
 ## Free read
+
+- [Version 3 Release Note](https://medium.com/dooboolab/react-native-audio-player-and-recorder-v3-7697e25cd07)
 
 - Happy [Blog](https://medium.com/@dooboolab/react-native-audio-recorder-and-player-4aa5f26a666).
 
@@ -174,7 +180,8 @@ Lastly, you need to enable `kotlin`. Please change add the line below in `androi
 buildscript {
   ext {
       buildToolsVersion = "29.0.3"
-      minSdkVersion = 21
++     // Note: Below change is necessary for pause / resume audio feature. Not for Kotlin.
++     minSdkVersion = 24
       compileSdkVersion = 29
       targetSdkVersion = 29
 +     kotlinVersion = '1.5.0'
@@ -239,7 +246,7 @@ const audioSet: AudioSet = {
 };
 const meteringEnabled = false; 
 
-const uri = await this.audioRecorderPlayer.startRecorder(path, meteringEnabled, audioSet);
+const uri = await this.audioRecorderPlayer.startRecorder(path, audioSet, meteringEnabled);
 
 this.audioRecorderPlayer.addRecordBackListener((e: any) => {
   this.setState({

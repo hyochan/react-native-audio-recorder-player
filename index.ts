@@ -226,8 +226,8 @@ class AudioRecorderPlayer {
 
       return RNAudioRecorderPlayer.startRecorder(
         uri ?? 'DEFAULT',
-        meteringEnabled ?? false,
         audioSets,
+        meteringEnabled ?? false,
       );
     }
 

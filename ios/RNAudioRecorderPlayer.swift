@@ -133,7 +133,7 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
     /**********               Player               **********/
 
     @objc(startRecorder:meteringEnabled:audioSets:resolve:reject:)
-    func startRecorder(path: String, meteringEnabled: Bool, audioSets: [String: Any], resolve: @escaping RCTPromiseResolveBlock,
+    func startRecorder(path: String,  audioSets: [String: Any], meteringEnabled: Bool, resolve: @escaping RCTPromiseResolveBlock,
        rejecter reject: @escaping RCTPromiseRejectBlock) -> Void {
 
         _meteringEnabled = meteringEnabled;
