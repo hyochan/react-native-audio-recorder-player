@@ -1,4 +1,7 @@
 ## Changelogs
+- **[3.0.1]**
+  - [iOS] Before setActive should stop RNAudioRecorderPlayer [#292](https://github.com/hyochan/react-native-audio-recorder-player/commit/d761de160be2b7241a2d511d02b69abecd1ca1d7)
+
 - **[3.0.0]**
   Released with `3.0.0` with below beta updates applied.
 
