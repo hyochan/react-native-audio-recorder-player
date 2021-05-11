@@ -1,5 +1,5 @@
 ## Changelogs
-- **[3.0.1]**
+- **[3.0.2]**
   - [iOS] Fixes when playing same file repeatedely [#293](https://github.com/hyochan/react-native-audio-recorder-player/pull/293)
 
 - **[3.0.1]**
