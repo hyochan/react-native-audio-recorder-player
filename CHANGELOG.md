@@ -1,4 +1,7 @@
 ## Changelogs
+- **[3.0.4]**
+  - [Android] Add optional wrappers to support android sdk 30 [#305](https://github.com/hyochan/react-native-audio-recorder-player/pull/305)
+
 - **[3.0.3]**
   - [iOS] Allow file uri to play [#301](https://github.com/hyochan/react-native-audio-recorder-player/pull/301)
      * Resolve [#300](https://github.com/hyochan/react-native-audio-recorder-player/issue/300)
