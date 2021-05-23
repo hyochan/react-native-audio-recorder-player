@@ -1,4 +1,7 @@
 ## Changelogs
+- **[3.0.6]**
+  - [iOS] Fix seekToPlayer method: it always seeked to 0. [#311](https://github.com/hyochan/react-native-audio-recorder-player/pull/311)
+
 - **[3.0.5]**
   - [iOS] Handle file path better [#307](https://github.com/hyochan/react-native-audio-recorder-player/pull/307)
 
