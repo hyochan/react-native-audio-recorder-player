@@ -1,4 +1,7 @@
 ## Changelogs
+- **[3.0.9]**
+  - [Bugfix/iOS] Select `opus` encoding on `iOS` [#324](https://github.com/hyochan/react-native-audio-recorder-player/pull/324).
+
 - **[3.0.8]**
   - [Bugfix/iOS] Fix crashing when stopping recorder when metering is enabled.
      - Resolve [#297](https://github.com/hyochan/react-native-audio-recorder-player/issues/297)
