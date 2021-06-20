@@ -1,4 +1,7 @@
 ## Changelogs
+- **[3.0.10]**
+  - [iOS] Fix minimum iOS deployment target [#332](https://github.com/hyochan/react-native-audio-recorder-player/pull/332).
+
 - **[3.0.9]**
   - [Bugfix/iOS] Select `opus` encoding on `iOS` [#324](https://github.com/hyochan/react-native-audio-recorder-player/pull/324).
 
