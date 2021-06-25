@@ -26,7 +26,7 @@ This is a react-native link module for audio recorder and player. This is not a 
 
 ## Breaking Changes
 
-- From version `3.0.+`, a critical migration has been done. Current version is not much different from version `2.0.+` in usability, but there are many changes internally.
+- From version `3.0.+`, a critical migration has been done. Current version is not much different from version `2.0.+` in usability, but there are many changes internally. Also note that it supports `iOS` platform version `10.0` or newer.
   1. Codebase has been re-written to [kotlin for Android](https://kotlinlang.org) and [swift for iOS](https://swift.org). Please follow the [post installation](https://github.com/hyochan/react-native-audio-recorder-player#post-installation) for this changes.
 
      [iOS]
