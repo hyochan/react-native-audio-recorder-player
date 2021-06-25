@@ -1,4 +1,8 @@
 ## Changelogs
+- **[3.0.11]**
+  - [Android] Small bugfixes on `println` message [#337](https://github.com/hyochan/react-native-audio-recorder-player/pull/337).
+
+
 - **[3.0.10]**
   - [iOS] Fix minimum iOS deployment target [#332](https://github.com/hyochan/react-native-audio-recorder-player/pull/332).
 
