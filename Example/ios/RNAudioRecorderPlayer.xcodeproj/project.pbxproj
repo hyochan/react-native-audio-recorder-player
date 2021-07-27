@@ -8,13 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* RNAudioRecorderPlayerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* RNAudioRecorderPlayerTests.m */; };
+		0D30EC940D3763887E649CA7 /* libPods-RNAudioRecorderPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6852286B721FC99745EE46F9 /* libPods-RNAudioRecorderPlayer.a */; };
 		0E7EAFD72642888200F4C51F /* SwiftBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E7EAFD62642888200F4C51F /* SwiftBridge.swift */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.m */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
-		1C0C2CB0BA006A179EB28869 /* libPods-RNAudioRecorderPlayer.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 96EC70B59662C74EA74CCF45 /* libPods-RNAudioRecorderPlayer.a */; };
-		810916E37D4688B5B81EDFCC /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC4CC58A9D81C86307095B53 /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		BB53B1557C906768AF1712D0 /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5AF7C9E34C6CC029E3BD5239 /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -31,20 +31,20 @@
 		00E356EE1AD99517003FC87E /* RNAudioRecorderPlayerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RNAudioRecorderPlayerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* RNAudioRecorderPlayerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNAudioRecorderPlayerTests.m; sourceTree = "<group>"; };
-		0B595183C5E56B684890DD40 /* Pods-RNAudioRecorderPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNAudioRecorderPlayer.debug.xcconfig"; path = "Target Support Files/Pods-RNAudioRecorderPlayer/Pods-RNAudioRecorderPlayer.debug.xcconfig"; sourceTree = "<group>"; };
 		0E7EAFD62642888200F4C51F /* SwiftBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftBridge.swift; sourceTree = "<group>"; };
+		132DDB7BCC4FF44E8F183637 /* Pods-RNAudioRecorderPlayer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNAudioRecorderPlayer.release.xcconfig"; path = "Target Support Files/Pods-RNAudioRecorderPlayer/Pods-RNAudioRecorderPlayer.release.xcconfig"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* RNAudioRecorderPlayer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RNAudioRecorderPlayer.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = RNAudioRecorderPlayer/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AppDelegate.m; path = RNAudioRecorderPlayer/AppDelegate.m; sourceTree = "<group>"; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = RNAudioRecorderPlayer/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = RNAudioRecorderPlayer/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = RNAudioRecorderPlayer/main.m; sourceTree = "<group>"; };
+		57CC40035B8F18B917975055 /* Pods-RNAudioRecorderPlayer.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNAudioRecorderPlayer.debug.xcconfig"; path = "Target Support Files/Pods-RNAudioRecorderPlayer/Pods-RNAudioRecorderPlayer.debug.xcconfig"; sourceTree = "<group>"; };
+		5AF7C9E34C6CC029E3BD5239 /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		5DB73003CEE817368C5C2B3E /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig"; path = "Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig"; sourceTree = "<group>"; };
+		6852286B721FC99745EE46F9 /* libPods-RNAudioRecorderPlayer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNAudioRecorderPlayer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = RNAudioRecorderPlayer/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		8854E1804B5FF1E1423F713D /* Pods-RNAudioRecorderPlayer.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNAudioRecorderPlayer.release.xcconfig"; path = "Target Support Files/Pods-RNAudioRecorderPlayer/Pods-RNAudioRecorderPlayer.release.xcconfig"; sourceTree = "<group>"; };
-		96EC70B59662C74EA74CCF45 /* libPods-RNAudioRecorderPlayer.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNAudioRecorderPlayer.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		B1F18E999E49CF88AAD205B3 /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig"; path = "Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig"; sourceTree = "<group>"; };
-		DC4CC58A9D81C86307095B53 /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DE6831B173502234E195B22A /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig"; path = "Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig"; sourceTree = "<group>"; };
+		8EDC274B6665FBF405AEFF56 /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig"; path = "Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
@@ -53,7 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				810916E37D4688B5B81EDFCC /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a in Frameworks */,
+				BB53B1557C906768AF1712D0 /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -61,7 +61,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1C0C2CB0BA006A179EB28869 /* libPods-RNAudioRecorderPlayer.a in Frameworks */,
+				0D30EC940D3763887E649CA7 /* libPods-RNAudioRecorderPlayer.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,8 +102,8 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				96EC70B59662C74EA74CCF45 /* libPods-RNAudioRecorderPlayer.a */,
-				DC4CC58A9D81C86307095B53 /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a */,
+				6852286B721FC99745EE46F9 /* libPods-RNAudioRecorderPlayer.a */,
+				5AF7C9E34C6CC029E3BD5239 /* libPods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -143,10 +143,10 @@
 		F08D4988F85BCAAB380ACD7B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				0B595183C5E56B684890DD40 /* Pods-RNAudioRecorderPlayer.debug.xcconfig */,
-				8854E1804B5FF1E1423F713D /* Pods-RNAudioRecorderPlayer.release.xcconfig */,
-				B1F18E999E49CF88AAD205B3 /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig */,
-				DE6831B173502234E195B22A /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig */,
+				57CC40035B8F18B917975055 /* Pods-RNAudioRecorderPlayer.debug.xcconfig */,
+				132DDB7BCC4FF44E8F183637 /* Pods-RNAudioRecorderPlayer.release.xcconfig */,
+				8EDC274B6665FBF405AEFF56 /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig */,
+				5DB73003CEE817368C5C2B3E /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -158,11 +158,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 00E357021AD99517003FC87E /* Build configuration list for PBXNativeTarget "RNAudioRecorderPlayerTests" */;
 			buildPhases = (
-				0B691C34FD8481C59AF08F55 /* [CP] Check Pods Manifest.lock */,
+				74ED64A95708009C70FEC786 /* [CP] Check Pods Manifest.lock */,
 				00E356EA1AD99517003FC87E /* Sources */,
 				00E356EB1AD99517003FC87E /* Frameworks */,
 				00E356EC1AD99517003FC87E /* Resources */,
-				33F64D0E38587FA22C8DA903 /* [CP] Copy Pods Resources */,
+				5DC982796ADFFC3AF7C4F8BF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -178,13 +178,13 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "RNAudioRecorderPlayer" */;
 			buildPhases = (
-				DAE80994624FE307310DEBEA /* [CP] Check Pods Manifest.lock */,
+				34C0AA8863CADFC465C5518D /* [CP] Check Pods Manifest.lock */,
 				FD10A7F022414F080027D42C /* Start Packager */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
-				94901F9442A504744465A261 /* [CP] Copy Pods Resources */,
+				0B67A0306C44C0F88B83E50F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -201,7 +201,7 @@
 		83CBB9F71A601CBA00E9B192 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 1210;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					00E356ED1AD99517003FC87E = {
 						CreatedOnToolsVersion = 6.2;
@@ -265,46 +265,7 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\n\nexport NODE_BINARY=node\n../node_modules/react-native/scripts/react-native-xcode.sh\n";
 		};
-		0B691C34FD8481C59AF08F55 /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		33F64D0E38587FA22C8DA903 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		94901F9442A504744465A261 /* [CP] Copy Pods Resources */ = {
+		0B67A0306C44C0F88B83E50F /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -321,7 +282,7 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNAudioRecorderPlayer/Pods-RNAudioRecorderPlayer-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DAE80994624FE307310DEBEA /* [CP] Check Pods Manifest.lock */ = {
+		34C0AA8863CADFC465C5518D /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -337,6 +298,45 @@
 			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-RNAudioRecorderPlayer-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		5DC982796ADFFC3AF7C4F8BF /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests-resources-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		74ED64A95708009C70FEC786 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -396,7 +396,7 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = B1F18E999E49CF88AAD205B3 /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig */;
+			baseConfigurationReference = 8EDC274B6665FBF405AEFF56 /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -405,7 +405,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = RNAudioRecorderPlayerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -424,13 +424,13 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DE6831B173502234E195B22A /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig */;
+			baseConfigurationReference = 5DB73003CEE817368C5C2B3E /* Pods-RNAudioRecorderPlayer-RNAudioRecorderPlayerTests.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
 				INFOPLIST_FILE = RNAudioRecorderPlayerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -449,12 +449,14 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0B595183C5E56B684890DD40 /* Pods-RNAudioRecorderPlayer.debug.xcconfig */;
+			baseConfigurationReference = 57CC40035B8F18B917975055 /* Pods-RNAudioRecorderPlayer.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LCXV255WTL;
 				ENABLE_BITCODE = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = RNAudioRecorderPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -465,7 +467,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.dooboolab.rnaudiorecorderplayer;
 				PRODUCT_NAME = RNAudioRecorderPlayer;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -475,11 +477,13 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8854E1804B5FF1E1423F713D /* Pods-RNAudioRecorderPlayer.release.xcconfig */;
+			baseConfigurationReference = 132DDB7BCC4FF44E8F183637 /* Pods-RNAudioRecorderPlayer.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = LCXV255WTL;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
 				INFOPLIST_FILE = RNAudioRecorderPlayer/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -490,7 +494,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.dooboolab.rnaudiorecorderplayer;
 				PRODUCT_NAME = RNAudioRecorderPlayer;
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -546,7 +550,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -604,7 +608,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					/usr/lib/swift,
 					"$(inherited)",
@@ -616,6 +620,7 @@
 				);
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
