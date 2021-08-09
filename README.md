@@ -27,29 +27,34 @@ This is a react-native link module for audio recorder and player. This is not a 
 ## Breaking Changes
 
 - From version `3.0.+`, a critical migration has been done. Current version is not much different from version `2.0.+` in usability, but there are many changes internally. Also note that it supports `iOS` platform version `10.0` or newer.
+
   1. Codebase has been re-written to [kotlin for Android](https://kotlinlang.org) and [swift for iOS](https://swift.org). Please follow the [post installation](https://github.com/hyochan/react-native-audio-recorder-player#post-installation) for this changes.
 
      [iOS]
-     * [AVAudioPlayer](https://developer.apple.com/documentation/avfaudio/avaudioplayer) has been migrated to [AVPlayer](https://developer.apple.com/documentation/avfoundation/avplayer) which supports stream and more possibilities [#231](https://github.com/hyochan/react-native-audio-recorder-player/issues/231), [#245](https://github.com/hyochan/react-native-audio-recorder-player/issues/245), [#275](https://github.com/hyochan/react-native-audio-recorder-player/issues/275).
+
+     - [AVAudioPlayer](https://developer.apple.com/documentation/avfaudio/avaudioplayer) has been migrated to [AVPlayer](https://developer.apple.com/documentation/avfoundation/avplayer) which supports stream and more possibilities [#231](https://github.com/hyochan/react-native-audio-recorder-player/issues/231), [#245](https://github.com/hyochan/react-native-audio-recorder-player/issues/245), [#275](https://github.com/hyochan/react-native-audio-recorder-player/issues/275).
+
   2. `pauseRecorder` and `resumeRecorder` features are added.
      - **Caveat**
        Android now requires `minSdk` of `24`.
   3. Renamed callback variables.
-      ```ts
-      export type RecordBackType = {
-        isRecording?: boolean;
-        currentPosition: number;
-        currentMetering?: number;
-      };
 
-      export type PlayBackType = {
-        isMuted?: boolean;
-        currentPosition: number;
-        duration: number;
-      };
-      ```
+     ```ts
+     export type RecordBackType = {
+       isRecording?: boolean;
+       currentPosition: number;
+       currentMetering?: number;
+     };
+
+     export type PlayBackType = {
+       isMuted?: boolean;
+       currentPosition: number;
+       duration: number;
+     };
+     ```
+
   4. `subscriptionDuration` offset not defaults to `0.5` which is `500ms`.
-      * Resolve [#273](https://github.com/hyochan/react-native-audio-recorder-player/issues/273)
+     - Resolve [#273](https://github.com/hyochan/react-native-audio-recorder-player/issues/273)
 
 - There has been vast improvements in [#114](https://github.com/dooboolab/react-native-audio-recorder-player/pull/114) which is released in `2.3.0`. We now support all `RN` versions without any version differenciating. See below installation guide for your understanding.
 
@@ -58,7 +63,7 @@ This is a react-native link module for audio recorder and player. This is not a 
 | 1.x.x                  | 2.x.x & 3.x.x             |
 | ---------------------- | ------------------------- |
 | `startRecord`          | `startRecorder`           |
-|                        | `pauseRecorder`  (3.x.x)  |
+|                        | `pauseRecorder` (3.x.x)   |
 |                        | `resumeRecorder` (3.x.x)  |
 | `stopRecord`           | `stopRecorder`            |
 | `startPlay`            | `startPlayer`             |
@@ -81,6 +86,7 @@ This is a react-native link module for audio recorder and player. This is not a 
 #### Using React Native >= 0.61
 
 [iOS only]
+
 ```sh
 npx pod-install
 ```
@@ -102,7 +108,7 @@ npx pod-install
 
 1. Open up `android/app/src/main/java/[...]/MainApplication.java`
 
-- Add `import com.dooboolab.RNAudioRecorderPlayerPackage;` to the imports at the top of the file
+- Add `import package com.dooboolab.audiorecorderplayer.RNAudioRecorderPlayerPackage;` to the imports at the top of the file
 - Add `new RNAudioRecorderPlayerPackage()` to the list returned by the `getPackages()` method
 
 2. Append the following lines to `android/settings.gradle`:
@@ -129,7 +135,6 @@ On _iOS_ you need to add a usage description to `Info.plist`:
 Also, add [swift bridging header](https://stackoverflow.com/questions/31716413/xcode-not-automatically-creating-bridging-header) if you haven't created one for `swift` compatibility.
 
 <img width="800" alt="1" src="https://user-images.githubusercontent.com/27461460/111863065-8be6e300-899c-11eb-8ad8-6811e0bd0fbd.png">
-
 
 #### Android
 
@@ -199,28 +204,27 @@ buildscript {
 ...
 ```
 
-
 ## Methods
 
 All methods are implemented with promises.
 
-| Func                  |        Param        |      Return       | Description                                                                  |
-| :-------------------- | :--------------------: | :---------------: | :--------------------------------------------------------------------------- |
-| mmss                  |  `number` seconds       |     `string`      | Convert seconds to `minute:second` string       |
-| setSubscriptionDuration |                        | `void` | Set default callback time when starting recorder or player. Default to `0.5` which is `500ms` |
-| addRecordBackListener | `Function` callBack     |     `void`        | Get callback from native module. Will receive `currentPosition`, `currentMetering` (if configured in startRecorder)          |
-| removeRecordBackListener | `Function` callBack  |     `void`        | Removes recordback listener |
-| addPlayBackListener   | `Function` callBack     |      `void`       | Get callback from native module. Will receive `duration`, `currentPosition` |
-| removePlayBackListener| `Function` callBack     |      `void`       | Removes playback  listener |
-| startRecorder         |   `<string>` uri? `<boolean>` meteringEnabled?      |  `Promise<void>`  | Start recording. Not passing uri will save audio in default location.  |
-| pauseRecorder         |                         | `Promise<string>` | Pause recording.      |
-| resumeRecorder        |                         | `Promise<string>` | Resume recording.     |
-| stopRecorder          |                         | `Promise<string>` | Stop recording.       |
-| startPlayer           |   `string` uri? `Record<string, string>` httpHeaders?       | `Promise<string>` | Start playing. Not passing the param will play audio in default location.    |
-| stopPlayer            |                         | `Promise<string>` | Stop playing.         |
-| pausePlayer           |                         | `Promise<string>` | Pause playing.        |
-| seekToPlayer          |  `number` miliseconds   | `Promise<string>` | Seek audio.           |
-| setVolume             |   `double` value        | `Promise<string>` | Set volume of audio player (default 1.0, range: 0.0 ~ 1.0). |
+| Func                     |                        Param                        |      Return       | Description                                                                                                         |
+| :----------------------- | :-------------------------------------------------: | :---------------: | :------------------------------------------------------------------------------------------------------------------ |
+| mmss                     |                  `number` seconds                   |     `string`      | Convert seconds to `minute:second` string                                                                           |
+| setSubscriptionDuration  |                                                     |      `void`       | Set default callback time when starting recorder or player. Default to `0.5` which is `500ms`                       |
+| addRecordBackListener    |                 `Function` callBack                 |      `void`       | Get callback from native module. Will receive `currentPosition`, `currentMetering` (if configured in startRecorder) |
+| removeRecordBackListener |                 `Function` callBack                 |      `void`       | Removes recordback listener                                                                                         |
+| addPlayBackListener      |                 `Function` callBack                 |      `void`       | Get callback from native module. Will receive `duration`, `currentPosition`                                         |
+| removePlayBackListener   |                 `Function` callBack                 |      `void`       | Removes playback listener                                                                                           |
+| startRecorder            |    `<string>` uri? `<boolean>` meteringEnabled?     |  `Promise<void>`  | Start recording. Not passing uri will save audio in default location.                                               |
+| pauseRecorder            |                                                     | `Promise<string>` | Pause recording.                                                                                                    |
+| resumeRecorder           |                                                     | `Promise<string>` | Resume recording.                                                                                                   |
+| stopRecorder             |                                                     | `Promise<string>` | Stop recording.                                                                                                     |
+| startPlayer              | `string` uri? `Record<string, string>` httpHeaders? | `Promise<string>` | Start playing. Not passing the param will play audio in default location.                                           |
+| stopPlayer               |                                                     | `Promise<string>` | Stop playing.                                                                                                       |
+| pausePlayer              |                                                     | `Promise<string>` | Pause playing.                                                                                                      |
+| seekToPlayer             |                `number` miliseconds                 | `Promise<string>` | Seek audio.                                                                                                         |
+| setVolume                |                   `double` value                    | `Promise<string>` | Set volume of audio player (default 1.0, range: 0.0 ~ 1.0).                                                         |
 
 ## Able to customize recorded audio quality (from `2.3.0`)
 
@@ -248,14 +252,16 @@ const audioSet: AudioSet = {
 };
 const meteringEnabled = false;
 
-const uri = await this.audioRecorderPlayer.startRecorder(path, audioSet, meteringEnabled);
+const uri = await this.audioRecorderPlayer.startRecorder(
+  path,
+  audioSet,
+  meteringEnabled,
+);
 
 this.audioRecorderPlayer.addRecordBackListener((e: any) => {
   this.setState({
     recordSecs: e.currentPosition,
-    recordTime: this.audioRecorderPlayer.mmssss(
-      Math.floor(e.currentPosition),
-    ),
+    recordTime: this.audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
   });
 });
 ```
