@@ -1,5 +1,12 @@
 ## Changelogs
 
+- **[3.1.2]**
+
+  - Fix: normalize seekToPlayer time argument  poultry_leg enhancement [#372](https://github.com/hyochan/react-native-audio-recorder-player/pull/372)
+
+  - [Android]
+    - Fix permission request when one is already granted  robot android poultry_leg enhancement [#373](https://github.com/hyochan/react-native-audio-recorder-player/pull/373)
+
 - **[3.1.1]**
 
   - [iOS] Check if recording actually started [#362](https://github.com/hyochan/react-native-audio-recorder-player/pull/362)
