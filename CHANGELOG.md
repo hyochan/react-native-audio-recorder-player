@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 3.3.0
+
+iOS network header support [#405](https://github.com/hyochan/react-native-audio-recorder-player/pull/405).
+
 ## 3.2.0
 
 Fix android build compatible to sdk 32 [#389](https://github.com/hyochan/react-native-audio-recorder-player/pull/389).
