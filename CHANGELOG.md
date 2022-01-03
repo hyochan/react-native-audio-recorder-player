@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 3.3.1
+
+chore: upgrade flowgen package [#411](https://github.com/hyochan/react-native-audio-recorder-player/pull/411)
+
 ## 3.3.0
 
 iOS network header support [#405](https://github.com/hyochan/react-native-audio-recorder-player/pull/405).
