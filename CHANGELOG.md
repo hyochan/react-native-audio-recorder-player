@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 3.3.2
+
+New AVModeIOS audio setting [#409](https://github.com/hyochan/react-native-audio-recorder-player/pull/411)
+
 ## 3.3.1
 
 chore: upgrade flowgen package [#411](https://github.com/hyochan/react-native-audio-recorder-player/pull/411)
