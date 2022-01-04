@@ -140,12 +140,14 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
         _meteringEnabled = meteringEnabled;
 
         let encoding = audioSets["AVFormatIDKeyIOS"] as? String
+        let mode = audioSets["AVModeIOS"] as? String
         let avLPCMBitDepth = audioSets["AVLinearPCMBitDepthKeyIOS"] as? Int
         let avLPCMIsBigEndian = audioSets["AVLinearPCMIsBigEndianKeyIOS"] as? Bool
         let avLPCMIsFloatKey = audioSets["AVLinearPCMIsFloatKeyIOS"] as? Bool
         let avLPCMIsNonInterleaved = audioSets["AVLinearPCMIsNonInterleavedIOS"] as? Bool
 
         var avFormat: Int? = nil
+        var avMode: AVAudioSession.Mode = AVAudioSession.Mode.default
         var sampleRate = audioSets["AVSampleRateKeyIOS"] as? Int
         var numberOfChannel = audioSets["AVNumberOfChannelsKeyIOS"] as? Int
         var audioQuality = audioSets["AVEncoderAudioQualityKeyIOS"] as? Int
@@ -189,6 +191,29 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
                 avFormat = Int(kAudioFormatOpus)
             }
         }
+
+        if (mode == "measurement") {
+            avMode = AVAudioSession.Mode.measurement
+        } else if (mode == "gamechat") {
+            avMode = AVAudioSession.Mode.gameChat
+        } else if (mode == "movieplayback") {
+            avMode = AVAudioSession.Mode.moviePlayback
+        } else if (mode == "spokenaudio") {
+            avMode = AVAudioSession.Mode.spokenAudio
+        } else if (mode == "videochat") {
+            avMode = AVAudioSession.Mode.videoChat
+        } else if (mode == "videorecording") {
+            avMode = AVAudioSession.Mode.videoRecording
+        } else if (mode == "voicechat") {
+            avMode = AVAudioSession.Mode.voiceChat
+        } else if (mode == "voiceprompt") {
+            if #available(iOS 12.0, *) {
+                avMode = AVAudioSession.Mode.voicePrompt
+            } else {
+                // Fallback on earlier versions
+            }
+        }
+
 
         if (numberOfChannel == nil) {
             numberOfChannel = 2
@@ -239,7 +264,7 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
         audioSession = AVAudioSession.sharedInstance()
 
         do {
-            try audioSession.setCategory(.playAndRecord, mode: .default, options: [AVAudioSession.CategoryOptions.defaultToSpeaker, AVAudioSession.CategoryOptions.allowBluetooth])
+            try audioSession.setCategory(.playAndRecord, mode: avMode, options: [AVAudioSession.CategoryOptions.defaultToSpeaker, AVAudioSession.CategoryOptions.allowBluetooth])
             try audioSession.setActive(true)
 
             audioSession.requestRecordPermission { granted in

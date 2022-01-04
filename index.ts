@@ -77,6 +77,27 @@ type AVEncodingType =
   | AVEncodingOption.flac
   | AVEncodingOption.opus;
 
+export enum AVModeIOSOption {
+  gamechat = 'gamechat',
+  measurement = 'measurement',
+  movieplayback = 'movieplayback',
+  spokenaudio = 'spokenaudio',
+  videochat = 'videochat',
+  videorecording = 'videorecording',
+  voicechat = 'voicechat',
+  voiceprompt = 'voiceprompt',
+}
+
+export type AVModeIOSType =
+  | AVModeIOSOption.gamechat
+  | AVModeIOSOption.measurement
+  | AVModeIOSOption.movieplayback
+  | AVModeIOSOption.spokenaudio
+  | AVModeIOSOption.videochat
+  | AVModeIOSOption.videorecording
+  | AVModeIOSOption.voicechat
+  | AVModeIOSOption.voiceprompt;
+
 export enum AVEncoderAudioQualityIOSType {
   min = 0,
   low = 32,
@@ -95,6 +116,7 @@ export enum AVLinearPCMBitDepthKeyIOSType {
 export interface AudioSet {
   AVSampleRateKeyIOS?: number;
   AVFormatIDKeyIOS?: AVEncodingType;
+  AVModeIOS?: AVModeIOSType;
   AVNumberOfChannelsKeyIOS?: number;
   AVEncoderAudioQualityKeyIOS?: AVEncoderAudioQualityIOSType;
   AudioSourceAndroid?: AudioSourceAndroidType;
