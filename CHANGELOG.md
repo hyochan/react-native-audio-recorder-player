@@ -1,8 +1,12 @@
 ## Changelogs
 
+## 3.3.3
+
+RCTJSONStringify parse error json fix [#413](https://github.com/hyochan/react-native-audio-recorder-player/pull/413)
+
 ## 3.3.2
 
-New AVModeIOS audio setting [#409](https://github.com/hyochan/react-native-audio-recorder-player/pull/411)
+New AVModeIOS audio setting [#409](https://github.com/hyochan/react-native-audio-recorder-player/pull/409)
 
 ## 3.3.1
 
