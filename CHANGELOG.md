@@ -1,5 +1,9 @@
 ## Changelogs
 
+## 3.3.4
+
+Fix playback of local files in iOS [#416](https://github.com/hyochan/react-native-audio-recorder-player/pull/416)
+
 ## 3.3.3
 
 RCTJSONStringify parse error json fix [#413](https://github.com/hyochan/react-native-audio-recorder-player/pull/413)
