@@ -1,5 +1,8 @@
 ## Changelogs
 
+## 3.4.0
+* Added kAudioFormatMPEG4AAC to AVEncodingType by @le-ar in https://github.com/hyochan/react-native-audio-recorder-player/pull/431
+
 ## 3.3.4
 
 Fix playback of local files in iOS [#416](https://github.com/hyochan/react-native-audio-recorder-player/pull/416)
