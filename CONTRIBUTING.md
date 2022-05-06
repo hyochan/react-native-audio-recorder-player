@@ -7,7 +7,7 @@
 	* If necessary, please take a screenshot and upload an image.
 
 ### Pull request(PR)
-* Do not modify the code in the `master` branch.
+* Do not modify the code in the `main` branch.
 * PR allows only the `dev` branch.
 * It is useful to use a topic branch that has the parent `dev` as its parent.
 
