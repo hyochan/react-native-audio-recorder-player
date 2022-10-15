@@ -1,6 +1,6 @@
+import type {EmitterSubscription} from 'react-native';
 import {
   DeviceEventEmitter,
-  EmitterSubscription,
   NativeEventEmitter,
   NativeModules,
   Platform,
