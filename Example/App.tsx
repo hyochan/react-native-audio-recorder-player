@@ -1,13 +1,13 @@
-import type {
-  AudioSet,
-  PlayBackType,
-  RecordBackType,
-} from 'react-native-audio-recorder-player';
 import AudioRecorderPlayer, {
   AVEncoderAudioQualityIOSType,
   AVEncodingOption,
   AudioEncoderAndroidType,
   AudioSourceAndroidType,
+} from 'react-native-audio-recorder-player';
+import type {
+  AudioSet,
+  PlayBackType,
+  RecordBackType,
 } from 'react-native-audio-recorder-player';
 import {
   Dimensions,
@@ -23,6 +23,7 @@ import React, {Component} from 'react';
 
 import Button from './components/uis/Button';
 import RNFetchBlob from 'rn-fetch-blob';
+import type {ReactElement} from 'react';
 
 const styles: any = StyleSheet.create({
   container: {
@@ -139,7 +140,7 @@ class Page extends Component<any, State> {
     this.audioRecorderPlayer.setSubscriptionDuration(0.1); // optional. Default is 0.5
   }
 
-  public render() {
+  public render(): ReactElement {
     let playWidth =
       (this.state.currentPositionSec / this.state.currentDurationSec) *
       (screenWidth - 56);
@@ -247,7 +248,7 @@ class Page extends Component<any, State> {
     );
   }
 
-  private onStatusPress = (e: any) => {
+  private onStatusPress = (e: any): void => {
     const touchX = e.nativeEvent.locationX;
     console.log(`touchX: ${touchX}`);
 
@@ -269,7 +270,7 @@ class Page extends Component<any, State> {
     }
   };
 
-  private onStartRecord = async () => {
+  private onStartRecord = async (): Promise<void> => {
     if (Platform.OS === 'android') {
       try {
         const grants = await PermissionsAndroid.requestMultiple([
@@ -334,7 +335,7 @@ class Page extends Component<any, State> {
     console.log(`uri: ${uri}`);
   };
 
-  private onPauseRecord = async () => {
+  private onPauseRecord = async (): Promise<void> => {
     try {
       const r = await this.audioRecorderPlayer.pauseRecorder();
       console.log(r);
@@ -343,11 +344,11 @@ class Page extends Component<any, State> {
     }
   };
 
-  private onResumeRecord = async () => {
+  private onResumeRecord = async (): Promise<void> => {
     await this.audioRecorderPlayer.resumeRecorder();
   };
 
-  private onStopRecord = async () => {
+  private onStopRecord = async (): Promise<void> => {
     const result = await this.audioRecorderPlayer.stopRecorder();
     this.audioRecorderPlayer.removeRecordBackListener();
     this.setState({
@@ -356,7 +357,7 @@ class Page extends Component<any, State> {
     console.log(result);
   };
 
-  private onStartPlay = async () => {
+  private onStartPlay = async (): Promise<void> => {
     console.log('onStartPlay');
     //? Custom path
     // const msg = await this.audioRecorderPlayer.startPlayer(this.path);
@@ -378,15 +379,15 @@ class Page extends Component<any, State> {
     });
   };
 
-  private onPausePlay = async () => {
+  private onPausePlay = async (): Promise<void> => {
     await this.audioRecorderPlayer.pausePlayer();
   };
 
-  private onResumePlay = async () => {
+  private onResumePlay = async (): Promise<void> => {
     await this.audioRecorderPlayer.resumePlayer();
   };
 
-  private onStopPlay = async () => {
+  private onStopPlay = async (): Promise<void> => {
     console.log('onStopPlay');
     this.audioRecorderPlayer.stopPlayer();
     this.audioRecorderPlayer.removePlayBackListener();
