@@ -224,17 +224,22 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
             }
 
             mediaPlayer!!.setOnPreparedListener { mp ->
-                Log.d(tag, "mediaplayer prepared and start")
+                Log.d(tag, "Mediaplayer prepared and start")
                 mp.start()
                 /**
                  * Set timer task to send event to RN.
                  */
                 mTask = object : TimerTask() {
                     override fun run() {
-                        val obj = Arguments.createMap()
-                        obj.putInt("duration", mp.duration)
-                        obj.putInt("currentPosition", mp.currentPosition)
-                        sendEvent(reactContext, "rn-playback", obj)
+                        try {
+                            val obj = Arguments.createMap()
+                            obj.putInt("duration", mp.duration)
+                            obj.putInt("currentPosition", mp.currentPosition)
+                            sendEvent(reactContext, "rn-playback", obj)
+                        } catch (e: IllegalStateException) {
+                            // IllegalStateException 처리
+                            Log.e(tag, "Mediaplayer error: ${e.message}")
+                        }
                     }
                 }
 
@@ -253,7 +258,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
                  */
                 val obj = Arguments.createMap()
                 obj.putInt("duration", mp.duration)
-                obj.putInt("currentPosition", mp.duration)
+                obj.putInt("currentPosition", mp.currentPosition)
                 sendEvent(reactContext, "rn-playback", obj)
                 /**
                  * Reset player.
@@ -278,12 +283,12 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
     @ReactMethod
     fun resumePlayer(promise: Promise) {
         if (mediaPlayer == null) {
-            promise.reject("resume", "mediaPlayer is null on resume.")
+            promise.reject("resume", "Mediaplayer is null on resume.")
             return
         }
 
         if (mediaPlayer!!.isPlaying) {
-            promise.reject("resume", "mediaPlayer is already running.")
+            promise.reject("resume", "Mediaplayer is already running.")
             return
         }
 
@@ -292,7 +297,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
             mediaPlayer!!.start()
             promise.resolve("resume player")
         } catch (e: Exception) {
-            Log.e(tag, "mediaPlayer resume: " + e.message)
+            Log.e(tag, "Mediaplayer resume: " + e.message)
             promise.reject("resume", e.message)
         }
     }
@@ -300,7 +305,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
     @ReactMethod
     fun pausePlayer(promise: Promise) {
         if (mediaPlayer == null) {
-            promise.reject("pausePlay", "mediaPlayer is null on pause.")
+            promise.reject("pausePlay", "Mediaplayer is null on pause.")
             return
         }
 
@@ -316,7 +321,7 @@ class RNAudioRecorderPlayerModule(private val reactContext: ReactApplicationCont
     @ReactMethod
     fun seekToPlayer(time: Double, promise: Promise) {
         if (mediaPlayer == null) {
-            promise.reject("seekTo", "mediaPlayer is null on seek.")
+            promise.reject("seekTo", "Mediaplayer is null on seek.")
             return
         }
 
