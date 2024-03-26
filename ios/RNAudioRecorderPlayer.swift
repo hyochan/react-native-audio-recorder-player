@@ -27,6 +27,15 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
     var playTimer: Timer?
     var timeObserverToken: Any?
 
+    override init() {
+        super.init()
+        NotificationCenter.default.addObserver(self, selector: #selector(handleAudioSessionInterruption(_:)), name: AVAudioSession.interruptionNotification, object: AVAudioSession.sharedInstance())
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
     override static func requiresMainQueueSetup() -> Bool {
       return true
     }
@@ -136,6 +145,26 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
     @objc(setSubscriptionDuration:)
     func setSubscriptionDuration(duration: Double) -> Void {
         subscriptionDuration = duration
+    }
+
+    // handle interrupt events
+    @objc 
+    func handleAudioSessionInterruption(_ notification: Notification) {
+        guard let userInfo = notification.userInfo,
+            let interruptionType = userInfo[AVAudioSessionInterruptionTypeKey] as? UInt else {
+            return
+        }
+
+        switch interruptionType {
+        case AVAudioSession.InterruptionType.began.rawValue:
+            pauseRecorder { _ in } rejecter: { _, _, _ in }
+            break
+        case AVAudioSession.InterruptionType.ended.rawValue:
+            resumeRecorder { _ in } rejecter: { _, _, _ in }
+            break
+        default:
+            break
+        }
     }
 
     /**********               Player               **********/
