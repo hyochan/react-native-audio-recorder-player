@@ -1,3 +1,6 @@
+def isNewArchitectureEnabled() {
+    return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}
 
 buildscript {
     ext.getExtOrDefault = {name ->
@@ -27,6 +30,10 @@ def safeExtGet(prop, fallback) {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
+if (isNewArchitectureEnabled()) {
+    apply plugin: "com.facebook.react"
+}
+
 android {
   def agpVersion = com.android.Version.ANDROID_GRADLE_PLUGIN_VERSION
   if (agpVersion.tokenize('.')[0].toInteger() >= 7) {
@@ -39,6 +46,21 @@ android {
     targetSdkVersion safeExtGet('targetSdkVersion', 31)
     versionCode 1
     versionName "1.0"
+    buildConfigField("boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString())
+  }
+
+  sourceSets {
+    main {
+      if (isNewArchitectureEnabled()) {
+          java.srcDirs += [
+            "src/newarch",
+            // This is needed to build Kotlin project with NewArch enabled
+            "${project.buildDir}/generated/source/codegen/java"
+          ]
+      } else {
+          java.srcDirs += ['src/oldarch']
+        }
+    }
   }
 
   compileOptions {
