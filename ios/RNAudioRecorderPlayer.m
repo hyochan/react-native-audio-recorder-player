@@ -2,9 +2,9 @@
 #import "React/RCTEventEmitter.h"
 
 //  RNAudioRecorderPlayer.m
-//  dooboolab
+//  hyochan
 //
-//  Created by dooboolab on 16/04/2018.
+//  Created by hyochan on 16/04/2018.
 //  Copyright © 2018 Facebook. All rights reserved.
 
 @interface RCT_EXTERN_MODULE(RNAudioRecorderPlayer, RCTEventEmitter)

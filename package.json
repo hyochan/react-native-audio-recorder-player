@@ -2,10 +2,10 @@
   "name": "react-native-audio-recorder-player",
   "version": "3.6.11",
   "description": "React Native Audio Recorder and Player.",
-  "homepage": "https://github.com/dooboolab/react-native-audio-recorder-player",
+  "homepage": "https://github.com/hyochan/react-native-audio-recorder-player",
   "main": "index.ts",
   "types": "index.d.ts",
-  "postinstall": "dooboolab-welcome postinstall",
+  "postinstall": "hyochan-welcome postinstall",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc && flowgen index.d.ts -o index.js.flow",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dooboolab/react-native-audio-recorder-player"
+    "url": "git+https://github.com/hyochan/react-native-audio-recorder-player"
   },
   "keywords": [
     "react-native",
@@ -23,14 +23,14 @@
     "recorder",
     "player"
   ],
-  "author": "dooboolab",
+  "author": "hyochan",
   "license": "MIT",
   "peerDependencies": {
     "react": "*",
     "react-native": "*"
   },
   "dependencies": {
-    "dooboolab-welcome": "^1.3.2"
+    "hyochan-welcome": "^1.0.0"
   },
   "devDependencies": {
     "eslint": "^8.57.0",
