@@ -333,15 +333,15 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
         let time = CMTime(seconds: subscriptionDuration, preferredTimescale: timeScale)
 
         timeObserverToken = audioPlayer.addPeriodicTimeObserver(forInterval: time,
-                                                                queue: .main) {_ in
-            if (self.audioPlayer != nil) {
-                self.sendEvent(withName: "rn-playback", body: [
-                    "isMuted": self.audioPlayer.isMuted,
-                    "currentPosition": self.audioPlayerItem.currentTime().seconds * 1000,
-                    "duration": self.audioPlayerItem.asset.duration.seconds * 1000,
-                    "isFinished": false,
-                ])
-            }
+                                                                queue: .main) {[weak self] _ in
+            guard let self = self, let audioPlayer = self.audioPlayer else { return }
+
+            self.sendEvent(withName: "rn-playback", body: [
+                "isMuted": audioPlayer.isMuted,
+                "currentPosition": self.audioPlayerItem.currentTime().seconds * 1000,
+                "duration": self.audioPlayerItem.asset.duration.seconds * 1000,
+                "isFinished": false,
+            ])
         }
     }
 
@@ -370,6 +370,7 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
         }
 
         setAudioFileURL(path: path)
+
         audioPlayerAsset = AVURLAsset(url: audioFileURL!, options:["AVURLAssetHTTPHeaderFieldsKey": httpHeaders])
         audioPlayerItem = AVPlayerItem(asset: audioPlayerAsset!)
 
@@ -403,15 +404,17 @@ class RNAudioRecorderPlayer: RCTEventEmitter, AVAudioRecorderDelegate {
         resolve: @escaping RCTPromiseResolveBlock,
         rejecter reject: @escaping RCTPromiseRejectBlock
     ) -> Void {
-        if (audioPlayer == nil) {
-            return reject("RNAudioPlayerRecorder", "Player has already stopped.", nil)
+        DispatchQueue.main.async {
+            if (self.audioPlayer == nil) {
+                return reject("RNAudioPlayerRecorder", "Player has already stopped.", nil)
+            }
+
+            self.audioPlayer.pause()
+            self.removePeriodicTimeObserver()
+            self.audioPlayer = nil;
+
+            resolve(self.audioFileURL?.absoluteString)
         }
-
-        audioPlayer.pause()
-        self.removePeriodicTimeObserver()
-        self.audioPlayer = nil;
-
-        resolve(audioFileURL?.absoluteString)
     }
 
     @objc(pausePlayer:rejecter:)
