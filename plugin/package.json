@@ -1,0 +1,36 @@
+{
+  "name": "react-native-audio-recorder-player-plugin",
+  "version": "1.0.0",
+  "description": "Expo config plugin for react-native-audio-recorder-player",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "sync-version": "node scripts/sync-version.js",
+    "build": "bun run sync-version && tsc",
+    "prepare": "bun run build"
+  },
+  "keywords": [
+    "expo",
+    "config-plugin",
+    "react-native",
+    "audio",
+    "recorder",
+    "player"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "expo": ">=47.0.0"
+  },
+  "dependencies": {
+    "expo": ">=47.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "build",
+    "README.md"
+  ]
+}
