@@ -23,7 +23,9 @@
       "Bash(npx expo prebuild:*)",
       "Bash(npx expo run:*)",
       "Bash(git checkout:*)",
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

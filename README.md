@@ -79,7 +79,7 @@ This is a react-native link module for audio recorder and player. This is not a 
 
 ## Getting started
 
-`$ yarn add react-native-audio-recorder-player`
+`$ bun add react-native-audio-recorder-player`
 
 ## Installation
 
@@ -428,8 +428,8 @@ const uri = await audioRecorderPlayer.startRecord(path);
 ## Try yourself
 
 1. Goto `Example` folder by running `cd Example`.
-2. Run `yarn install && yarn start`.
-3. Run `yarn ios` to run on ios simulator and `yarn android` to run on your android device.
+2. Run `bun install && bun start`.
+3. Run `bun ios` to run on ios simulator and `bun android` to run on your android device.
 
 ## Special Thanks
 

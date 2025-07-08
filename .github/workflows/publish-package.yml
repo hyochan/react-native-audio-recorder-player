@@ -1,25 +1,55 @@
-  
 name: publish-package
 
 on:
   release:
     types: [created]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Package version (e.g., 1.2.3) - leave empty to use package.json version'
+        required: false
+        type: string
+      tag:
+        description: 'NPM tag (latest, beta, next, etc.)'
+        required: false
+        default: 'latest'
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+    
+    - uses: oven-sh/setup-bun@v2
+      with:
+        bun-version: latest
+    
     - uses: actions/setup-node@v4
       with:
         node-version: 20
 
-    - run: yarn
-    - run: yarn build
+    - run: bun install
+    
+    - name: Update version if specified
+      if: ${{ github.event.inputs.version != '' }}
+      run: |
+        npm version ${{ github.event.inputs.version }} --no-git-tag-version
+        echo "Updated package.json to version ${{ github.event.inputs.version }}"
+    
+    - run: bun run build
 
     - name: Configure npm for publishing
       run: echo "//registry.npmjs.org/:_authToken=${{ secrets.NPM_TOKEN }}" > ~/.npmrc
 
-    - run: yarn publish
+    - name: Publish with tag
+      if: ${{ github.event.inputs.tag != '' }}
+      run: npm publish --tag ${{ github.event.inputs.tag }}
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        
+    - name: Publish (default)
+      if: ${{ github.event.inputs.tag == '' }}
+      run: npm publish
       env:
         NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
