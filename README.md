@@ -1,6 +1,6 @@
 # react-native-audio-recorder-player
 
-<img src="Logotype Primary.png" width="70%" height="70%" />
+<img src="Logotype Primary.png" width="70%" />
 
 [![yarn Version](http://img.shields.io/npm/v/react-native-audio-recorder-player.svg?style=flat-square)](https://npmjs.org/package/react-native-audio-recorder-player)
 [![Downloads](http://img.shields.io/npm/dm/react-native-audio-recorder-player.svg?style=flat-square)](https://npmjs.org/package/react-native-audio-recorder-player)
@@ -12,21 +12,66 @@
 [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 [![LICENSE](http://img.shields.io/npm/l/@react-native-seoul/masonry-list.svg?style=flat-square)](https://npmjs.org/package/@react-native-seoul/masonry-list)
 
-This is a react-native link module for audio recorder and player. This is not a playlist audio module and this library provides simple recorder and player functionalities for both `android` and `ios` platforms. This only supports default file extension for each platform. This module can also handle file from url.
+**🎉 Version 4.0.0 Released with NitroModule Support!**
+
+This is a high-performance React Native module for audio recording and playback, now powered by [NitroModules](https://github.com/mrousavy/nitro) for direct native module access without bridge overhead. The library provides simple recorder and player functionalities for both Android and iOS platforms with full TypeScript support and type safety.
 
 ## Preview
 
 <img src="https://user-images.githubusercontent.com/27461460/117547014-3fe52000-b068-11eb-9f34-2bfc1e5092fd.gif" width=300/>
 
-## Free read
+## Documentation & Resources
 
-- [Version 3 Release Note](https://medium.com/dooboolab/react-native-audio-player-and-recorder-v3-7697e25cd07)
+- 📚 [Version 4.0.0 Migration Guide](#whats-new-in-400-)
+- 📝 [Version 3 Release Note](https://medium.com/dooboolab/react-native-audio-player-and-recorder-v3-7697e25cd07)
+- 📰 [Original Blog Post](https://medium.com/@dooboolab/react-native-audio-recorder-and-player-4aa5f26a666)
+- 🔧 [NitroModules Documentation](https://github.com/mrousavy/nitro)
 
-- Happy [Blog](https://medium.com/@dooboolab/react-native-audio-recorder-and-player-4aa5f26a666).
+## What's New in 4.0.0 🚀
 
-## Breaking Changes
+### NitroModule Migration
+Version 4.0.0 introduces a complete rewrite using [NitroModules](https://github.com/mrousavy/nitro), offering:
+- **Zero Bridge Overhead**: Direct native module access for maximum performance
+- **Full Type Safety**: TypeScript definitions generated from native specs
+- **Synchronous Methods**: Where appropriate, for better developer experience
+- **Event Listeners**: Native callbacks with type-safe event payloads
+- **Cross-Platform Code Generation**: Automatic code generation for iOS (Swift) and Android (Kotlin)
 
-- From version `3.0.+`, a critical migration has been done. Current version is not much different from version `2.0.+` in usability, but there are many changes internally. Also note that it supports `iOS` platform version `10.0` or newer.
+### Requirements
+- React Native >= 0.73.0
+- iOS >= 13.0
+- Android minSdk >= 24
+- Expo SDK >= 50 (for Expo users)
+
+## Breaking Changes from 3.x
+
+### API Changes
+1. **Import Change**: The module is now imported differently:
+   ```ts
+   // Before (3.x)
+   import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+   const audioRecorderPlayer = new AudioRecorderPlayer();
+   
+   // After (4.0.0)
+   import { AudioRecorderPlayerNitro } from 'react-native-audio-recorder-player';
+   const audioRecorderPlayer = new AudioRecorderPlayerNitro();
+   ```
+
+2. **Event Listeners**: New event listener API:
+   ```ts
+   // Before (3.x)
+   audioRecorderPlayer.addRecordBackListener((e) => { ... });
+   
+   // After (4.0.0)
+   audioRecorderPlayer.onRecordingProgress = (e) => { ... };
+   audioRecorderPlayer.onPlaybackProgress = (e) => { ... };
+   ```
+
+3. **Promise Return Types**: All methods now have proper TypeScript types
+
+### Previous Breaking Changes (3.x)
+
+- From version `3.0.+`, a critical migration has been done. Also note that it supports `iOS` platform version `10.0` or newer.
 
   1. Codebase has been re-written to [kotlin for Android](https://kotlinlang.org) and [swift for iOS](https://swift.org). Please follow the [post installation](https://github.com/hyochan/react-native-audio-recorder-player#post-installation) for this changes.
 
@@ -56,9 +101,19 @@ This is a react-native link module for audio recorder and player. This is not a 
   4. `subscriptionDuration` offset not defaults to `0.5` which is `500ms`.
      - Resolve [#273](https://github.com/hyochan/react-native-audio-recorder-player/issues/273)
 
-- There has been vast improvements in [#114](https://github.com/hyochan/react-native-audio-recorder-player/pull/114) which is released in `2.3.0`. We now support all `RN` versions without any version differentiating. See below installation guide for your understanding.
-
 ## Migration Guide
+
+### From 3.x to 4.0.0 (NitroModule)
+
+| 3.x API                          | 4.0.0 NitroModule API                    |
+| -------------------------------- | ---------------------------------------- |
+| `new AudioRecorderPlayer()`      | `new AudioRecorderPlayerNitro()`         |
+| `addRecordBackListener(cb)`      | `onRecordingProgress = cb`               |
+| `removeRecordBackListener()`     | `onRecordingProgress = undefined`        |
+| `addPlayBackListener(cb)`        | `onPlaybackProgress = cb`                |
+| `removePlayBackListener()`       | `onPlaybackProgress = undefined`         |
+
+### From 1.x to 2.x/3.x
 
 | 1.x.x                  | 2.x.x & 3.x.x             |
 | ---------------------- | ------------------------- |
@@ -79,30 +134,61 @@ This is a react-native link module for audio recorder and player. This is not a 
 
 ## Getting started
 
-`$ bun add react-native-audio-recorder-player`
+```sh
+bun add react-native-audio-recorder-player
+```
+
+Or using npm/yarn:
+```sh
+npm install react-native-audio-recorder-player
+# or
+yarn add react-native-audio-recorder-player
+```
 
 ## Installation
 
-#### Using React Native >= 0.61
+### React Native CLI
 
-[iOS only]
-
+#### iOS
 ```sh
-npx pod-install
+cd ios && pod install
 ```
 
-#### Using React Native < 0.60
+#### Android
+No additional steps required. The module uses autolinking.
 
-`$ react-native link react-native-audio-recorder-player`
+### Post-installation for NitroModule (Required)
+
+After installing the package, you need to run the code generation:
+
+```sh
+# Using bun (recommended)
+bun x nitro-codegen
+
+# Or using npm/yarn
+npx nitro-codegen
+# or
+yarn nitro-codegen
+```
+
+This will generate the necessary native code bindings for both iOS and Android platforms.
 
 ### Expo
 
-This library supports Expo via a config plugin. No manual setup is required when using Expo managed workflow.
+This library supports Expo SDK 50+ via a config plugin. The plugin handles all native configuration automatically.
 
 #### Installation
 
 ```sh
 expo install react-native-audio-recorder-player
+```
+
+#### Post-installation
+
+For Expo managed workflow, you need to prebuild your app after adding the plugin:
+
+```sh
+expo prebuild
 ```
 
 #### Configuration in app.json / app.config.js
@@ -137,49 +223,42 @@ Or with custom iOS microphone permission text:
 The plugin automatically configures:
 - **iOS**: `NSMicrophoneUsageDescription` in Info.plist
 - **Android**: `RECORD_AUDIO`, `WRITE_EXTERNAL_STORAGE`, and `READ_EXTERNAL_STORAGE` permissions in AndroidManifest.xml
+- **NitroModule**: All necessary native module configurations
 
-### Manual installation
-
-#### iOS
-
-1. In XCode, in the project navigator, right click `Libraries` ➜ `Add Files to [your project's name]`
-2. Go to `node_modules` ➜ `react-native-audio-recorder-player` and add `RNAudioRecorderPlayer.xcodeproj`
-3. In XCode, in the project navigator, select your project. Add `libRNAudioRecorderPlayer.a` to your project's `Build Phases` ➜ `Link Binary With Libraries`
-4. Run your project (`Cmd+R`)<
-
-#### Android
-
-1. Open up `android/app/src/main/java/[...]/MainApplication.java`
-
-- Add `import package com.dooboolab.audiorecorderplayer.RNAudioRecorderPlayerPackage;` to the imports at the top of the file
-- Add `new RNAudioRecorderPlayerPackage()` to the list returned by the `getPackages()` method
-
-2. Append the following lines to `android/settings.gradle`:
-   ```
-   include ':react-native-audio-recorder-player'
-   project(':react-native-audio-recorder-player').projectDir = new File(rootProject.projectDir, 	'../node_modules/react-native-audio-recorder-player/android')
-   ```
-3. Insert the following lines inside the dependencies block in `android/app/build.gradle`:
-   ```
-     compile project(':react-native-audio-recorder-player')
-   ```
-
-## Post installation
-
-#### iOS
-
-On _iOS_ you need to add a usage description to `Info.plist`:
-
-```xml
-<key>NSMicrophoneUsageDescription</key>
-<string>Give $(PRODUCT_NAME) permission to use your microphone. Your record wont be shared without your permission.</string>
+⚠️ **Important for Expo users**: After adding the plugin, you must run `expo prebuild` to generate the native code. For development builds, use:
+```sh
+eas build --profile development --platform all
 ```
 
-Also, add [swift bridging header](https://stackoverflow.com/questions/31716413/xcode-not-automatically-creating-bridging-header) if you haven't created one for `swift` compatibility.
+### Manual Installation (Not recommended with NitroModule)
 
-<img width="800" alt="1" src="https://user-images.githubusercontent.com/27461460/111863065-8be6e300-899c-11eb-8ad8-6811e0bd0fbd.png">
+⚠️ **Note**: Manual installation is not recommended for NitroModule 4.0.0. Use autolinking instead.
 
-#### Android
+If you must use manual installation:
+
+1. Follow the standard installation steps
+2. Run `bun x nitro-codegen` to generate native bindings
+3. The generated code will be in the `nitrogen` directory
+4. Link the generated native modules to your project
+
+## Platform-specific Configuration
+
+### iOS Configuration
+
+1. **Microphone Permission**: Add to your `Info.plist`:
+   ```xml
+   <key>NSMicrophoneUsageDescription</key>
+   <string>Give $(PRODUCT_NAME) permission to use your microphone. Your record wont be shared without your permission.</string>
+   ```
+
+2. **Minimum iOS Version**: Ensure your minimum deployment target is iOS 13.0 or higher in your `Podfile`:
+   ```ruby
+   platform :ios, '13.0'
+   ```
+
+3. **Swift Support**: The module uses Swift. If your project doesn't have a bridging header, it will be created automatically during pod installation.
+
+### Android Configuration
 
 On _Android_ you need to add a permission to `AndroidManifest.xml`:
 
@@ -227,92 +306,118 @@ if (Platform.OS === 'android') {
 }
 ```
 
-Lastly, you need to enable `kotlin`. Please change add the line below in `android/build.gradle`.
+2. **Build Configuration**: Update your `android/build.gradle`:
+   ```gradle
+   buildscript {
+     ext {
+         buildToolsVersion = "33.0.0"
+         minSdkVersion = 24  // Required for pause/resume features
+         compileSdkVersion = 33
+         targetSdkVersion = 33
+         kotlinVersion = '1.8.0'  // Required for NitroModule
+         
+         ndkVersion = "23.1.7779620"
+     }
+   }
+   ```
 
-```diff
-buildscript {
-  ext {
-      buildToolsVersion = "29.0.3"
-+     // Note: Below change is necessary for pause / resume audio feature. Not for Kotlin.
-+     minSdkVersion = 24
-      compileSdkVersion = 29
-      targetSdkVersion = 29
-+     kotlinVersion = '1.6.10'
+3. **CMake Support**: NitroModule requires CMake for Android. It's automatically configured, but ensure you have CMake installed in Android Studio:
+   - Open Android Studio
+   - Go to Tools → SDK Manager → SDK Tools
+   - Check "CMake" and click "Apply"
 
-      ndkVersion = "20.1.5948944"
-  }
-  repositories {
-      google()
-      jcenter()
-  }
-  dependencies {
-      classpath("com.android.tools.build:gradle:4.2.2")
-  }
-...
-```
+## Troubleshooting
+
+### Common Issues
+
+1. **Build Error: "Cannot find module 'react-native-nitro-modules'"**
+   - Solution: Run `bun x nitro-codegen` after installation
+   
+2. **iOS Build Error: "No such module 'NitroAudioRecorderPlayer'"**
+   - Solution: Run `cd ios && pod install`
+   
+3. **Android Build Error: "CMake not found"**
+   - Solution: Install CMake through Android Studio SDK Manager
+   
+4. **Expo Error: "Plugin is not compatible with Expo Go"**
+   - Solution: Use development builds with `eas build` or `expo prebuild`
 
 ## Methods
 
-All methods are implemented with promises.
+### NitroModule API (4.0.0)
 
-| Func                     |                        Param                        |      Return       | Description                                                                                                         |
-| :----------------------- | :-------------------------------------------------: | :---------------: | :------------------------------------------------------------------------------------------------------------------ |
-| mmss                     |                  `number` seconds                   |     `string`      | Convert seconds to `minute:second` string                                                                           |
-| setSubscriptionDuration  |                                                     |      `void`       | Set default callback time when starting recorder or player. Default to `0.5` which is `500ms`                       |
-| addRecordBackListener    |                 `Function` callBack                 |      `void`       | Get callback from native module. Will receive `currentPosition`, `currentMetering` (if configured in startRecorder) |
-| removeRecordBackListener |                 `Function` callBack                 |      `void`       | Removes recordBack listener                                                                                         |
-| addPlayBackListener      |                 `Function` callBack                 |      `void`       | Get callback from native module. Will receive `duration`, `currentPosition`                                         |
-| removePlayBackListener   |                 `Function` callBack                 |      `void`       | Removes playback listener                                                                                           |
-| startRecorder            |    `<string>` uri? `<boolean>` meteringEnabled?     |  `Promise<void>`  | Start recording. Not passing uri will save audio in default location.                                               |
-| pauseRecorder            |                                                     | `Promise<string>` | Pause recording.                                                                                                    |
-| resumeRecorder           |                                                     | `Promise<string>` | Resume recording.                                                                                                   |
-| stopRecorder             |                                                     | `Promise<string>` | Stop recording.                                                                                                     |
-| startPlayer              | `string` uri? `Record<string, string>` httpHeaders? | `Promise<string>` | Start playing. Not passing the param will play audio in default location.                                           |
-| stopPlayer               |                                                     | `Promise<string>` | Stop playing.                                                                                                       |
-| pausePlayer              |                                                     | `Promise<string>` | Pause playing.                                                                                                      |
-| seekToPlayer             |                `number` milliseconds                | `Promise<string>` | Seek audio.                                                                                                         |
-| setVolume                |                   `double` value                    | `Promise<string>` | Set volume of audio player (default 1.0, range: 0.0 ~ 1.0).                                                         |
+| Method                  |                        Param                        |      Return       | Description                                                                            |
+| :---------------------- | :-------------------------------------------------: | :---------------: | :------------------------------------------------------------------------------------- |
+| mmss                    |                  `number` seconds                   |     `string`      | Convert seconds to `minute:second` string                                              |
+| mmssss                  |                  `number` seconds                   |     `string`      | Convert seconds to `minute:second:millisecond` string                                  |
+| setSubscriptionDuration |                  `number` duration                  |      `void`       | Set callback interval in ms (default 500ms)                                           |
+| startRecorder           |      `string?` uri, `AudioSet?` audioSet,           | `Promise<string>` | Start recording with optional path and audio settings                                  |
+|                         |          `boolean?` meteringEnabled                 |                   |                                                                                        |
+| pauseRecorder           |                                                     | `Promise<string>` | Pause recording                                                                        |
+| resumeRecorder          |                                                     | `Promise<string>` | Resume recording                                                                       |
+| stopRecorder            |                                                     | `Promise<string>` | Stop recording and return file path                                                    |
+| startPlayer             | `string?` uri, `Record<string, string>?` headers    | `Promise<string>` | Start playback with optional URI and HTTP headers                                      |
+| stopPlayer              |                                                     | `Promise<string>` | Stop playback                                                                          |
+| pausePlayer             |                                                     | `Promise<string>` | Pause playback                                                                         |
+| resumePlayer            |                                                     | `Promise<string>` | Resume playback                                                                        |
+| seekToPlayer            |                `number` milliseconds                | `Promise<string>` | Seek to position in milliseconds                                                       |
+| setVolume               |                   `number` value                    | `Promise<string>` | Set volume (0.0 - 1.0)                                                                 |
+| onRecordingProgress     |          `(event: RecordBackType) => void`          |      `void`       | Set recording progress callback                                                        |
+| onPlaybackProgress      |           `(event: PlayBackType) => void`           |      `void`       | Set playback progress callback                                                         |
 
-## Able to customize recorded audio quality (from `2.3.0`)
+### Legacy API (for backward compatibility)
 
-```
+| Method                  |                        Param                        |      Return       | Description                                                                            |
+| :---------------------- | :-------------------------------------------------: | :---------------: | :------------------------------------------------------------------------------------- |
+| addRecordBackListener   |                 `Function` callBack                 |      `void`       | Add recording progress listener (deprecated, use onRecordingProgress)                  |
+| removeRecordBackListener|                 `Function` callBack                 |      `void`       | Remove recording listener                                                              |
+| addPlayBackListener     |                 `Function` callBack                 |      `void`       | Add playback progress listener (deprecated, use onPlaybackProgress)                    |
+| removePlayBackListener  |                 `Function` callBack                 |      `void`       | Remove playback listener                                                               |
+
+## Customizing Audio Quality
+
+### Audio Configuration Options
+
+```typescript
 interface AudioSet {
-  AVSampleRateKeyIOS?: number;
-  AVFormatIDKeyIOS?: AVEncodingType;
-  AVModeIOS?: AVModeType;
-  AVNumberOfChannelsKeyIOS?: number;
-  AVEncoderAudioQualityKeyIOS?: AVEncoderAudioQualityIOSType;
-  AudioSourceAndroid?: AudioSourceAndroidType;
-  OutputFormatAndroid?: OutputFormatAndroidType;
-  AudioEncoderAndroid?: AudioEncoderAndroidType;
+  // iOS Options
+  AVSampleRateKeyIOS?: number;              // Sample rate (e.g., 44100)
+  AVFormatIDKeyIOS?: AVEncodingType;        // Audio format (e.g., aac, mp4)
+  AVModeIOS?: AVModeType;                   // Audio session mode
+  AVNumberOfChannelsKeyIOS?: number;        // Number of channels (1 = mono, 2 = stereo)
+  AVEncoderAudioQualityKeyIOS?: AVEncoderAudioQualityIOSType; // Quality level
+  
+  // Android Options
+  AudioSourceAndroid?: AudioSourceAndroidType;     // Audio source (e.g., MIC)
+  OutputFormatAndroid?: OutputFormatAndroidType;   // Output format
+  AudioEncoderAndroid?: AudioEncoderAndroidType;   // Encoder type
 }
 ```
 
-> More description on each parameter types are described in `index.d.ts`. Below is an example code.
+### Example Configuration
 
-```ts
+```typescript
 const audioSet: AudioSet = {
-  AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-  AudioSourceAndroid: AudioSourceAndroidType.MIC,
+  // iOS Settings
+  AVSampleRateKeyIOS: 44100,
+  AVFormatIDKeyIOS: AVEncodingOption.aac,
   AVModeIOS: AVModeIOSOption.measurement,
   AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
   AVNumberOfChannelsKeyIOS: 2,
-  AVFormatIDKeyIOS: AVEncodingOption.aac,
+  
+  // Android Settings
+  AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+  AudioSourceAndroid: AudioSourceAndroidType.MIC,
+  OutputFormatAndroid: OutputFormatAndroidType.AAC_ADTS,
 };
-const meteringEnabled = false;
 
-const uri = await this.audioRecorderPlayer.startRecorder(
-  path,
+const meteringEnabled = true; // Enable audio metering
+
+const uri = await audioRecorderPlayer.startRecorder(
+  undefined, // Use default path
   audioSet,
-  meteringEnabled,
+  meteringEnabled
 );
-
-this.audioRecorderPlayer.addRecordBackListener((e: any) => {
-  this.setState({
-    recordSecs: e.currentPosition,
-    recordTime: this.audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
-  });
-});
 ```
 
 ## Default Path
@@ -322,58 +427,74 @@ this.audioRecorderPlayer.addRecordBackListener((e: any) => {
 
 ## Usage
 
+### Basic Usage with NitroModule (4.0.0)
+
+```typescript
+import { AudioRecorderPlayerNitro } from 'react-native-audio-recorder-player';
+
+const audioRecorderPlayer = new AudioRecorderPlayerNitro();
+
+// Recording
+const onStartRecord = async () => {
+  // Set up recording progress listener
+  audioRecorderPlayer.onRecordingProgress = (e) => {
+    console.log('Recording progress:', e.currentPosition, e.currentMetering);
+    setState({
+      recordSecs: e.currentPosition,
+      recordTime: audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
+    });
+  };
+  
+  const result = await audioRecorderPlayer.startRecorder();
+  console.log('Recording started:', result);
+};
+
+const onStopRecord = async () => {
+  const result = await audioRecorderPlayer.stopRecorder();
+  audioRecorderPlayer.onRecordingProgress = undefined; // Clear listener
+  console.log('Recording stopped:', result);
+};
+
+// Playback
+const onStartPlay = async () => {
+  // Set up playback progress listener
+  audioRecorderPlayer.onPlaybackProgress = (e) => {
+    console.log('Playback progress:', e.currentPosition, e.duration);
+    setState({
+      currentPositionSec: e.currentPosition,
+      currentDurationSec: e.duration,
+      playTime: audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
+      duration: audioRecorderPlayer.mmssss(Math.floor(e.duration)),
+    });
+  };
+  
+  const result = await audioRecorderPlayer.startPlayer();
+  console.log('Playback started:', result);
+};
+
+const onPausePlay = async () => {
+  await audioRecorderPlayer.pausePlayer();
+};
+
+const onStopPlay = async () => {
+  audioRecorderPlayer.stopPlayer();
+  audioRecorderPlayer.onPlaybackProgress = undefined; // Clear listener
+};
+```
+
+### Legacy API (for backward compatibility)
+
+If you need to maintain backward compatibility, you can still use the legacy API:
+
 ```javascript
 import AudioRecorderPlayer from 'react-native-audio-recorder-player';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
-onStartRecord = async () => {
-  const result = await this.audioRecorderPlayer.startRecorder();
-  this.audioRecorderPlayer.addRecordBackListener((e) => {
-    this.setState({
-      recordSecs: e.currentPosition,
-      recordTime: this.audioRecorderPlayer.mmssss(
-        Math.floor(e.currentPosition),
-      ),
-    });
-    return;
-  });
-  console.log(result);
-};
-
-onStopRecord = async () => {
-  const result = await this.audioRecorderPlayer.stopRecorder();
-  this.audioRecorderPlayer.removeRecordBackListener();
-  this.setState({
-    recordSecs: 0,
-  });
-  console.log(result);
-};
-
-onStartPlay = async () => {
-  console.log('onStartPlay');
-  const msg = await this.audioRecorderPlayer.startPlayer();
-  console.log(msg);
-  this.audioRecorderPlayer.addPlayBackListener((e) => {
-    this.setState({
-      currentPositionSec: e.currentPosition,
-      currentDurationSec: e.duration,
-      playTime: this.audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)),
-      duration: this.audioRecorderPlayer.mmssss(Math.floor(e.duration)),
-    });
-    return;
-  });
-};
-
-onPausePlay = async () => {
-  await this.audioRecorderPlayer.pausePlayer();
-};
-
-onStopPlay = async () => {
-  console.log('onStopPlay');
-  this.audioRecorderPlayer.stopPlayer();
-  this.audioRecorderPlayer.removePlayBackListener();
-};
+// Legacy callback style still works
+audioRecorderPlayer.addRecordBackListener((e) => {
+  // Handle recording progress
+});
 ```
 
 ## TIPS
@@ -425,11 +546,38 @@ const uri = await audioRecorderPlayer.startRecord(path);
 
 
 
-## Try yourself
+## Example App
 
-1. Goto `Example` folder by running `cd Example`.
-2. Run `bun install && bun start`.
-3. Run `bun ios` to run on ios simulator and `bun android` to run on your android device.
+### Running the Example
+
+1. Navigate to the example directory:
+   ```sh
+   cd Example
+   ```
+
+2. Install dependencies:
+   ```sh
+   bun install
+   ```
+
+3. Generate NitroModule bindings:
+   ```sh
+   bun x nitro-codegen
+   ```
+
+4. Start the development server:
+   ```sh
+   bun start
+   ```
+
+5. Run on your platform:
+   ```sh
+   # iOS
+   bun ios
+   
+   # Android
+   bun android
+   ```
 
 ## Special Thanks
 
