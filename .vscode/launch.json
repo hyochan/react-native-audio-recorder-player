@@ -1,0 +1,40 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "iOS Simulator",
+      "request": "launch",
+      "type": "node-terminal",
+      "command": "${workspaceFolder}/.vscode/run_ios.sh",
+      "cwd": "${workspaceFolder}/Example"
+    },
+    {
+      "name": "Android Emulator",
+      "request": "launch",
+      "type": "node-terminal",
+      "command": "${workspaceFolder}/.vscode/run_android.sh",
+      "cwd": "${workspaceFolder}/Example"
+    },
+    {
+      "name": "Start Expo",
+      "request": "launch",
+      "type": "node-terminal",
+      "command": "npx expo start --clear",
+      "cwd": "${workspaceFolder}/Example"
+    },
+    {
+      "name": "iOS Device",
+      "request": "launch",
+      "type": "node-terminal",
+      "command": "npx expo run:ios --device",
+      "cwd": "${workspaceFolder}/Example"
+    },
+    {
+      "name": "Android Device",
+      "request": "launch",
+      "type": "node-terminal",
+      "command": "npx expo run:android --device",
+      "cwd": "${workspaceFolder}/Example"
+    }
+  ]
+}
