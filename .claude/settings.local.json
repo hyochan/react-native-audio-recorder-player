@@ -38,7 +38,11 @@
       "Bash(git commit:*)",
       "Bash(bundle update:*)",
       "Bash(bundle install:*)",
-      "Bash(gem install:*)"
+      "Bash(gem install:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)",
+      "Bash(yarn install)",
+      "Bash(yarn:*)"
     ],
     "deny": []
   }
