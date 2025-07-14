@@ -24,10 +24,10 @@ This is a high-performance React Native module for audio recording and playback,
 
 ## Documentation & Resources
 
-- 📚 [Version 4.0.0 Migration Guide](#whats-new-in-400-)
+- 📚 [Migration Guide](./docs/MIGRATION.md) - For migrating from older versions
+- 🔧 [NitroModules Documentation](https://github.com/mrousavy/nitro) - Learn about the underlying technology
 - 📝 [Version 3 Release Note](https://medium.com/dooboolab/react-native-audio-player-and-recorder-v3-7697e25cd07)
 - 📰 [Original Blog Post](https://medium.com/@dooboolab/react-native-audio-recorder-and-player-4aa5f26a666)
-- 🔧 [NitroModules Documentation](https://github.com/mrousavy/nitro)
 
 ## What's New in 4.0.0 🚀
 
@@ -40,6 +40,7 @@ Version 4.0.0 introduces a complete rewrite using [NitroModules](https://github.
 - **Synchronous Methods**: Where appropriate, for better developer experience
 - **Event Listeners**: Native callbacks with type-safe event payloads
 - **Cross-Platform Code Generation**: Automatic code generation for iOS (Swift) and Android (Kotlin)
+- **Background Processing**: Recording operations now run in background threads to prevent UI blocking, requiring loading state management
 
 ### Requirements
 
@@ -48,89 +49,9 @@ Version 4.0.0 introduces a complete rewrite using [NitroModules](https://github.
 - Android minSdk >= 24
 - Expo SDK >= 50 (for Expo users)
 
-## Breaking Changes from 3.x
+## Migration from Older Versions
 
-### API Changes
-
-1. **Import Change**: The module is now imported differently:
-
-   ```ts
-   // Before (3.x)
-   import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-   const audioRecorderPlayer = new AudioRecorderPlayer();
-
-   // After (4.0.0)
-   import AudioRecorderPlayer from 'react-native-audio-recorder-player';
-   const audioRecorderPlayer = new AudioRecorderPlayer();
-   ```
-
-2. **Event Listeners**: Updated event listener API:
-
-   ```ts
-   // Recording progress
-   audioRecorderPlayer.addRecordBackListener((e) => {
-     console.log('Recording:', e.currentPosition, e.currentMetering);
-   });
-
-   // Playback progress
-   audioRecorderPlayer.addPlayBackListener((e) => {
-     console.log('Playback:', e.currentPosition, e.duration);
-   });
-   ```
-
-3. **Promise Return Types**: All methods now have proper TypeScript types
-
-### Previous Breaking Changes (3.x)
-
-- From version `3.0.+`, a critical migration has been done. Also note that it supports `iOS` platform version `10.0` or newer.
-  1. Codebase has been re-written to [kotlin for Android](https://kotlinlang.org) and [swift for iOS](https://swift.org). Please follow the [post installation](https://github.com/hyochan/react-native-audio-recorder-player#post-installation) for this changes.
-
-     [iOS]
-     - [AVAudioPlayer](https://developer.apple.com/documentation/avfaudio/avaudioplayer) has been migrated to [AVPlayer](https://developer.apple.com/documentation/avfoundation/avplayer) which supports stream and more possibilities [#231](https://github.com/hyochan/react-native-audio-recorder-player/issues/231), [#245](https://github.com/hyochan/react-native-audio-recorder-player/issues/245), [#275](https://github.com/hyochan/react-native-audio-recorder-player/issues/275).
-
-  2. `pauseRecorder` and `resumeRecorder` features are added.
-     - **Caveat**
-       Android now requires `minSdk` of `24`.
-  3. Renamed callback variables.
-
-     ```ts
-     export type RecordBackType = {
-       isRecording?: boolean;
-       currentPosition: number;
-       currentMetering?: number;
-       recordSecs: number;
-     };
-
-     export type PlayBackType = {
-       isMuted?: boolean;
-       currentPosition: number;
-       duration: number;
-     };
-     ```
-
-  4. `subscriptionDuration` offset not defaults to `0.5` which is `500ms`.
-     - Resolve [#273](https://github.com/hyochan/react-native-audio-recorder-player/issues/273)
-
-## Migration Guide
-
-### From 1.x to 2.x/3.x
-
-| 1.x.x                  | 2.x.x & 3.x.x             |
-| ---------------------- | ------------------------- |
-| `startRecord`          | `startRecorder`           |
-|                        | `pauseRecorder` (3.x.x)   |
-|                        | `resumeRecorder` (3.x.x)  |
-| `stopRecord`           | `stopRecorder`            |
-| `startPlay`            | `startPlayer`             |
-| `stopPlay`             | `stopPlayer`              |
-| `pausePlay`            | `pausePlayer`             |
-| `resume`               | `resumePlayer`            |
-| `seekTo`               | `seekToPlayer`            |
-|                        | `setSubscriptionDuration` |
-| `addPlayBackListener`  | `addPlayBackListener`     |
-| `setRecordInterval`    | `addRecordBackListener`   |
-| `removeRecordInterval` | ``                        |
-|                        | `setVolume`               |
+If you're upgrading from version 3.x or earlier, please refer to our [Migration Guide](./docs/MIGRATION.md) for detailed instructions and breaking changes.
 
 ## Getting started
 
@@ -152,23 +73,15 @@ Version 4.0.0 introduces a complete rewrite using [NitroModules](https://github.
 
 After installing the packages, follow these steps:
 
-1. **Generate NitroModule bindings**:
-   ```sh
-   # Using yarn
-   yarn nitro-codegen
-   
-   # Or using npm
-   npx nitro-codegen
-   ```
-   This generates the necessary native code bindings for both iOS and Android platforms.
-
-2. **iOS Setup**:
+1. **iOS Setup**:
    ```sh
    cd ios && pod install
    ```
 
-3. **Android Setup**:
+2. **Android Setup**:
    No additional steps required. The module uses autolinking.
+
+> **Note**: The `nitro-codegen` command is already run during the library's build process. You don't need to run it in your application.
 
 ## Platform-specific Configuration
 
@@ -188,9 +101,10 @@ After installing the packages, follow these steps:
 
 ### Android Configuration
 
-On _Android_ you need to add a permission to `AndroidManifest.xml`:
+On _Android_ you need to add permissions to `AndroidManifest.xml`:
 
 ```xml
+<uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -265,64 +179,64 @@ import AudioRecorderPlayer, {
   PlayBackType,
 } from 'react-native-audio-recorder-player';
 
-const audioRecorderPlayer = new AudioRecorderPlayer();
+// AudioRecorderPlayer is a singleton instance, use directly
 
 // Recording
 const onStartRecord = async () => {
   // Set up recording progress listener
-  audioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
+  AudioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
     console.log('Recording progress:', e.currentPosition, e.currentMetering);
     setRecordSecs(e.currentPosition);
-    setRecordTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+    setRecordTime(AudioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
   });
 
-  const result = await audioRecorderPlayer.startRecorder();
+  const result = await AudioRecorderPlayer.startRecorder();
   console.log('Recording started:', result);
 };
 
 const onStopRecord = async () => {
-  const result = await audioRecorderPlayer.stopRecorder();
-  audioRecorderPlayer.removeRecordBackListener();
+  const result = await AudioRecorderPlayer.stopRecorder();
+  AudioRecorderPlayer.removeRecordBackListener();
   console.log('Recording stopped:', result);
 };
 
 // Playback
 const onStartPlay = async () => {
   // Set up playback progress listener
-  audioRecorderPlayer.addPlayBackListener((e: PlayBackType) => {
+  AudioRecorderPlayer.addPlayBackListener((e: PlayBackType) => {
     console.log('Playback progress:', e.currentPosition, e.duration);
     setCurrentPosition(e.currentPosition);
     setTotalDuration(e.duration);
-    setPlayTime(audioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
-    setDuration(audioRecorderPlayer.mmssss(Math.floor(e.duration)));
+    setPlayTime(AudioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+    setDuration(AudioRecorderPlayer.mmssss(Math.floor(e.duration)));
   });
 
-  const result = await audioRecorderPlayer.startPlayer();
+  const result = await AudioRecorderPlayer.startPlayer();
   console.log('Playback started:', result);
 };
 
 const onPausePlay = async () => {
-  await audioRecorderPlayer.pausePlayer();
+  await AudioRecorderPlayer.pausePlayer();
 };
 
 const onStopPlay = async () => {
-  audioRecorderPlayer.stopPlayer();
-  audioRecorderPlayer.removePlayBackListener();
+  AudioRecorderPlayer.stopPlayer();
+  AudioRecorderPlayer.removePlayBackListener();
 };
 
 // Seeking
 const seekTo = async (milliseconds: number) => {
-  await audioRecorderPlayer.seekToPlayer(milliseconds);
+  await AudioRecorderPlayer.seekToPlayer(milliseconds);
 };
 
 // Volume control
 const setVolume = async (volume: number) => {
-  await audioRecorderPlayer.setVolume(volume); // 0.0 - 1.0
+  await AudioRecorderPlayer.setVolume(volume); // 0.0 - 1.0
 };
 
 // Speed control
 const setSpeed = async (speed: number) => {
-  await audioRecorderPlayer.setPlaybackSpeed(speed); // 0.5 - 2.0
+  await AudioRecorderPlayer.setPlaybackSpeed(speed); // 0.5 - 2.0
 };
 ```
 
@@ -343,7 +257,7 @@ const audioSet: AudioSet = {
 
 const meteringEnabled = true; // Enable audio metering
 
-const uri = await audioRecorderPlayer.startRecorder(
+const uri = await AudioRecorderPlayer.startRecorder(
   undefined, // Use default path
   audioSet,
   meteringEnabled
@@ -354,6 +268,133 @@ const uri = await audioRecorderPlayer.startRecorder(
 
 - Default path for android uri is `{cacheDir}/sound.mp4`.
 - Default path for ios uri is `{cacheDir}/sound.m4a`.
+
+## Component-Based Implementation
+
+For better code organization, consider separating recording and playback into separate components:
+
+### Important: Loading States
+
+> **Note**: Starting from version 4.x, recording operations (start/stop) are processed in the background to prevent UI blocking. This means there's a slight delay between calling the method and the actual operation completing. **We strongly recommend implementing loading states** to provide better user experience.
+
+### AudioRecorder Component with Loading States
+
+```typescript
+import React, { useState } from 'react';
+import { View, Button, Text, ActivityIndicator } from 'react-native';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+
+export const AudioRecorder = ({ onRecordingComplete }) => {
+  const [isRecording, setIsRecording] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [recordTime, setRecordTime] = useState('00:00:00');
+
+  const onStartRecord = async () => {
+    setIsLoading(true);
+    try {
+      const result = await AudioRecorderPlayer.startRecorder();
+      AudioRecorderPlayer.addRecordBackListener((e) => {
+        setRecordTime(AudioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+      });
+      setIsRecording(true);
+    } catch (error) {
+      console.error('Failed to start recording:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onStopRecord = async () => {
+    setIsLoading(true);
+    try {
+      const result = await AudioRecorderPlayer.stopRecorder();
+      AudioRecorderPlayer.removeRecordBackListener();
+      setIsRecording(false);
+      onRecordingComplete?.(result);
+    } catch (error) {
+      console.error('Failed to stop recording:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <View>
+      <Text>{recordTime}</Text>
+      <Button
+        title={isRecording ? 'Stop Recording' : 'Start Recording'}
+        onPress={isRecording ? onStopRecord : onStartRecord}
+        disabled={isLoading}
+      />
+      {isLoading && <ActivityIndicator />}
+    </View>
+  );
+};
+```
+
+### AudioPlayer Component with Loading States
+
+```typescript
+import React, { useState } from 'react';
+import { View, Button, Text, ActivityIndicator } from 'react-native';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player';
+
+export const AudioPlayer = ({ audioPath }) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [playTime, setPlayTime] = useState('00:00:00');
+  const [duration, setDuration] = useState('00:00:00');
+
+  const onStartPlay = async () => {
+    setIsLoading(true);
+    try {
+      const msg = await AudioRecorderPlayer.startPlayer(audioPath);
+      AudioRecorderPlayer.addPlayBackListener((e) => {
+        setPlayTime(AudioRecorderPlayer.mmssss(Math.floor(e.currentPosition)));
+        setDuration(AudioRecorderPlayer.mmssss(Math.floor(e.duration)));
+        
+        // Auto-stop when playback completes
+        if (e.duration > 0 && e.currentPosition >= e.duration - 100) {
+          setIsPlaying(false);
+          AudioRecorderPlayer.removePlayBackListener();
+        }
+      });
+      setIsPlaying(true);
+    } catch (error) {
+      console.error('Failed to start playback:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const onStopPlay = async () => {
+    setIsLoading(true);
+    try {
+      await AudioRecorderPlayer.stopPlayer();
+      AudioRecorderPlayer.removePlayBackListener();
+      setIsPlaying(false);
+      setPlayTime('00:00:00');
+      setDuration('00:00:00');
+    } catch (error) {
+      console.error('Failed to stop playback:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <View>
+      <Text>{playTime} / {duration}</Text>
+      <Button
+        title={isPlaying ? 'Stop' : 'Play'}
+        onPress={isPlaying ? onStopPlay : onStartPlay}
+        disabled={!audioPath || isLoading}
+      />
+      {isLoading && <ActivityIndicator />}
+    </View>
+  );
+};
+```
 
 ## Example App
 
@@ -371,19 +412,13 @@ const uri = await audioRecorderPlayer.startRecorder(
    yarn install
    ```
 
-3. Generate NitroModule bindings:
-
-   ```sh
-   yarn nitro-codegen
-   ```
-
-4. Start the development server:
+3. Start the development server:
 
    ```sh
    yarn start
    ```
 
-5. Run on your platform:
+4. Run on your platform:
 
    ```sh
    # iOS
@@ -392,6 +427,77 @@ const uri = await audioRecorderPlayer.startRecorder(
    # Android
    yarn android
    ```
+
+## Troubleshooting
+
+### iOS Recording Error: "Unknown std::runtime_error"
+
+If you encounter this error when trying to record on iOS:
+
+1. **Ensure microphone permissions are properly configured** in your `Info.plist`:
+   ```xml
+   <key>NSMicrophoneUsageDescription</key>
+   <string>Your app needs microphone access to record audio</string>
+   ```
+
+2. **Clean and rebuild your iOS project**:
+   ```sh
+   cd ios
+   rm -rf build Pods
+   pod install
+   cd ..
+   yarn ios
+   ```
+
+3. **Make sure you're testing on a real device** if using the simulator doesn't work. Some audio features require real hardware.
+
+4. **Verify the Nitro modules are properly linked** by checking that the `[NitroModules] 🔥 AudioRecorderPlayer is boosted by nitro!` message appears during `pod install`.
+
+### Common Issues
+
+- **"nitro-codegen" command not found**: This command is only needed when developing the library itself, not when using it in your app.
+- **Module not found errors**: Make sure to run `pod install` after installing the package.
+- **Android build issues**: Ensure your `minSdkVersion` is 24 or higher in `android/build.gradle`.
+
+### Clean Build Instructions
+
+If you're experiencing build issues or runtime errors after updating the library:
+
+#### iOS Clean Build
+```sh
+cd ios
+rm -rf ~/Library/Caches/CocoaPods
+rm -rf Pods
+rm -rf ~/Library/Developer/Xcode/DerivedData/*
+pod cache clean --all
+pod install
+cd ..
+```
+
+Then in Xcode:
+1. Product → Clean Build Folder (⇧⌘K)
+2. Product → Build (⌘B)
+
+#### Android Clean Build
+```sh
+cd android
+./gradlew clean
+rm -rf ~/.gradle/caches/
+cd ..
+```
+
+Then rebuild:
+```sh
+yarn android
+# or
+npx react-native run-android
+```
+
+#### Both Platforms
+You can also try resetting Metro cache:
+```sh
+npx react-native start --reset-cache
+```
 
 ## Contributing
 
