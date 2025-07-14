@@ -16,6 +16,8 @@
 
 > ⚠️ **Important**: Version 4.0.0 had issues with Nitro integration. Please install version 4.1.0 or later.
 
+> 🔴 **Critical for v4.x**: Recording operations now run in background threads. **You MUST implement loading states** to handle the async delays, or your UI may appear unresponsive. See [Component Examples](#component-based-implementation) for proper implementation.
+
 This is a high-performance React Native module for audio recording and playback, now powered by [NitroModules](https://github.com/mrousavy/nitro) for direct native module access without bridge overhead. The library provides simple recorder and player functionalities for both Android and iOS platforms with full TypeScript support and type safety.
 
 ## Preview
@@ -110,8 +112,37 @@ On _Android_ you need to add permissions to `AndroidManifest.xml`:
 <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 ```
 
-Also, android above `Marshmallow` needs runtime permission to record audio. Below is sample usage:
+Also, android above `Marshmallow` needs runtime permission to record audio. Below are two approaches:
 
+**Minimal Approach (Recommended for Android 13+):**
+```ts
+if (Platform.OS === 'android') {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+      {
+        title: 'Audio Recording Permission',
+        message: 'This app needs access to your microphone to record audio.',
+        buttonNeutral: 'Ask Me Later',
+        buttonNegative: 'Cancel',
+        buttonPositive: 'OK',
+      }
+    );
+    
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+      console.log('Recording permission granted');
+    } else {
+      console.log('Recording permission denied');
+      return;
+    }
+  } catch (err) {
+    console.warn(err);
+    return;
+  }
+}
+```
+
+**Full Permissions Approach (For older Android versions):**
 ```ts
 if (Platform.OS === 'android') {
   try {
@@ -129,7 +160,7 @@ if (Platform.OS === 'android') {
       grants['android.permission.RECORD_AUDIO'] ===
         PermissionsAndroid.RESULTS.GRANTED
     ) {
-      console.log('Permissions granted');
+      console.log('All permissions granted');
     } else {
       console.log('All required permissions not granted');
       return;
@@ -200,6 +231,17 @@ const onStopRecord = async () => {
   console.log('Recording stopped:', result);
 };
 
+// Pause/Resume Recording
+const onPauseRecord = async () => {
+  await AudioRecorderPlayer.pauseRecorder();
+  console.log('Recording paused');
+};
+
+const onResumeRecord = async () => {
+  await AudioRecorderPlayer.resumeRecorder();
+  console.log('Recording resumed');
+};
+
 // Playback
 const onStartPlay = async () => {
   // Set up playback progress listener
@@ -268,6 +310,8 @@ const uri = await AudioRecorderPlayer.startRecorder(
 
 - Default path for android uri is `{cacheDir}/sound.mp4`.
 - Default path for ios uri is `{cacheDir}/sound.m4a`.
+
+> **Tip**: Store the file path returned by `startRecorder()` immediately for later use in playback or file management.
 
 ## Component-Based Implementation
 
