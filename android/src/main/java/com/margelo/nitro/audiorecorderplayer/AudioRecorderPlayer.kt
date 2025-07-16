@@ -250,6 +250,23 @@ class HybridAudioRecorderPlayer : HybridAudioRecorderPlayerSpec() {
                     promise.reject(Exception("URI is required"))
                     return@launch
                 }
+                
+                // Clean up any existing player first
+                mediaPlayer?.let { existingPlayer ->
+                    try {
+                        if (existingPlayer.isPlaying) {
+                            existingPlayer.stop()
+                        }
+                        existingPlayer.reset()
+                        existingPlayer.release()
+                    } catch (e: Exception) {
+                        // Ignore cleanup errors
+                    }
+                }
+                
+                handler.post {
+                    stopPlayTimer()
+                }
             
             mediaPlayer = MediaPlayer().apply {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -322,9 +339,13 @@ class HybridAudioRecorderPlayer : HybridAudioRecorderPlayerSpec() {
         // Return immediately and process in background
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                mediaPlayer?.apply {
-                    stop()
-                    release()
+                mediaPlayer?.let { player ->
+                    // Check if player is in a valid state before stopping
+                    if (player.isPlaying) {
+                        player.stop()
+                    }
+                    player.reset()
+                    player.release()
                 }
                 mediaPlayer = null
                 
@@ -334,8 +355,19 @@ class HybridAudioRecorderPlayer : HybridAudioRecorderPlayerSpec() {
                 
                 promise.resolve("Player stopped")
             } catch (e: Exception) {
-                mediaPlayer?.release()
+                // Ensure cleanup even if error occurs
+                try {
+                    mediaPlayer?.reset()
+                    mediaPlayer?.release()
+                } catch (releaseError: Exception) {
+                    // Ignore errors during cleanup
+                }
                 mediaPlayer = null
+                
+                handler.post {
+                    stopPlayTimer()
+                }
+                
                 promise.reject(e)
             }
         }
