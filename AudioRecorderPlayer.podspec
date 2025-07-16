@@ -19,12 +19,15 @@ Pod::Spec.new do |s|
     "ios/**/*.{swift}",
     "ios/**/*.{m,mm}",
   ]
+  
+  s.exclude_files = [
+    "ios/AudioRecorderPlayer-Bridging-Header.h",
+  ]
 
   s.pod_target_xcconfig = {
     "DEFINES_MODULE" => "YES",
     "SWIFT_VERSION" => "5.0",
-    "CLANG_CXX_LANGUAGE_STANDARD" => "c++20",
-    "CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES" => "YES"
+    "CLANG_CXX_LANGUAGE_STANDARD" => "c++20"
   }
   
   s.compiler_flags = folly_compiler_flags
