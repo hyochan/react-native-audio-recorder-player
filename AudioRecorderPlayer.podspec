@@ -24,10 +24,11 @@ Pod::Spec.new do |s|
     "ios/AudioRecorderPlayer-Bridging-Header.h",
   ]
 
+  # Basic configuration - let Nitrogen handle the rest
   s.pod_target_xcconfig = {
-    "DEFINES_MODULE" => "YES",
     "SWIFT_VERSION" => "5.0",
-    "CLANG_CXX_LANGUAGE_STANDARD" => "c++20"
+    "SWIFT_ACTIVE_COMPILATION_CONDITIONS" => "$(inherited)",
+    "GCC_PREPROCESSOR_DEFINITIONS" => "$(inherited)",
   }
   
   s.compiler_flags = folly_compiler_flags

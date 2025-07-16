@@ -46,7 +46,9 @@
       "Bash(git add:*)",
       "Bash(git commit:*)",
       "Bash(mv:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "WebFetch(domain:github.com)",
+      "Bash(./gradlew:*)"
     ],
     "deny": []
   }
