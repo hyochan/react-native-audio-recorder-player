@@ -39,7 +39,7 @@
     "test": "jest",
     "typecheck": "tsc",
     "lint": "eslint \"**/*.{js,ts,tsx}\"",
-    "clean": "del-cli android/build Example/android/build Example/android/app/build Example/ios/build lib",
+    "clean": "del-cli android/build example/android/build example/android/app/build example/ios/build lib",
     "prepare": "bob build",
     "nitrogen": "nitro-codegen",
     "release": "release-it --only-version"
@@ -95,13 +95,13 @@
     "react-native-nitro-modules": "^0.26.3"
   },
   "workspaces": [
-    "Example"
+    "example"
   ],
   "packageManager": "yarn@3.6.1",
   "jest": {
     "preset": "react-native",
     "modulePathIgnorePatterns": [
-      "<rootDir>/Example/node_modules",
+      "<rootDir>/example/node_modules",
       "<rootDir>/lib/"
     ]
   },

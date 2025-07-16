@@ -11716,9 +11716,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-audio-recorder-player-example@workspace:Example":
+"react-native-audio-recorder-player-example@workspace:example":
   version: 0.0.0-use.local
-  resolution: "react-native-audio-recorder-player-example@workspace:Example"
+  resolution: "react-native-audio-recorder-player-example@workspace:example"
   dependencies:
     "@babel/core": ^7.25.2
     "@babel/preset-env": ^7.25.3

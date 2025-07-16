@@ -42,7 +42,11 @@
       "Bash(git pull:*)",
       "Bash(git stash:*)",
       "Bash(yarn install)",
-      "Bash(yarn:*)"
+      "Bash(yarn:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(mv:*)",
+      "Bash(git push:*)"
     ],
     "deny": []
   }
