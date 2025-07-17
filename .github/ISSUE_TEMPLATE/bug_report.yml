@@ -39,6 +39,33 @@ body:
       placeholder: "x.x.x"
     validations:
       required: true
+  - type: dropdown
+    id: project-type
+    attributes:
+      label: Project type
+      description: What type of React Native project are you using?
+      options:
+        - React Native (bare workflow)
+        - Expo (managed workflow)
+        - Expo (bare workflow)
+    validations:
+      required: true
+  - type: input
+    id: react-native-version
+    attributes:
+      label: React Native version
+      description: What version of React Native are you using?
+      placeholder: "0.79.x"
+    validations:
+      required: true
+  - type: input
+    id: expo-version
+    attributes:
+      label: Expo SDK version (if applicable)
+      description: If you're using Expo, what SDK version are you on?
+      placeholder: "SDK 51"
+    validations:
+      required: false
   - type: textarea
     id: react-native-info
     attributes:
