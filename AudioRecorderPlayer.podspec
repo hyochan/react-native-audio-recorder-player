@@ -37,7 +37,7 @@ Pod::Spec.new do |s|
   s.dependency 'React-jsi'
   s.dependency 'React-callinvoker'
 
-  load 'nitrogen/generated/ios/AudioRecorderPlayer+autolinking.rb'
+  load File.join(__dir__, 'nitrogen/generated/ios/AudioRecorderPlayer+autolinking.rb')
   add_nitrogen_files(s)
 
   s.info_plist = {

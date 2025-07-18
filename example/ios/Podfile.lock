@@ -1,5 +1,5 @@
 PODS:
-  - AudioRecorderPlayer (4.1.2):
+  - AudioRecorderPlayer (4.1.4):
     - DoubleConversion
     - glog
     - hermes-engine
@@ -1988,7 +1988,7 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/yoga"
 
 SPEC CHECKSUMS:
-  AudioRecorderPlayer: c7701c1938768df52049a097113d8f1c76a77530
+  AudioRecorderPlayer: 8d9b9f07b1012e621c99b9ceaacffef4700fe547
   boost: 7e761d76ca2ce687f7cc98e698152abd03a18f90
   DoubleConversion: cb417026b2400c8f53ae97020b2be961b59470cb
   fast_float: 06eeec4fe712a76acc9376682e4808b05ce978b6
