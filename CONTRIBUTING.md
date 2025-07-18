@@ -12,6 +12,39 @@
 * It is useful to use a topic branch that has the parent `dev` as its parent.
 
 
+### Development Setup
+
+To contribute to this project, follow these steps to set up your development environment:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/hyochan/react-native-audio-recorder-player.git
+cd react-native-audio-recorder-player
+
+# 2. Install root dependencies
+yarn
+
+# 3. Build the library (IMPORTANT: Must be done before running the example)
+yarn prepare
+
+# 4. Generate Nitro module code
+yarn nitrogen
+
+# 5. Install example dependencies and run the example app
+# For iOS:
+yarn example ios:pod    # This will install pods using workspace
+yarn example ios
+
+# For Android:
+yarn example android
+```
+
+**Important Notes:**
+- You must run `yarn prepare` before attempting to run the example app
+- The `yarn nitrogen` command generates necessary Nitro module bindings
+- For iOS, use `yarn example ios:pod` instead of manually navigating to the ios directory
+- All example commands can be run from the root directory using yarn workspaces
+
 ### Coding Guidelines
 Please follow the Coding conventions as much as possible when contributing your code.
 * The indent tab is two spaces.
