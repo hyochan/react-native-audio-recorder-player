@@ -28,7 +28,7 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = {
     "SWIFT_VERSION" => "5.0",
     "SWIFT_ACTIVE_COMPILATION_CONDITIONS" => "$(inherited)",
-    "GCC_PREPROCESSOR_DEFINITIONS" => "$(inherited)",
+    "GCC_PREPROCESSOR_DEFINITIONS" => "$(inherited) FOLLY_NO_CONFIG FOLLY_MOBILE=1 FOLLY_USE_LIBCPP=1",
   }
   
   s.compiler_flags = folly_compiler_flags
