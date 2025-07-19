@@ -119,6 +119,15 @@ export interface PlayBackType {
   currentPosition: number;
 }
 
+export interface PlaybackEndType {
+  duration: number;
+  currentPosition: number;
+}
+
+export type RecordBackListener = (recordingMeta: RecordBackType) => void;
+export type PlayBackListener = (playbackMeta: PlayBackType) => void;
+export type PlaybackEndListener = (playbackEndMeta: PlaybackEndType) => void;
+
 export interface AudioRecorderPlayer
   extends HybridObject<{ ios: 'swift'; android: 'kotlin' }> {
   // Recording methods
@@ -153,6 +162,10 @@ export interface AudioRecorderPlayer
   removeRecordBackListener(): void;
   addPlayBackListener(callback: (playbackMeta: PlayBackType) => void): void;
   removePlayBackListener(): void;
+  addPlaybackEndListener(
+    callback: (playbackEndMeta: PlaybackEndType) => void
+  ): void;
+  removePlaybackEndListener(): void;
 
   // Utility methods
   mmss(secs: number): string;

@@ -18,6 +18,7 @@ import AudioRecorderPlayer, {
   AVEncoderAudioQualityIOSType,
   type RecordBackType,
   type PlayBackType,
+  type PlaybackEndType,
 } from '../../src';
 
 const App = () => {
@@ -29,6 +30,7 @@ const App = () => {
   const [isPaused, setIsPaused] = useState(false);
   const [recordingPath, setRecordingPath] = useState('');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaybackPaused, setIsPlaybackPaused] = useState(false);
   const [actualRecordedDuration, setActualRecordedDuration] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isRecordLoading, setIsRecordLoading] = useState(false);
@@ -46,6 +48,7 @@ const App = () => {
       try {
         AudioRecorderPlayer.removePlayBackListener();
         AudioRecorderPlayer.removeRecordBackListener();
+        AudioRecorderPlayer.removePlaybackEndListener();
       } catch (error) {
         console.log('Error removing listeners:', error);
       }
@@ -197,6 +200,11 @@ const App = () => {
       setIsRecording(true);
       setIsRecordLoading(false);
 
+      // Set faster update interval for web
+      if (Platform.OS === 'web') {
+        AudioRecorderPlayer.setSubscriptionDuration(0.01); // 10ms updates
+      }
+
       AudioRecorderPlayer.addRecordBackListener((e: RecordBackType) => {
         console.log('🎤 Recording callback:', e);
         setRecordSecs(Math.floor(e.currentPosition));
@@ -273,6 +281,23 @@ const App = () => {
     try {
       // Set up listener BEFORE starting playback
       console.log('Setting up playback listener...');
+
+      // Set faster update interval for web
+      if (Platform.OS === 'web') {
+        AudioRecorderPlayer.setSubscriptionDuration(0.01); // 10ms updates
+      }
+
+      // Add playback end listener
+      AudioRecorderPlayer.addPlaybackEndListener((e: PlaybackEndType) => {
+        console.log('📱 Playback ended:', e);
+        setIsPlaying(false);
+        setIsPlaybackPaused(false);
+        setIsLoading(false);
+        // Ensure progress bar shows 100%
+        setCurrentPosition(e.duration);
+        setTotalDuration(e.duration);
+      });
+
       AudioRecorderPlayer.addPlayBackListener((e: PlayBackType) => {
         console.log('📱 Playback callback received:', {
           position: e.currentPosition,
@@ -310,18 +335,23 @@ const App = () => {
       });
 
       console.log('Starting player...');
-      const msg = await AudioRecorderPlayer.startPlayer(recordingPath);
+      // For web, if we get 'recording_in_progress', don't pass any path
+      const pathToPlay =
+        recordingPath === 'recording_in_progress' ? undefined : recordingPath;
+      const msg = await AudioRecorderPlayer.startPlayer(pathToPlay);
       console.log('Started playing:', msg);
 
       // Hide loading and show playing after player starts
       setIsLoading(false);
       setIsPlaying(true);
+      setIsPlaybackPaused(false);
 
       const volumeResult = await AudioRecorderPlayer.setVolume(1.0);
       console.log('Volume:', volumeResult);
     } catch (error) {
       console.error('Start play error:', error);
       setIsPlaying(false);
+      setIsPlaybackPaused(false);
       setIsLoading(false);
     }
   };
@@ -329,6 +359,7 @@ const App = () => {
   const onPausePlay = async () => {
     try {
       await AudioRecorderPlayer.pausePlayer();
+      setIsPlaybackPaused(true);
     } catch (error) {
       console.error('Pause play error:', error);
     }
@@ -337,6 +368,7 @@ const App = () => {
   const onResumePlay = async () => {
     try {
       await AudioRecorderPlayer.resumePlayer();
+      setIsPlaybackPaused(false);
     } catch (error) {
       console.error('Resume play error:', error);
     }
@@ -351,10 +383,12 @@ const App = () => {
       setCurrentPosition(0);
       setTotalDuration(0);
       setIsPlaying(false);
+      setIsPlaybackPaused(false);
       console.log('Playback stopped');
     } catch (error) {
       console.error('Stop play error:', error);
       setIsPlaying(false);
+      setIsPlaybackPaused(false);
     }
   };
 
@@ -605,10 +639,10 @@ const App = () => {
               style={[
                 styles.button,
                 styles.pauseButton,
-                !isPlaying && styles.disabledButton,
+                (!isPlaying || isPlaybackPaused) && styles.disabledButton,
               ]}
               onPress={onPausePlay}
-              disabled={!isPlaying}
+              disabled={!isPlaying || isPlaybackPaused}
             >
               <Text style={styles.buttonText}>Pause</Text>
             </TouchableOpacity>
@@ -616,10 +650,10 @@ const App = () => {
               style={[
                 styles.button,
                 styles.resumeButton,
-                isPlaying && styles.disabledButton,
+                !isPlaybackPaused && styles.disabledButton,
               ]}
               onPress={onResumePlay}
-              disabled={isPlaying}
+              disabled={!isPlaybackPaused}
             >
               <Text style={styles.buttonText}>Resume</Text>
             </TouchableOpacity>
