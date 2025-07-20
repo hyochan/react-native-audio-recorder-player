@@ -24,7 +24,7 @@ This is a high-performance React Native module for audio recording and playback,
 
 ## Preview
 
-<img src="https://user-images.githubusercontent.com/27461460/117547014-3fe52000-b068-11eb-9f34-2bfc1e5092fd.gif" width=300/>
+<img src="https://github.com/user-attachments/assets/2c88f580-4e2b-43f3-a177-bf19d2d40fd5" width=800/>
 
 ## Documentation & Resources
 
