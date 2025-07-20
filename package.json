@@ -1,6 +1,6 @@
 {
   "name": "react-native-audio-recorder-player",
-  "version": "4.1.5",
+  "version": "4.2.0",
   "description": "React Native Audio Recorder and Player.",
   "homepage": "https://github.com/hyochan/react-native-audio-recorder-player",
   "main": "./lib/module/index.js",
