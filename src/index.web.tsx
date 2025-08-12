@@ -1,296 +1,312 @@
 import type {
-  AudioRecorderPlayer as AudioRecorderPlayerType,
   AudioSet,
   RecordBackType,
   PlayBackType,
-  PlaybackEndType,
-} from './AudioRecorderPlayer.nitro';
+} from './NativeAudioRecorderPlayer.web';
 
-export * from './AudioRecorderPlayer.nitro';
+export type { AudioSet, RecordBackType, PlayBackType };
+export {
+  AudioEncoderAndroidType,
+  AudioSourceAndroidType,
+  OutputFormatAndroidType,
+  AVEncoderAudioQualityIOSType,
+} from './NativeAudioRecorderPlayer.web';
 
-class AudioRecorderPlayerWebImpl implements AudioRecorderPlayerType {
+export interface PlaybackEndType {
+  finished: boolean;
+  duration?: number;
+  currentPosition?: number;
+}
+
+class AudioRecorderPlayerImpl {
   private mediaRecorder: MediaRecorder | null = null;
-  private audioContext: AudioContext | null = null;
-  private audio: HTMLAudioElement | null = null;
-  private recordedChunks: Blob[] = [];
+  private audioChunks: Blob[] = [];
+  private audioPlayer: HTMLAudioElement | null = null;
   private recordingStartTime: number = 0;
-  private actualRecordedDuration: number = 0;
-  private recordBackListener: ((recordingMeta: RecordBackType) => void) | null =
-    null;
-  private playBackListener: ((playbackMeta: PlayBackType) => void) | null =
-    null;
-  private playbackEndListener:
-    | ((playbackEndMeta: PlaybackEndType) => void)
-    | null = null;
-  private recordingInterval: NodeJS.Timeout | null = null;
-  private playbackInterval: NodeJS.Timeout | null = null;
-  private subscriptionDuration: number = 10; // Default 10ms for faster updates
-  private currentVolume: number = 1.0;
-  private recordingUrl: string | null = null;
-  private mediaStream: MediaStream | null = null;
+  private recordingTimer: NodeJS.Timeout | null = null;
+  private playbackTimer: NodeJS.Timeout | null = null;
+  private recordCallback: ((data: RecordBackType) => void) | null = null;
+  private playbackCallback: ((data: PlayBackType) => void) | null = null;
+  private playbackEndCallback: ((data: PlaybackEndType) => void) | null = null;
+  private subscriptionDuration: number = 60; // milliseconds
+  private recordedBlob: Blob | null = null;
+  private recordedUrl: string | null = null;
 
   // Recording methods
   async startRecorder(
-    _uri?: string,
-    audioSets?: AudioSet,
-    meteringEnabled?: boolean
+    uri?: string,
+    _audioSets?: AudioSet,
+    _meteringEnabled?: boolean
   ): Promise<string> {
     try {
-      // Get user media
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: {
-          channelCount: audioSets?.AudioChannels || 1,
-          sampleRate: audioSets?.AudioSamplingRate || 44100,
-          echoCancellation: true,
-          noiseSuppression: true,
-        },
-      });
-
-      // Setup audio context for metering
-      if (meteringEnabled && !this.audioContext) {
-        this.audioContext = new AudioContext();
-      }
+      // Request microphone permission
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
 
       // Create MediaRecorder
-      const options: MediaRecorderOptions = {
-        mimeType: this.getMimeType(audioSets),
-        audioBitsPerSecond: audioSets?.AudioEncodingBitRate || 128000,
-      };
-
-      this.mediaRecorder = new MediaRecorder(stream, options);
-      this.recordedChunks = [];
+      const mimeType = MediaRecorder.isTypeSupported('audio/webm')
+        ? 'audio/webm'
+        : 'audio/ogg';
+      this.mediaRecorder = new MediaRecorder(stream, { mimeType });
+      this.audioChunks = [];
 
       this.mediaRecorder.ondataavailable = (event) => {
         if (event.data.size > 0) {
-          this.recordedChunks.push(event.data);
+          this.audioChunks.push(event.data);
         }
       };
 
-      // Store stream reference for cleanup
-      this.mediaStream = stream;
+      this.mediaRecorder.onstop = () => {
+        // Create blob from chunks
+        this.recordedBlob = new Blob(this.audioChunks, { type: mimeType });
+        this.recordedUrl = URL.createObjectURL(this.recordedBlob);
 
-      // Start recording with timeslice to get more accurate chunks
-      this.mediaRecorder.start(100); // Capture data every 100ms
+        // Stop all tracks
+        stream.getTracks().forEach((track) => track.stop());
+      };
+
+      // Start recording
+      this.mediaRecorder.start();
       this.recordingStartTime = Date.now();
 
-      // Start progress updates
-      this.startRecordingProgress(meteringEnabled || false);
+      // Start timer for recording progress
+      this.startRecordingTimer();
 
-      // Return a placeholder until recording is stopped
-      return 'recording_in_progress';
+      console.log('Web recording started');
+      return uri || 'web-recording';
     } catch (error) {
       console.error('Failed to start recording:', error);
-      throw new Error(`Failed to start recording: ${error}`);
+      throw error;
     }
   }
 
   async pauseRecorder(): Promise<string> {
     if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
       this.mediaRecorder.pause();
-      this.stopRecordingProgress();
-      return 'paused';
+      this.stopRecordingTimer();
+      console.log('Web recording paused');
+      return 'Recording paused';
     }
-    throw new Error('No active recording to pause');
+    return 'Not recording';
   }
 
   async resumeRecorder(): Promise<string> {
     if (this.mediaRecorder && this.mediaRecorder.state === 'paused') {
       this.mediaRecorder.resume();
-      this.startRecordingProgress(false);
-      return 'resumed';
+      this.startRecordingTimer();
+      console.log('Web recording resumed');
+      return 'Recording resumed';
     }
-    throw new Error('No paused recording to resume');
+    return 'Not paused';
   }
 
   async stopRecorder(): Promise<string> {
-    if (this.mediaRecorder) {
+    if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
       return new Promise((resolve) => {
-        const mimeType = this.mediaRecorder!.mimeType || 'audio/webm';
+        if (this.mediaRecorder) {
+          this.mediaRecorder.onstop = () => {
+            // Create blob from chunks
+            const mimeType = this.mediaRecorder?.mimeType || 'audio/webm';
+            this.recordedBlob = new Blob(this.audioChunks, { type: mimeType });
+            this.recordedUrl = URL.createObjectURL(this.recordedBlob);
 
-        // Calculate actual duration before stopping
-        this.actualRecordedDuration = Date.now() - this.recordingStartTime;
+            this.stopRecordingTimer();
+            console.log('Web recording stopped');
+            resolve(this.recordedUrl || 'web-recording-stopped');
+          };
 
-        this.mediaRecorder!.onstop = () => {
-          const blob = new Blob(this.recordedChunks, {
-            type: mimeType,
-          });
-          const url = URL.createObjectURL(blob);
-          this.recordingUrl = url;
-
-          // Clean up the stream
-          if (this.mediaStream) {
-            this.mediaStream.getTracks().forEach((track) => track.stop());
-            this.mediaStream = null;
-          }
-
-          // Clean up media recorder
-          this.mediaRecorder = null;
-
-          resolve(url);
-        };
-
-        this.mediaRecorder!.stop();
-        this.stopRecordingProgress();
+          this.mediaRecorder.stop();
+        }
       });
     }
-    throw new Error('No active recording to stop');
+    return 'Not recording';
   }
 
   // Playback methods
   async startPlayer(
     uri?: string,
-    httpHeaders?: Record<string, string>
+    _httpHeaders?: Record<string, string>
   ): Promise<string> {
     try {
-      this.audio = new Audio();
-      this.audio.volume = this.currentVolume;
+      // Use recorded audio or provided URI
+      const audioUrl = uri || this.recordedUrl;
 
-      if (uri) {
-        // For remote URLs with headers, we might need to use fetch
-        if (httpHeaders && Object.keys(httpHeaders).length > 0) {
-          const response = await fetch(uri, { headers: httpHeaders });
-          const blob = await response.blob();
-          const url = URL.createObjectURL(blob);
-          this.audio.src = url;
-        } else {
-          this.audio.src = uri;
-        }
-      } else if (this.recordingUrl) {
-        this.audio.src = this.recordingUrl;
-      } else {
-        throw new Error('No audio URI provided');
+      if (!audioUrl) {
+        throw new Error('No audio URL provided');
       }
 
-      // Add ended event listener
-      this.audio.onended = () => {
-        this.stopPlaybackProgress();
+      // Create audio element
+      this.audioPlayer = new Audio(audioUrl);
 
-        const finalDuration =
-          this.actualRecordedDuration > 0
-            ? this.actualRecordedDuration
-            : this.audio!.duration * 1000;
-
-        if (this.playBackListener) {
-          // Send final update with exact duration
-          this.playBackListener({
-            isMuted: this.audio!.muted,
-            duration: finalDuration,
-            currentPosition: finalDuration,
-          });
-        }
-
-        if (this.playbackEndListener) {
-          // Send playback end event
-          this.playbackEndListener({
-            duration: finalDuration,
-            currentPosition: finalDuration,
+      // Set up event listeners
+      this.audioPlayer.onended = () => {
+        this.stopPlaybackTimer();
+        if (this.playbackEndCallback) {
+          this.playbackEndCallback({
+            finished: true,
+            duration: (this.audioPlayer?.duration || 0) * 1000,
+            currentPosition: (this.audioPlayer?.duration || 0) * 1000,
           });
         }
       };
 
-      await this.audio.play();
-      this.startPlaybackProgress();
+      // Start playback
+      await this.audioPlayer.play();
 
-      return uri || this.recordingUrl || '';
+      // Start timer for playback progress
+      this.startPlaybackTimer();
+
+      console.log('Web playback started');
+      return audioUrl;
     } catch (error) {
       console.error('Failed to start playback:', error);
-      throw new Error(`Failed to start playback: ${error}`);
+      throw error;
     }
   }
 
   async stopPlayer(): Promise<string> {
-    if (this.audio) {
-      this.audio.pause();
-      this.audio.currentTime = 0;
-      this.stopPlaybackProgress();
-      this.audio = null;
-      return 'stopped';
+    if (this.audioPlayer) {
+      this.audioPlayer.pause();
+      this.audioPlayer.currentTime = 0;
+      this.stopPlaybackTimer();
+      this.audioPlayer = null;
+      console.log('Web playback stopped');
+      return 'Playback stopped';
     }
-    throw new Error('No active playback to stop');
+    return 'Not playing';
   }
 
   async pausePlayer(): Promise<string> {
-    if (this.audio && !this.audio.paused) {
-      this.audio.pause();
-      this.stopPlaybackProgress();
-      return 'paused';
+    if (this.audioPlayer && !this.audioPlayer.paused) {
+      this.audioPlayer.pause();
+      this.stopPlaybackTimer();
+      console.log('Web playback paused');
+      return 'Playback paused';
     }
-    throw new Error('No active playback to pause');
+    return 'Not playing';
   }
 
   async resumePlayer(): Promise<string> {
-    if (this.audio && this.audio.paused) {
-      await this.audio.play();
-      this.startPlaybackProgress();
-      return 'resumed';
+    if (this.audioPlayer && this.audioPlayer.paused) {
+      await this.audioPlayer.play();
+      this.startPlaybackTimer();
+      console.log('Web playback resumed');
+      return 'Playback resumed';
     }
-    throw new Error('No paused playback to resume');
+    return 'Not paused';
   }
 
   async seekToPlayer(time: number): Promise<string> {
-    if (this.audio) {
-      this.audio.currentTime = time / 1000; // Convert ms to seconds
-      return `${time}`;
+    if (this.audioPlayer) {
+      this.audioPlayer.currentTime = time / 1000; // Convert ms to seconds
+      return 'Seek completed';
     }
-    throw new Error('No active playback to seek');
+    return 'Not playing';
   }
 
   async setVolume(volume: number): Promise<string> {
-    this.currentVolume = Math.max(0, Math.min(1, volume));
-    if (this.audio) {
-      this.audio.volume = this.currentVolume;
+    if (this.audioPlayer) {
+      this.audioPlayer.volume = Math.max(0, Math.min(1, volume));
+      return 'Volume set';
     }
-    return `${this.currentVolume}`;
+    return 'Not playing';
   }
 
   async setPlaybackSpeed(playbackSpeed: number): Promise<string> {
-    if (this.audio) {
-      this.audio.playbackRate = playbackSpeed;
-      return `${playbackSpeed}`;
+    if (this.audioPlayer) {
+      this.audioPlayer.playbackRate = playbackSpeed;
+      return 'Playback speed set';
     }
-    throw new Error('No active playback to set speed');
+    return 'Not playing';
   }
 
   // Subscription
   setSubscriptionDuration(sec: number): void {
-    // For web, use milliseconds directly for faster updates
-    this.subscriptionDuration = Math.max(10, sec * 1000); // Convert to ms, minimum 10ms
+    this.subscriptionDuration = sec * 1000; // Convert to milliseconds
+  }
+
+  // Timer methods
+  private startRecordingTimer(): void {
+    this.stopRecordingTimer();
+
+    this.recordingTimer = setInterval(() => {
+      if (this.recordCallback && this.mediaRecorder?.state === 'recording') {
+        const currentPosition = Date.now() - this.recordingStartTime;
+        this.recordCallback({
+          isRecording: true,
+          currentPosition,
+          currentMetering: 0, // Web doesn't provide metering
+        });
+      }
+    }, this.subscriptionDuration);
+  }
+
+  private stopRecordingTimer(): void {
+    if (this.recordingTimer) {
+      clearInterval(this.recordingTimer);
+      this.recordingTimer = null;
+    }
+  }
+
+  private startPlaybackTimer(): void {
+    this.stopPlaybackTimer();
+
+    this.playbackTimer = setInterval(() => {
+      if (
+        this.playbackCallback &&
+        this.audioPlayer &&
+        !this.audioPlayer.paused
+      ) {
+        this.playbackCallback({
+          isMuted: this.audioPlayer.muted,
+          currentPosition: this.audioPlayer.currentTime * 1000,
+          duration: this.audioPlayer.duration * 1000,
+        });
+      }
+    }, this.subscriptionDuration);
+  }
+
+  private stopPlaybackTimer(): void {
+    if (this.playbackTimer) {
+      clearInterval(this.playbackTimer);
+      this.playbackTimer = null;
+    }
   }
 
   // Listeners
   addRecordBackListener(
     callback: (recordingMeta: RecordBackType) => void
   ): void {
-    this.recordBackListener = callback;
+    this.recordCallback = callback;
   }
 
   removeRecordBackListener(): void {
-    this.recordBackListener = null;
+    this.recordCallback = null;
   }
 
   addPlayBackListener(callback: (playbackMeta: PlayBackType) => void): void {
-    this.playBackListener = callback;
+    this.playbackCallback = callback;
   }
 
   removePlayBackListener(): void {
-    this.playBackListener = null;
+    this.playbackCallback = null;
   }
 
   addPlaybackEndListener(
     callback: (playbackEndMeta: PlaybackEndType) => void
   ): void {
-    this.playbackEndListener = callback;
+    this.playbackEndCallback = callback;
   }
 
   removePlaybackEndListener(): void {
-    this.playbackEndListener = null;
+    this.playbackEndCallback = null;
   }
 
   // Utility methods
   mmss(secs: number): string {
-    const minutes = Math.floor(secs / 60);
-    const seconds = Math.floor(secs % 60);
-    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    const seconds = Math.floor(secs);
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
   }
 
   mmssss(milisecs: number): string {
@@ -300,138 +316,9 @@ class AudioRecorderPlayerWebImpl implements AudioRecorderPlayerType {
     const milliseconds = Math.floor((milisecs % 1000) / 10);
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}:${milliseconds.toString().padStart(2, '0')}`;
   }
-
-  // Private helper methods
-  private getMimeType(_audioSets?: AudioSet): string {
-    // Try to use webm/opus for best browser support
-    if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) {
-      return 'audio/webm;codecs=opus';
-    }
-    if (MediaRecorder.isTypeSupported('audio/webm')) {
-      return 'audio/webm';
-    }
-    if (MediaRecorder.isTypeSupported('audio/mp4')) {
-      return 'audio/mp4';
-    }
-    return 'audio/wav';
-  }
-
-  private startRecordingProgress(meteringEnabled: boolean): void {
-    if (this.recordingInterval) {
-      clearInterval(this.recordingInterval);
-    }
-
-    const startTime = performance.now();
-
-    this.recordingInterval = setInterval(() => {
-      if (
-        this.recordBackListener &&
-        this.mediaRecorder?.state === 'recording'
-      ) {
-        const currentPosition = performance.now() - startTime;
-        const recordSecs = currentPosition / 1000;
-
-        this.recordBackListener({
-          isRecording: true,
-          currentPosition,
-          currentMetering: meteringEnabled
-            ? this.getCurrentMetering()
-            : undefined,
-          recordSecs,
-        });
-      }
-    }, this.subscriptionDuration);
-  }
-
-  private stopRecordingProgress(): void {
-    if (this.recordingInterval) {
-      clearInterval(this.recordingInterval);
-      this.recordingInterval = null;
-    }
-  }
-
-  private startPlaybackProgress(): void {
-    if (this.playbackInterval) {
-      clearInterval(this.playbackInterval);
-    }
-
-    this.playbackInterval = setInterval(() => {
-      if (this.playBackListener && this.audio && !this.audio.paused) {
-        // Use actual recorded duration if available and audio duration is not accurate
-        const duration =
-          this.actualRecordedDuration > 0
-            ? this.actualRecordedDuration
-            : this.audio.duration * 1000;
-
-        const currentPosition = this.audio.currentTime * 1000;
-
-        // Ensure we don't exceed duration
-        const safePosition = Math.min(currentPosition, duration);
-
-        this.playBackListener({
-          isMuted: this.audio.muted,
-          duration: duration,
-          currentPosition: safePosition,
-        });
-
-        // Check if playback has ended
-        if (this.audio.ended || currentPosition >= duration) {
-          this.stopPlaybackProgress();
-          if (this.playBackListener) {
-            // Send final update with 100% progress
-            this.playBackListener({
-              isMuted: this.audio.muted,
-              duration: duration,
-              currentPosition: duration,
-            });
-          }
-        }
-      }
-    }, this.subscriptionDuration);
-  }
-
-  private stopPlaybackProgress(): void {
-    if (this.playbackInterval) {
-      clearInterval(this.playbackInterval);
-      this.playbackInterval = null;
-    }
-  }
-
-  private getCurrentMetering(): number {
-    // Simplified metering - in a real implementation, you'd analyze the audio stream
-    return Math.random() * 40 - 40; // Random value between -40 and 0 dB
-  }
-
-  // Required by HybridObject interface but not used in web
-  get name(): string {
-    return 'AudioRecorderPlayer';
-  }
-
-  equals(other: AudioRecorderPlayerType): boolean {
-    return other === this;
-  }
-
-  get hashCode(): number {
-    return 0;
-  }
-
-  toString(): string {
-    return 'AudioRecorderPlayer (Web)';
-  }
-
-  dispose(): void {
-    this.stopRecorder().catch(() => {});
-    this.stopPlayer().catch(() => {});
-    this.removeRecordBackListener();
-    this.removePlayBackListener();
-    if (this.audioContext) {
-      this.audioContext.close();
-      this.audioContext = null;
-    }
-  }
 }
 
 // Create singleton instance
-const AudioRecorderPlayer = new AudioRecorderPlayerWebImpl();
+const AudioRecorderPlayer = new AudioRecorderPlayerImpl();
 
 export default AudioRecorderPlayer;
