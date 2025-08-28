@@ -13,7 +13,6 @@ LogoType Primary.png
 tsconfig.json
 .vscode/
 plugin/
-nitrogen/
 nitro.json
 .nitrogenignore
 NITRO_MIGRATION.md
