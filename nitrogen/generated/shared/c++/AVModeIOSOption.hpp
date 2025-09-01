@@ -30,37 +30,47 @@ namespace margelo::nitro::audiorecorderplayer {
    */
   enum class AVModeIOSOption {
     GAMECHATAUDIO      SWIFT_NAME(gamechataudio) = 0,
-    VIDEORECORDING      SWIFT_NAME(videorecording) = 1,
-    VOICECHAT      SWIFT_NAME(voicechat) = 2,
-    VIDEOCHAT      SWIFT_NAME(videochat) = 3,
+    MEASUREMENT      SWIFT_NAME(measurement) = 1,
+    MOVIEPLAYBACK      SWIFT_NAME(movieplayback) = 2,
+    SPOKENAUDIO      SWIFT_NAME(spokenaudio) = 3,
+    VIDEOCHAT      SWIFT_NAME(videochat) = 4,
+    VIDEORECORDING      SWIFT_NAME(videorecording) = 5,
+    VOICECHAT      SWIFT_NAME(voicechat) = 6,
+    VOICEPROMPT      SWIFT_NAME(voiceprompt) = 7,
   } CLOSED_ENUM;
 
 } // namespace margelo::nitro::audiorecorderplayer
 
 namespace margelo::nitro {
 
-  using namespace margelo::nitro::audiorecorderplayer;
-
   // C++ AVModeIOSOption <> JS AVModeIOSOption (union)
   template <>
-  struct JSIConverter<AVModeIOSOption> final {
-    static inline AVModeIOSOption fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
+  struct JSIConverter<margelo::nitro::audiorecorderplayer::AVModeIOSOption> final {
+    static inline margelo::nitro::audiorecorderplayer::AVModeIOSOption fromJSI(jsi::Runtime& runtime, const jsi::Value& arg) {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, arg);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
-        case hashString("gameChatAudio"): return AVModeIOSOption::GAMECHATAUDIO;
-        case hashString("videoRecording"): return AVModeIOSOption::VIDEORECORDING;
-        case hashString("voiceChat"): return AVModeIOSOption::VOICECHAT;
-        case hashString("videoChat"): return AVModeIOSOption::VIDEOCHAT;
+        case hashString("gameChatAudio"): return margelo::nitro::audiorecorderplayer::AVModeIOSOption::GAMECHATAUDIO;
+        case hashString("measurement"): return margelo::nitro::audiorecorderplayer::AVModeIOSOption::MEASUREMENT;
+        case hashString("moviePlayback"): return margelo::nitro::audiorecorderplayer::AVModeIOSOption::MOVIEPLAYBACK;
+        case hashString("spokenAudio"): return margelo::nitro::audiorecorderplayer::AVModeIOSOption::SPOKENAUDIO;
+        case hashString("videoChat"): return margelo::nitro::audiorecorderplayer::AVModeIOSOption::VIDEOCHAT;
+        case hashString("videoRecording"): return margelo::nitro::audiorecorderplayer::AVModeIOSOption::VIDEORECORDING;
+        case hashString("voiceChat"): return margelo::nitro::audiorecorderplayer::AVModeIOSOption::VOICECHAT;
+        case hashString("voicePrompt"): return margelo::nitro::audiorecorderplayer::AVModeIOSOption::VOICEPROMPT;
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert \"" + unionValue + "\" to enum AVModeIOSOption - invalid value!");
       }
     }
-    static inline jsi::Value toJSI(jsi::Runtime& runtime, AVModeIOSOption arg) {
+    static inline jsi::Value toJSI(jsi::Runtime& runtime, margelo::nitro::audiorecorderplayer::AVModeIOSOption arg) {
       switch (arg) {
-        case AVModeIOSOption::GAMECHATAUDIO: return JSIConverter<std::string>::toJSI(runtime, "gameChatAudio");
-        case AVModeIOSOption::VIDEORECORDING: return JSIConverter<std::string>::toJSI(runtime, "videoRecording");
-        case AVModeIOSOption::VOICECHAT: return JSIConverter<std::string>::toJSI(runtime, "voiceChat");
-        case AVModeIOSOption::VIDEOCHAT: return JSIConverter<std::string>::toJSI(runtime, "videoChat");
+        case margelo::nitro::audiorecorderplayer::AVModeIOSOption::GAMECHATAUDIO: return JSIConverter<std::string>::toJSI(runtime, "gameChatAudio");
+        case margelo::nitro::audiorecorderplayer::AVModeIOSOption::MEASUREMENT: return JSIConverter<std::string>::toJSI(runtime, "measurement");
+        case margelo::nitro::audiorecorderplayer::AVModeIOSOption::MOVIEPLAYBACK: return JSIConverter<std::string>::toJSI(runtime, "moviePlayback");
+        case margelo::nitro::audiorecorderplayer::AVModeIOSOption::SPOKENAUDIO: return JSIConverter<std::string>::toJSI(runtime, "spokenAudio");
+        case margelo::nitro::audiorecorderplayer::AVModeIOSOption::VIDEOCHAT: return JSIConverter<std::string>::toJSI(runtime, "videoChat");
+        case margelo::nitro::audiorecorderplayer::AVModeIOSOption::VIDEORECORDING: return JSIConverter<std::string>::toJSI(runtime, "videoRecording");
+        case margelo::nitro::audiorecorderplayer::AVModeIOSOption::VOICECHAT: return JSIConverter<std::string>::toJSI(runtime, "voiceChat");
+        case margelo::nitro::audiorecorderplayer::AVModeIOSOption::VOICEPROMPT: return JSIConverter<std::string>::toJSI(runtime, "voicePrompt");
         default: [[unlikely]]
           throw std::invalid_argument("Cannot convert AVModeIOSOption to JS - invalid value: "
                                     + std::to_string(static_cast<int>(arg)) + "!");
@@ -73,9 +83,13 @@ namespace margelo::nitro {
       std::string unionValue = JSIConverter<std::string>::fromJSI(runtime, value);
       switch (hashString(unionValue.c_str(), unionValue.size())) {
         case hashString("gameChatAudio"):
+        case hashString("measurement"):
+        case hashString("moviePlayback"):
+        case hashString("spokenAudio"):
+        case hashString("videoChat"):
         case hashString("videoRecording"):
         case hashString("voiceChat"):
-        case hashString("videoChat"):
+        case hashString("voicePrompt"):
           return true;
         default:
           return false;
