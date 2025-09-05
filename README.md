@@ -21,6 +21,16 @@
 
 This is a high-performance React Native module for audio recording and playback, now powered by [NitroModules](https://github.com/mrousavy/nitro) for direct native module access without bridge overhead. The library provides simple recorder and player functionalities for iOS, Android, and Web platforms with full TypeScript support and type safety.
 
+## Help Maintenance
+
+Maintaining multiple open source projects has been incredibly rewarding, but also a bit exhausting at times.
+If my work has been helpful to you, consider buying me a coffee ☕️ — it would mean the world to me and give me the energy to keep going!
+
+Recently, my audio library has become one of my favorite projects, and I see huge potential for its growth. I’m excited to keep building fun and powerful audio features for the community.
+
+<a href="https://www.buymeacoffee.com/hyochan" target="_blank"><img src="https://www.buymeacoffee.com/assets/img/custom_images/purple_img.png" alt="Buy Me A Coffee" style="height: auto !important;width: auto !important;" ></a>
+[![Paypal](https://www.paypalobjects.com/webstatic/mktg/Logo/pp-logo-100px.png)](https://paypal.me/dooboolab)
+
 ## Preview
 
 <img src="https://github.com/user-attachments/assets/2c88f580-4e2b-43f3-a177-bf19d2d40fd5" width=800 alt="Preview"/>
@@ -642,7 +652,3 @@ See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the 
 ## License
 
 MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
